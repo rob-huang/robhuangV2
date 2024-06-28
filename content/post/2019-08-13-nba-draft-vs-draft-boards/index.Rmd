@@ -1,0 +1,237 @@
+---
+title: NBA Draft vs. Draft Boards
+author: Robert Huang
+date: '2019-08-13'
+slug: nba-draft-vs-draft-boards
+categories: []
+tags:
+  - nba
+  - nba draft
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
+
+library(tidyverse)
+library(ggrepel)
+library(scales)
+library(cowplot)
+library(kableExtra)
+
+### data
+draft <- read.csv("data//nba draft boards//draft.csv",
+                  stringsAsFactors = FALSE, na = "")
+
+undrafted <- read.csv("data//nba draft boards//undrafted.csv",
+                      stringsAsFactors = FALSE, na = "")
+
+```
+
+
+## Background
+
+Heading into the NBA draft, the is a general consensus on the rough order that the current crop of prospects should be selected. This can be seen through the numerous draft boards for a given year available on many websites, created by both professional and amateur draft prognosticators. Analysts project who they think will have the best NBA careers using a combination of their own scouting abilities, some group think, and, for the more well-connected individuals, whatever information they may have gathered from league insiders or team executives.
+
+While the public has an idea of where players will be selected, the NBA teams doing the actual selections have their own draft boards. Teams operate under more information than individuals not involved with the draft process, watching players work out in person, conducting interviews with the players and the people around them, and doing whatever background or medical checks are needed.
+
+Even with all this information, teams sometimes make decisions that are baffling to NBA watchers, drafting players way ahead of where they are projected to go. Other players that are highly regarded going into the draft fall heavily. Most recently in the 2019 draft, Oregon center Bol Bol was originally projected to go in the middle of the first round, but watched team after team bypass him until he fell to the Denver Nuggets in the middle of the second round at 44.
+
+Who were the players that rose and fell the most compared to their projected positions? Were the decisions to overdraft or skip over players the correct ones?
+
+
+## Overview
+
+We look at NBA drafts from 2008 to 2019 because of the number of available pre-draft rankings for this period. This number grows each year, with five boards used for 2008 and 22 used for 2019. The rankings come from a variety of sources, including major sports publications like ESPN and CBS Sports, draft specific sites like DraftExpress and NBADraft.net, and personal blogs by draft enthusiasts. The rankings utilized are always "big boards" as opposed to mock drafts. Big boards are pure rankings of the NBA potential of prospects, regardless of fit or intel on where a player will fall to a team. Mock drafts attempt to predict draft position, regardless of the author's beliefs about a player's outlook. These individual draft boards are aggregated together using a point system (100 points for 1st, 99 points for 2nd...) to produce overall rankings.
+
+```{r}
+
+### biggest risers (highest draft position compared to board ranking)
+# only consider 1st round because of variance of opinions for 2nd round
+rise <- draft %>%
+  arrange(diff) %>%
+  filter(round == "Round 1") %>%
+  mutate(rk.ws = ifelse(year == 2019, NA, rk.ws))
+
+
+### biggest droppers
+# consider both rounds
+fall <- draft %>%
+  arrange(desc(diff)) %>%
+  mutate(rk.ws = ifelse(year == 2019, NA, rk.ws))
+
+```
+
+Player pre-draft rankings and actual draft positions are plotted below for an overview of the relationship between the two variables. As expected, there is a strong linear relationship between the two. Players are drafted roughly in the order of how analysts project their future NBA careers to turn out. This relationship is strong for the highest ranked players, but weakens as we move down either the board rankings or pick number, with the greatest variation at the end of the draft. This is not unusual as it becomes more difficult for scouts to differentiate players that deep into the pool.
+
+```{r fig.align = "center"}
+
+### plot draft board ranking against actual draft result
+# size/color of points represent player quality (career WS) relative to draft year
+# if below x = y line, drafted above pre-draft rankings (rose)
+# if above x = y line, drafted below pre-draft rankings (fell)
+# do not include 2019 because WS not yet available
+p1 <- draft %>%
+  filter(year < 2019) %>%
+  ggplot(aes(x = board.rk, y = pick)) +
+  geom_abline(slope = 1, intercept = 0, size = 1) +
+  geom_text_repel(data = draft %>%
+                    filter(player %in% 
+                             rise$player[rise$diff <= -30],
+                           year < 2019),
+                  aes(label = gsub(" ", "\n", player)),
+                  vjust = 1, hjust = 0, nudge_x = 1.5, nudge_y = -0.5,
+                  size = 3, lineheight = 0.75) +
+  geom_text_repel(data = draft %>%
+                    filter(player %in% 
+                             fall$player[fall$diff >= 26],
+                           year < 2019),
+                  aes(label = player),
+                  hjust = 1, vjust = 0.5, nudge_x = -1.1, size = 3) +
+  geom_jitter(aes(size = -(rk.ws^(1/3)),
+                  fill = rk.ws^(1/3)),
+              shape = 21, alpha = 0.6) +
+  scale_size_continuous(guide = FALSE) +
+  scale_fill_gradient(low = "blue", high = "white", guide = FALSE) +
+  scale_x_continuous(breaks = seq(0, 125, by = 25), limits = c(0, 130)) +
+  labs(x = "Draft Board Ranking", y = "Draft Pick") +
+  theme_bw()
+
+# undrafted
+p2 <- undrafted %>%
+  mutate(plot.y = sample(1, nrow(undrafted), replace = TRUE)) %>%
+  # filter(board.rk <= 60) %>%
+  ggplot(aes(x = board.rk, y = plot.y)) +
+  geom_jitter(shape = 21, alpha = 0.3) +
+  geom_vline(xintercept = 60) +
+  annotate("label", x = 10, y = 1, label = "Undrafted") +
+  scale_x_continuous(breaks = seq(0, 125, by = 25), limits = c(0, 130)) +
+  labs(x = "Undrafted", y = "") +
+  theme_bw() +
+  theme(axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.title = element_blank(),
+        # plot.margin = unit(c(0, 0, 0, 0), "cm"),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank())
+
+plot_grid(p2, p1,
+          ncol = 1, align = "v",
+          rel_heights = c(1, 9))
+
+
+```
+
+```{r}
+
+### percentage of drafted players that rose/fell compared to board ranking
+result.count <- draft %>%
+  mutate(
+    result = case_when(
+      diff < 0 ~ "rose",
+      diff > 0 ~ "fell",
+      diff == 0 ~ "at",
+      is.na(diff) ~ "rose",
+    )
+  ) %>%
+  count(result) %>%
+  mutate(pct = n / sum(n),
+         pct.txt = percent(pct, 1))
+
+```
+
+Players that fall below the x = y line are reaches by teams, selected earlier than their pre-draft rankings. Players that fall above the line have slipped, selected below their pre-draft ranking. Considering only players that were drafted, `r result.count$pct.txt[result.count$result == "fell"]` fell, `r result.count$pct.txt[result.count$result == "rose"]` rose, and `r result.count$pct.txt[result.count$result == "at"]` were drafted at exactly their ranking. The larger percentage of players that rose is a result of there being only 60 picks in any draft but no limit on the number of players on draft boards. There are many players ranked inside the top 60 on draft boards that end up undrafted. These players are represented in the panel above the main plot.
+
+The size and shade of the circles for each player correspond to their career Win Shares ranking among players from the same draft. Larger and darker circles represent players that have had better careers as of the 2018-19 NBA season. This is used as a quick look of the relationship between player quality and draft position, with players drafted earlier or ranked higher pre-draft generally having stronger careers. Note that this is not a definitive statement on the players, especially for players from more recent drafts that have not played many seasons.
+
+
+## "Overdrafted"
+
+```{r}
+
+rise.form <- rise %>%
+  select(year, team, player, college, G, pick, board.rk, diff) %>%
+  filter(diff <= -15) %>%
+  mutate(college = ifelse(is.na(college), "", college),
+         G = ifelse(is.na(G) & year == 2019, "", G)) %>%
+  rename(Year = year,
+         Team = team,
+         Player = player,
+         College = college,
+         Games = G,
+         Pick = pick,
+         Rank = board.rk,
+         Difference = diff)
+
+rise.form %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                full_width = FALSE) %>%
+  scroll_box(height = "500px")
+
+```
+
+We look at the players that had the largest difference between their pre-draft rankings and actual pick positions, starting with the ones that went earlier than more highly regarded players. This list is limited to only players drafted in the first round. The second round is generally viewed as more difficult to predict and a crapshoot compared to the first. Given the lower stakes, teams reach for players they like regardless of other available prospects. Teams sometimes do not have enough roster slots or do not want to use cap space to take on more players and will instead pick international prospects to stash overseas for a period of time.
+
+Bruno Caboclo tops the list of draft reaches by a significant margin. Entering the 2014 draft ranked all the way at `r rise.form$Rank[rise.form$Player == "Bruno Caboclo"]` (and completed off the boards of many analysts), the Toronto Raptors shocked the NBA community when they selected him at `r rise.form$Pick[rise.form$Player == "Bruno Caboclo"]`. Caboclo projected as a raw project then and has not done much to change that perception today. Rather than for anything on the court, he is still most remembered as being described by commentator [Fran Fraschilla](https://youtu.be/6CtQbGI1258) as being "two years away from being two years away" after the selection was made during the draft broadcast.
+
+The next two players, Christian Eyenga and Josh Huestis, were drafted about 30 places above their board ranking, but both were basically second round picks. [Georgios Papagiannis](https://www.sactownroyalty.com/2018/2/28/16993924/why-did-georgios-papagiannis-get-picked-so-high), viewed as a mid-second round talent, was selected in the late lottery in 2016 by the Phoenix Suns who then traded him to the Sacramento Kings. He was waived by the Kings in 2018 before his first contract was up and is now back playing is his home country of Greece. In the same draft, the Milwaukee Bucks swung for the fences with Thon Maker at 10. Despite some flashes, he was traded away to the Pistons while still on his rookie contract. Guerschon Yabusele went `r rise.form$Difference[rise.form$Player == "Guerschon Yabusele"] %>% abs()` places ahead of his ranking and is no longer with the Celtics after only two seasons. Jason Thompson was not the the 12th best player in the 2008 draft, but actually provided the Kings with seven seasons as a starter.
+
+There are players on the above list that outperform their draft positions, difficult to do given that their pick number is already inflated. Pascal Siakam and Caris LeVert are the obvious standouts. Siakam was probably ranked too low because he did not possess much offensive upside, and Levert was ranked lower than his talent level because of medical concerns. Despite those worries, both have proven that they should have been considered way earlier than where they were actually picked (at `r rise.form$Pick[rise.form$Player == "Pascal Siakam"]` and `r rise.form$Pick[rise.form$Player == "Caris LeVert"]`, respectively).
+
+
+## "Underdrafted"
+
+```{r}
+
+fall.form <- fall %>%
+  select(year, team, player, college, G, pick, board.rk, diff) %>%
+  filter(diff >= 15) %>%
+  mutate(college = ifelse(is.na(college), "", college),
+         G = ifelse(is.na(G) & year == 2019, "",
+                    ifelse(is.na(G) & year < 2019, 0, G))) %>%
+  rename(Year = year,
+         Team = team,
+         Player = player,
+         College = college,
+         Games = G,
+         Pick = pick,
+         Rank = board.rk,
+         Difference = diff)
+
+fall.form %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                full_width = FALSE) %>%
+  scroll_box(height = "500px")
+
+```
+
+On the flip side, there are players who slipped in the draft, selected much later than expected. There is no player that slid down the draft as much as Bruno Caboclo climbed—also mathematically impossible given only 60 draft picks. At the top of the table is Stanley Robinson—originally projected as a late first round talent—who fell to the end of the second round, about 30 slots lower than expected. This decision turned out to be correct as Robinson has yet to appear in an NBA game as of the 2018-19 season.
+
+Also in this group is the aforementioned Bol Bol, who with a pre-draft ranking of `r fall.form$Rank[fall.form$Player == "Bol Bol"]` is one of the more highly rated prospects to have fallen down a large number of spots in the draft. Deyonta Davis's projection as a lottery pick makes him the highest ranked player to have fell at least 15 spots. As with Stanley Robinson, this appears to be the right decision by NBA teams as he has not developed much of a career in the three seasons since he was drafted. We will wait and see with Bol Bol.
+
+There are also successes on the list: DeAndre Jordan, ranked as a late lottery pick, fell to the second round but has made three All-NBA teams and one All-Star game; Hassan Whiteside, despite his faults, has put up counting stats that far exceed players drafted in the lottery; Patty Mills, a major depth piece for Spurs for multiple years, has proven that he should have been selected way above his board ranking of `r fall.form$Rank[fall.form$Player == "Patrick Mills"]`; DeJuan Blair, who fell to the second round because of injury concerns, has outperformed many players ahead of him. Jordan and Whiteside—probably the best players of this group—had two of the higher pre-draft rankings relative to the others, suggesting that what they have achieved in the NBA should not been too surprising to scouts.
+
+Most of the other players above are second rounds picks with careers that are consistent with the average second rounder, spending one to three seasons in the NBA, always with sporadic playing time. This sometimes has less to do with talent, as teams do not feel the need to invest as much with players selected this low in the draft especially when compared to first rounders. Front offices may have a greater incentive to make sure youngsters selected early have every chance to succeed, given the criticism they may receive for having failed to make the most of a prized draft asset—in this case, the pick itself.
+
+```{r}
+
+### highest ranked players not drafted
+undraft.form <- undrafted %>%
+  arrange(board.rk) %>%
+  filter(board.rk < 40) %>%
+  select(year, name, board.rk) %>%
+  rename(Year = year,
+         Player = name,
+         Rank = board.rk)
+
+undraft.form %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                full_width = FALSE)
+
+```
+
+We also look at players ranked higher than 40 on pre-draft boards that slipped completely out of the draft. Only one player since 2008, UNLV's Christian Wood, was projected as a first round talent to have gone undrafted. Wood did sign with a team after the draft and debuted in the NBA in the same season. This cannot be said of most of the other players in the above group, although many are still young enough for that to happen sometime in the future.
+
+One key difference between the group of players that fell up in the draft and the group that fell down is the number of international players. Of the `r nrow(rise.form)` players that climbed at least 15 spots, `r sum(rise.form$College == "")` played professionally overseas as prospects. Only `r sum(fall.form$College == "")` of the `r nrow(fall.form)` players that fell at least 15 slots played internationally; the rest played college basketball in the US. Every player on the undrafted list also played NCAA basketball. This quirk could be the result of teams having better information on international players compared to the average draft analyst. A lot less video and English language articles on foreign players are available, affecting where analysts will slot them on their draft boards. College players, on the other hand, may be overrated by analysts, given the visibility of these athletes on TV or major sports websites. How many full games of Bruno Cabocolo playing in the Brazilian basketball league has the average scout watched? Stanley Robinson, on the other hand, played numerous games in his UConn career that were broadcast nationally.

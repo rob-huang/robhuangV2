@@ -1,0 +1,3990 @@
+---
+title: NBA Draft - Best/Worst Picks by Team and General Manager
+author: Robert Huang
+date: '2018-10-10'
+slug: nba-draft-best-worst-picks-by-team-and-general-manager
+categories: []
+tags:
+  - nba
+  - nba draft
+---
+
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+
+
+<div id="background" class="section level2">
+<h2>Background</h2>
+<p>In recent years, the Sacramento Kings used top 10 draft picks on Thomas Robinson, Ben McLemore, and Jimmer Freddette (I would have included Georgios Papagiannis, but he went 13th). The San Antonio Spurs, on the other hand, were able to get Kawhi Leonard at 15, Tony Parker at 28, and Manu Ginobili at 57. Is all of this luck or are there certain teams or front offices that are more skilled at drafting than others? Are there incompetent teams that continually fail in finding talent through the draft. We will attempt to find the best and worst draft picks and whether they fall to particular teams/executives more often than others.</p>
+<p>For this analysis, we will look at NBA drafts from 1980 to 2013. To measure whether a player is a value-plus or -minus pick, we have to assign values to players. There are numerous advanced statistics that attempt to give a player’s worth using just one number, but we will use Basketball Reference’s <a href="https://www.basketball-reference.com/about/ws.html">Win Shares</a> (WS). Data used will be only for the regular season and current as of the 2017-18 season. For each player, value will be defined as the WS total for their first five seasons since being drafted. The first five seasons are used instead of career WS because doing so will lead to a lot of incomplete data. There are two players from the 1998 draft still active going into the 2018-19 season (Dirk Nowitzki and Vince Carter). Limiting the dataset to only drafts where all players have complete careers will nearly cut the data at hand in half (it also makes this less fun without more current players). Five seasons of WS data already has a strong correlation with career WS, giving a pretty good picture of a player’s value. Note that international draft-and-stash players, guys that are drafted but stay overseas for one or more seasons before coming over to the NBA, are given values of 0 for any seasons where they did not play in any games. Also, only picks from 1 up to 60 are considered.</p>
+</div>
+<div id="draft-picks---expected-value" class="section level2">
+<h2>Draft Picks - Expected Value</h2>
+<p>With values for every player from each draft from 1980 to 2013, we can work to establish expected values for each pick. The following plot shows WS and draft position for every pick from the 34 drafts used. There is a general decreasing trend in player values as the picks get worse, with the red line tracing the mean WS values for each pick. Obviously, any pick is more valuable than any pick that comes after it. A naive method for evaluating players that have most outperformed or underperformed their draft number is to compare their WS to the average WS for all players picked at the same position. This ignores two underlying characteristics of the graph.</p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/plot.exp.val-1.png" width="816" style="display: block; margin: auto;" /></p>
+<p>The first is that the raw mean WS for each pick (red line) do not form a perfectly decreasing relationship, with pick #2 appearing less valuable than pick #3, pick #9 performing stronger than picks 6 to 8, and so on. While it is possible there may be actual reasons for these anomalies, the more likely explanation is noise. Any valuation should prefer earlier picks over later picks. A better way to obtain expected values for each pick is to model the values using pick number as the predictor. The blue line shows the fit from a cubic spline model (with df 3) that better fits the theoretical relationship between pick number and pick value. We will use this fit to build the expected values for each pick.</p>
+<p>The second characteristic of the pick and WS graph is that there is an inverse relationship between pick number and variance of player values. For example, the range of outcomes for picks in the top 10 are much larger than the range for picks in the 50s. A boxplot of the previous graph highlights this point. While there are outliers at every pick, the ranges of outcomes shrink as the pick numbers get worse/higher. The number one overall pick can turn out to be a Hall of Famer (Hakeem Olajuwon, Tim Duncan), a good but not great player (Derrick Coleman, Glenn Robinson), or even a complete bust (Greg Oden, Anthony Bennett). Nearly every player picked late, say at #56, did not have much of a career (in this case, Anthony Mason and Ramon Sessions being the only exceptions). There are no busts late in the draft because there are no longer any expectations.</p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/plot.sd-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>We must take the above results into account when calculating player value relative to draft position. Finding a solid role player late in the draft can actually be more impressive than getting an All-Star with the first pick. We can model the relationship between pick number and the variance of the WS for all players at that pick. The next plot shows pick number and WS standard deviation along with two fits. The red line uses a simple linear regression, and the blue line uses a cubic spline model. While it is more complex, the smoothed model better captures the relationship at the left end of the graph (although there is the possibility of overfitting). We will use this model in conjunction with the expected values built earlier to define the best and worst picks at each draft position.</p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/plot.sd.fit-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="player-scores" class="section level2">
+<h2>Player Scores</h2>
+<p>With the fitted expected values and standard deviations of WS for each pick in hand, we can calculate pseudo z-scores for all players (<span class="math inline">\((WS_{i} - WS_{i,fitted}) / SD_{i,fitted}\)</span> where fitted values are based on pick #). These scores will allow for the comparison of player WS at different pick positions, giving more weight to deviations from the mean at picks with less spread and less weight at picks with greater spread. The resulting scores for all picks are plotted below:</p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/plot.std-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The larger range of outcomes for the early picks results in more varied distributions of standardized scores for those picks. Conversely, because the majority of players picked late have WS totals close to zero, these resulting standardized scores are basically bounded below by negative numbers not far away from zero. The players who do perform above average skew the distribution of the scores at each pick to the right. In addition, there are positive outliers among the late second picks in the dataset that will heavily influence summary statistics.</p>
+<p>The top 30 players (out of 1,982) who most outperformed their draft position based on this measure are:</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:390px; ">
+<table class="table table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-1">Table 1: </span>30 Best Draft Picks (1980-2013)
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Rank
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Draft Year
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Pick
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+Team
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+Player
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Score
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+2011
+</td>
+<td style="text-align:right;">
+60
+</td>
+<td style="text-align:left;">
+SAC
+</td>
+<td style="text-align:left;">
+Isaiah Thomas
+</td>
+<td style="text-align:right;">
+11.34
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+2007
+</td>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:left;">
+LAL
+</td>
+<td style="text-align:left;">
+Marc Gasol
+</td>
+<td style="text-align:right;">
+5.93
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+2006
+</td>
+<td style="text-align:right;">
+47
+</td>
+<td style="text-align:left;">
+UTA
+</td>
+<td style="text-align:left;">
+Paul Millsap
+</td>
+<td style="text-align:right;">
+5.64
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1986
+</td>
+<td style="text-align:right;">
+46
+</td>
+<td style="text-align:left;">
+PHO
+</td>
+<td style="text-align:left;">
+Jeff Hornacek
+</td>
+<td style="text-align:right;">
+5.41
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+1985
+</td>
+<td style="text-align:right;">
+45
+</td>
+<td style="text-align:left;">
+CLE
+</td>
+<td style="text-align:left;">
+Hot Rod Williams
+</td>
+<td style="text-align:right;">
+4.75
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+1984
+</td>
+<td style="text-align:right;">
+46
+</td>
+<td style="text-align:left;">
+POR
+</td>
+<td style="text-align:left;">
+Jerome Kersey
+</td>
+<td style="text-align:right;">
+4.55
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+2000
+</td>
+<td style="text-align:right;">
+43
+</td>
+<td style="text-align:left;">
+MIL
+</td>
+<td style="text-align:left;">
+Michael Redd
+</td>
+<td style="text-align:right;">
+4.25
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+1998
+</td>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:left;">
+HOU
+</td>
+<td style="text-align:left;">
+Cuttino Mobley
+</td>
+<td style="text-align:right;">
+4.22
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+2007
+</td>
+<td style="text-align:right;">
+56
+</td>
+<td style="text-align:left;">
+MIL
+</td>
+<td style="text-align:left;">
+Ramon Sessions
+</td>
+<td style="text-align:right;">
+4.08
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+2003
+</td>
+<td style="text-align:right;">
+51
+</td>
+<td style="text-align:left;">
+NJN
+</td>
+<td style="text-align:left;">
+Kyle Korver
+</td>
+<td style="text-align:right;">
+4.08
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+2012
+</td>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:left;">
+GSW
+</td>
+<td style="text-align:left;">
+Draymond Green
+</td>
+<td style="text-align:right;">
+3.99
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+2001
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:left;">
+GSW
+</td>
+<td style="text-align:left;">
+Gilbert Arenas
+</td>
+<td style="text-align:right;">
+3.95
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+1988
+</td>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:left;">
+DET
+</td>
+<td style="text-align:left;">
+Micheal Williams
+</td>
+<td style="text-align:right;">
+3.94
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+2005
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:left;">
+NYK
+</td>
+<td style="text-align:left;">
+David Lee
+</td>
+<td style="text-align:right;">
+3.88
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+1996
+</td>
+<td style="text-align:right;">
+54
+</td>
+<td style="text-align:left;">
+UTA
+</td>
+<td style="text-align:left;">
+Shandon Anderson
+</td>
+<td style="text-align:right;">
+3.87
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+2002
+</td>
+<td style="text-align:right;">
+34
+</td>
+<td style="text-align:left;">
+CLE
+</td>
+<td style="text-align:left;">
+Carlos Boozer
+</td>
+<td style="text-align:right;">
+3.86
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+2011
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:left;">
+CHI
+</td>
+<td style="text-align:left;">
+Jimmy Butler
+</td>
+<td style="text-align:right;">
+3.81
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+2013
+</td>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:left;">
+DEN
+</td>
+<td style="text-align:left;">
+Rudy Gobert
+</td>
+<td style="text-align:right;">
+3.81
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+1993
+</td>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:left;">
+LAL
+</td>
+<td style="text-align:left;">
+Nick Van Exel
+</td>
+<td style="text-align:right;">
+3.76
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+2001
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:left;">
+SAS
+</td>
+<td style="text-align:left;">
+Tony Parker
+</td>
+<td style="text-align:right;">
+3.71
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+2011
+</td>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:left;">
+HOU
+</td>
+<td style="text-align:left;">
+Chandler Parsons
+</td>
+<td style="text-align:right;">
+3.70
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:right;">
+1985
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:left;">
+POR
+</td>
+<td style="text-align:left;">
+Terry Porter
+</td>
+<td style="text-align:right;">
+3.61
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+1983
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:left;">
+ATL
+</td>
+<td style="text-align:left;">
+Doc Rivers
+</td>
+<td style="text-align:right;">
+3.61
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+1984
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+CHI
+</td>
+<td style="text-align:left;">
+Michael Jordan
+</td>
+<td style="text-align:right;">
+3.52
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+1999
+</td>
+<td style="text-align:right;">
+57
+</td>
+<td style="text-align:left;">
+SAS
+</td>
+<td style="text-align:left;">
+Manu Ginobili
+</td>
+<td style="text-align:right;">
+3.49
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+1986
+</td>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:left;">
+DET
+</td>
+<td style="text-align:left;">
+Dennis Rodman
+</td>
+<td style="text-align:right;">
+3.49
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:right;">
+1995
+</td>
+<td style="text-align:right;">
+58
+</td>
+<td style="text-align:left;">
+DET
+</td>
+<td style="text-align:left;">
+Don Reid
+</td>
+<td style="text-align:right;">
+3.46
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+1980
+</td>
+<td style="text-align:right;">
+58
+</td>
+<td style="text-align:left;">
+NYK
+</td>
+<td style="text-align:left;">
+Kurt Rambis
+</td>
+<td style="text-align:right;">
+3.45
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+2003
+</td>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:left;">
+DAL
+</td>
+<td style="text-align:left;">
+Josh Howard
+</td>
+<td style="text-align:right;">
+3.41
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+1990
+</td>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:left;">
+PHO
+</td>
+<td style="text-align:left;">
+Cedric Ceballos
+</td>
+<td style="text-align:right;">
+3.29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Isaiah Thomas lords over the list, with a dominating outlier score of 11.3. This is no surprise given the earlier graphs showing how well Thomas performed compared to fellow players at the same draft number. Thomas was the last pick of the 2011 draft yet he is two time All-Star and made two All-NBA teams, accolades few players drafted this late (or even early) ever achieve. The rest of the list is made up of a mix of All-Stars and role players, mostly drafted in the second round. The only player drafted inside the top 20 to appear on the list is Michael Jordan, who was drafted very early at number three. But then again, getting arguably the greatest player of all time at any pick other than first overall represents major value added.</p>
+<p>A quick reminder that the WS values used for this analysis are the totals from a player’s first five seasons since being drafted. This explains the relatively low placing of Manu Ginobili who did not play in the NBA until three years after he was drafted, generating zero WS for each of those missed seasons. Given his late draft position (57th), had he made the jump over to the NBA earlier, he could very well have challenged Isaiah Thomas for the top spot. Using only the first five seasons instead of something greater is a handicap for players who either missed time early in their careers or took a longer amount of time to develop, while rewarding those who started off hot but flamed out later.</p>
+<p>Similarly, the 30 worst draft picks since 1980 are as follows:</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:390px; ">
+<table class="table table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-2">Table 2: </span>30 Worst Draft Picks (1980-2013)
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Rank
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Draft Year
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Pick
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+Team
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+Player
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Score
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1998
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+LAC
+</td>
+<td style="text-align:left;">
+Michael Olowokandi
+</td>
+<td style="text-align:right;">
+-1.92
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+2006
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+CHA
+</td>
+<td style="text-align:left;">
+Adam Morrison
+</td>
+<td style="text-align:right;">
+-1.87
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+2013
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+CLE
+</td>
+<td style="text-align:left;">
+Anthony Bennett
+</td>
+<td style="text-align:right;">
+-1.86
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1986
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+BOS
+</td>
+<td style="text-align:left;">
+Len Bias
+</td>
+<td style="text-align:right;">
+-1.83
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+1986
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+GSW
+</td>
+<td style="text-align:left;">
+Chris Washburn
+</td>
+<td style="text-align:right;">
+-1.81
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+2002
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+CHI
+</td>
+<td style="text-align:left;">
+Jay Williams
+</td>
+<td style="text-align:right;">
+-1.77
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+2002
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+DEN
+</td>
+<td style="text-align:left;">
+Nikoloz Tskitishvili
+</td>
+<td style="text-align:right;">
+-1.76
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+1984
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+LAC
+</td>
+<td style="text-align:left;">
+Lancaster Gordon
+</td>
+<td style="text-align:right;">
+-1.68
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+1980
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+DEN
+</td>
+<td style="text-align:left;">
+James Ray
+</td>
+<td style="text-align:right;">
+-1.66
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+2009
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+MIN
+</td>
+<td style="text-align:left;">
+Jonny Flynn
+</td>
+<td style="text-align:right;">
+-1.66
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+1993
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+SAC
+</td>
+<td style="text-align:left;">
+Bobby Hurley
+</td>
+<td style="text-align:right;">
+-1.61
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+2002
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+CLE
+</td>
+<td style="text-align:left;">
+Dajuan Wagner
+</td>
+<td style="text-align:right;">
+-1.58
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+1986
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+PHO
+</td>
+<td style="text-align:left;">
+William Bedford
+</td>
+<td style="text-align:right;">
+-1.53
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+2003
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+DET
+</td>
+<td style="text-align:left;">
+Darko Milicic
+</td>
+<td style="text-align:right;">
+-1.53
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+1983
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+GSW
+</td>
+<td style="text-align:left;">
+Russell Cross
+</td>
+<td style="text-align:right;">
+-1.52
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+2000
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+CHI
+</td>
+<td style="text-align:left;">
+Marcus Fizer
+</td>
+<td style="text-align:right;">
+-1.50
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+2004
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+TOR
+</td>
+<td style="text-align:left;">
+Rafael Araujo
+</td>
+<td style="text-align:right;">
+-1.49
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+2009
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+MEM
+</td>
+<td style="text-align:left;">
+Hasheem Thabeet
+</td>
+<td style="text-align:right;">
+-1.49
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+1994
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+PHI
+</td>
+<td style="text-align:left;">
+Sharone Wright
+</td>
+<td style="text-align:right;">
+-1.47
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+1990
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+LAC
+</td>
+<td style="text-align:left;">
+Bo Kimble
+</td>
+<td style="text-align:right;">
+-1.45
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+1991
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+DEN
+</td>
+<td style="text-align:left;">
+Mark Macon
+</td>
+<td style="text-align:right;">
+-1.44
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:right;">
+2008
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+MIL
+</td>
+<td style="text-align:left;">
+Joe Alexander
+</td>
+<td style="text-align:right;">
+-1.43
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+1989
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+IND
+</td>
+<td style="text-align:left;">
+George McCloud
+</td>
+<td style="text-align:right;">
+-1.43
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+2007
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+POR
+</td>
+<td style="text-align:left;">
+Greg Oden
+</td>
+<td style="text-align:right;">
+-1.43
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+2004
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+LAC
+</td>
+<td style="text-align:left;">
+Shaun Livingston
+</td>
+<td style="text-align:right;">
+-1.39
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+2006
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+GSW
+</td>
+<td style="text-align:left;">
+Patrick O’Bryant
+</td>
+<td style="text-align:right;">
+-1.36
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:right;">
+1991
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+DAL
+</td>
+<td style="text-align:left;">
+Doug Smith
+</td>
+<td style="text-align:right;">
+-1.35
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+1999
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+TOR
+</td>
+<td style="text-align:left;">
+Jonathan Bender
+</td>
+<td style="text-align:right;">
+-1.35
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+2007
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+MIL
+</td>
+<td style="text-align:left;">
+Yi Jianlian
+</td>
+<td style="text-align:right;">
+-1.34
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+2004
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+CLE
+</td>
+<td style="text-align:left;">
+Luke Jackson
+</td>
+<td style="text-align:right;">
+-1.33
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Whereas the list of best picks is made up of players drafted late, all 30 players on this list were top 10 draft picks. There is also much less separation in scores between each of the players here. These observations are not surprising given the earlier results. Players already infamous for being busts such as Michael Olowokandi, Anthony Bennett, and Darko Milicic perform highly (or more fittingly, lowly) on the list. Another note is that WS values can be negative, but negative values can only be generated with playing time. Under this scoring system, it may be preferable be playing very little and generating zero WS than it is to have a longer career playing badly every season. This is the case with Michael Olowokandi and Anthony Bennett. Olowokandi played 323 games in his first five seasons but garnered negative WS in four of those seasons. Bennett played only 151 games in his first four seasons, producing low WS totals for each while not even making an NBA team for his fifth season (no WS are better than negative WS).</p>
+<p>Shaun Livingston is a surprising inclusion on the worst list, but this is the result of a nearly career-ending leg injury that cost him his fourth and fifth seasons. The score is ignorant of the fact that he became a valuable role player late in his career. This somewhat applies to George McCloud, who started off his career slow (including leaving for Europe between stints in the NBA) before providing some value to NBA teams. The rest of the players were either truly terrible or had careers cut short by injuries.</p>
+</div>
+<div id="best-drafting-franchises" class="section level2">
+<h2>Best Drafting Franchises</h2>
+<p>We can now find the NBA franchises that have been the most and least adept at drafting by using the average scores for all draft picks by each team. Before doing that, we have to make an adjustment for some of the listed draft teams. The team that drafts a player does not necessarily keep the player, with some players being traded immediately after being drafted. A team sometimes drafts a player for another team because of a not-yet official trade. We must assign players to the franchises that actually intend to keep them, not just the team that officially drafted them. A decision has to be made on how early a transaction must be made for a player to be assigned to the receiving team. We will use a one week period after the draft date. As long as a player is moved within that period, they will be assigned to the franchise on the other end of the transaction. Any moves after that will not be considered, with the player’s value counting toward the team that drafted him even if he never plays for that team. An example case is Andrew Wiggins, who was drafted by the Cleveland Cavaliers but traded to the Minnesota Timberwolves two months after the draft. Even though he never played for the Cavaliers, his score will be grouped with the rest of Cleveland’s picks. I think it makes sense for Wiggins to count for Cleveland because I believe they went into the draft intending to keep the player, while the opportunity to trade him came much later. This logic will hopefully apply to all other players moved not too long after being drafted.</p>
+<p>Because of the issues with skewed standardized scores, we will use medians to summarize scores for all players drafted for each NBA franchise. The results for all 30 teams sorted from best to worst median scores are presented. Note that different iterations of the same teams are grouped together as single franchises (Apologies to Seattle, but the Sonics are grouped with the Thunder):</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:390px; ">
+<table class="table table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;">
+<caption>
+<span id="tab:unnamed-chunk-3">Table 3: </span>Draft picks by team (1980-2013)
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Rank
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+Team
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Players
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Median
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Mean
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+SD
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+Best Pick*
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+Worst Pick*
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+LAL
+</td>
+<td style="text-align:right;">
+56
+</td>
+<td style="text-align:right;">
+-0.17
+</td>
+<td style="text-align:right;">
+0.24
+</td>
+<td style="text-align:right;">
+1.25
+</td>
+<td style="text-align:left;">
+Marc Gasol (2007, 48)
+</td>
+<td style="text-align:left;">
+Javaris Crittenton (2007, 19)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+CHO
+</td>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+-0.21
+</td>
+<td style="text-align:right;">
+-0.07
+</td>
+<td style="text-align:right;">
+0.83
+</td>
+<td style="text-align:left;">
+Kobe Bryant (1996, 13)
+</td>
+<td style="text-align:left;">
+Adam Morrison (2006, 3)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+DET
+</td>
+<td style="text-align:right;">
+69
+</td>
+<td style="text-align:right;">
+-0.24
+</td>
+<td style="text-align:right;">
+0.37
+</td>
+<td style="text-align:right;">
+1.27
+</td>
+<td style="text-align:left;">
+Micheal Williams (1988, 48)
+</td>
+<td style="text-align:left;">
+Darko Milicic (2003, 2)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+SAS
+</td>
+<td style="text-align:right;">
+68
+</td>
+<td style="text-align:right;">
+-0.24
+</td>
+<td style="text-align:right;">
+0.22
+</td>
+<td style="text-align:right;">
+1.16
+</td>
+<td style="text-align:left;">
+Tony Parker (2001, 28)
+</td>
+<td style="text-align:left;">
+Alfredrick Hughes (1985, 14)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+IND
+</td>
+<td style="text-align:right;">
+70
+</td>
+<td style="text-align:right;">
+-0.31
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:right;">
+0.84
+</td>
+<td style="text-align:left;">
+Reggie Miller (1987, 11)
+</td>
+<td style="text-align:left;">
+George McCloud (1989, 7)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+SAC
+</td>
+<td style="text-align:right;">
+72
+</td>
+<td style="text-align:right;">
+-0.31
+</td>
+<td style="text-align:right;">
+0.01
+</td>
+<td style="text-align:right;">
+1.54
+</td>
+<td style="text-align:left;">
+Isaiah Thomas (2011, 60)
+</td>
+<td style="text-align:left;">
+Bobby Hurley (1993, 7)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+CLE
+</td>
+<td style="text-align:right;">
+76
+</td>
+<td style="text-align:right;">
+-0.31
+</td>
+<td style="text-align:right;">
+0.12
+</td>
+<td style="text-align:right;">
+1.20
+</td>
+<td style="text-align:left;">
+Hot Rod Williams (1985, 45)
+</td>
+<td style="text-align:left;">
+Anthony Bennett (2013, 1)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+MIL
+</td>
+<td style="text-align:right;">
+65
+</td>
+<td style="text-align:right;">
+-0.31
+</td>
+<td style="text-align:right;">
+0.17
+</td>
+<td style="text-align:right;">
+1.20
+</td>
+<td style="text-align:left;">
+Michael Redd (2000, 43)
+</td>
+<td style="text-align:left;">
+Joe Alexander (2008, 8)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+TOR
+</td>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:right;">
+-0.32
+</td>
+<td style="text-align:right;">
+-0.03
+</td>
+<td style="text-align:right;">
+0.91
+</td>
+<td style="text-align:left;">
+Matt Bonner (2003, 45)
+</td>
+<td style="text-align:left;">
+Rafael Araujo (2004, 8)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+UTA
+</td>
+<td style="text-align:right;">
+63
+</td>
+<td style="text-align:right;">
+-0.32
+</td>
+<td style="text-align:right;">
+0.34
+</td>
+<td style="text-align:right;">
+1.44
+</td>
+<td style="text-align:left;">
+Paul Millsap (2006, 47)
+</td>
+<td style="text-align:left;">
+Jose Ortiz (1987, 15)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:left;">
+ORL
+</td>
+<td style="text-align:right;">
+50
+</td>
+<td style="text-align:right;">
+-0.33
+</td>
+<td style="text-align:right;">
+0.07
+</td>
+<td style="text-align:right;">
+0.92
+</td>
+<td style="text-align:left;">
+Anderson Varejao (2004, 30)
+</td>
+<td style="text-align:left;">
+Fran Vazquez (2005, 11)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:left;">
+OKC
+</td>
+<td style="text-align:right;">
+73
+</td>
+<td style="text-align:right;">
+-0.34
+</td>
+<td style="text-align:right;">
+0.09
+</td>
+<td style="text-align:right;">
+0.95
+</td>
+<td style="text-align:left;">
+Rashard Lewis (1998, 32)
+</td>
+<td style="text-align:left;">
+Mouhamed Sene (2006, 10)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:left;">
+PHO
+</td>
+<td style="text-align:right;">
+81
+</td>
+<td style="text-align:right;">
+-0.37
+</td>
+<td style="text-align:right;">
+0.10
+</td>
+<td style="text-align:right;">
+1.16
+</td>
+<td style="text-align:left;">
+Jeff Hornacek (1986, 46)
+</td>
+<td style="text-align:left;">
+William Bedford (1986, 6)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:left;">
+WAS
+</td>
+<td style="text-align:right;">
+82
+</td>
+<td style="text-align:right;">
+-0.38
+</td>
+<td style="text-align:right;">
+-0.07
+</td>
+<td style="text-align:right;">
+0.81
+</td>
+<td style="text-align:left;">
+Jeff Ruland (1980, 25)
+</td>
+<td style="text-align:left;">
+Kenny Green (1985, 12)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:left;">
+NYK
+</td>
+<td style="text-align:right;">
+60
+</td>
+<td style="text-align:right;">
+-0.38
+</td>
+<td style="text-align:right;">
+0.03
+</td>
+<td style="text-align:right;">
+1.03
+</td>
+<td style="text-align:left;">
+David Lee (2005, 30)
+</td>
+<td style="text-align:left;">
+Frederic Weis (1999, 15)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:left;">
+PHI
+</td>
+<td style="text-align:right;">
+80
+</td>
+<td style="text-align:right;">
+-0.39
+</td>
+<td style="text-align:right;">
+-0.07
+</td>
+<td style="text-align:right;">
+0.96
+</td>
+<td style="text-align:left;">
+Kyle Korver (2003, 51)
+</td>
+<td style="text-align:left;">
+Sharone Wright (1994, 6)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:left;">
+GSW
+</td>
+<td style="text-align:right;">
+83
+</td>
+<td style="text-align:right;">
+-0.40
+</td>
+<td style="text-align:right;">
+-0.07
+</td>
+<td style="text-align:right;">
+0.99
+</td>
+<td style="text-align:left;">
+Draymond Green (2012, 35)
+</td>
+<td style="text-align:left;">
+Chris Washburn (1986, 3)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:left;">
+BOS
+</td>
+<td style="text-align:right;">
+67
+</td>
+<td style="text-align:right;">
+-0.41
+</td>
+<td style="text-align:right;">
+0.08
+</td>
+<td style="text-align:right;">
+1.06
+</td>
+<td style="text-align:left;">
+Ryan Gomes (2005, 50)
+</td>
+<td style="text-align:left;">
+Len Bias (1986, 2)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:left;">
+CHI
+</td>
+<td style="text-align:right;">
+90
+</td>
+<td style="text-align:right;">
+-0.42
+</td>
+<td style="text-align:right;">
+-0.06
+</td>
+<td style="text-align:right;">
+0.96
+</td>
+<td style="text-align:left;">
+Jimmy Butler (2011, 30)
+</td>
+<td style="text-align:left;">
+Jay Williams (2002, 2)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:left;">
+MEM
+</td>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+-0.43
+</td>
+<td style="text-align:right;">
+-0.20
+</td>
+<td style="text-align:right;">
+0.69
+</td>
+<td style="text-align:left;">
+Pau Gasol (2001, 3)
+</td>
+<td style="text-align:left;">
+Hasheem Thabeet (2009, 2)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:left;">
+BRK
+</td>
+<td style="text-align:right;">
+67
+</td>
+<td style="text-align:right;">
+-0.43
+</td>
+<td style="text-align:right;">
+-0.16
+</td>
+<td style="text-align:right;">
+0.80
+</td>
+<td style="text-align:left;">
+Richard Jefferson (2001, 13)
+</td>
+<td style="text-align:left;">
+Terrence Williams (2009, 11)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:left;">
+HOU
+</td>
+<td style="text-align:right;">
+74
+</td>
+<td style="text-align:right;">
+-0.44
+</td>
+<td style="text-align:right;">
+0.03
+</td>
+<td style="text-align:right;">
+1.05
+</td>
+<td style="text-align:left;">
+Cuttino Mobley (1998, 41)
+</td>
+<td style="text-align:left;">
+Dave Jamerson (1990, 15)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:left;">
+MIN
+</td>
+<td style="text-align:right;">
+57
+</td>
+<td style="text-align:right;">
+-0.45
+</td>
+<td style="text-align:right;">
+-0.25
+</td>
+<td style="text-align:right;">
+0.70
+</td>
+<td style="text-align:left;">
+Craig Smith (2006, 36)
+</td>
+<td style="text-align:left;">
+Jonny Flynn (2009, 6)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:left;">
+LAC
+</td>
+<td style="text-align:right;">
+74
+</td>
+<td style="text-align:right;">
+-0.47
+</td>
+<td style="text-align:right;">
+-0.28
+</td>
+<td style="text-align:right;">
+0.81
+</td>
+<td style="text-align:left;">
+Craig Hodges (1982, 48)
+</td>
+<td style="text-align:left;">
+Michael Olowokandi (1998, 1)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:left;">
+POR
+</td>
+<td style="text-align:right;">
+91
+</td>
+<td style="text-align:right;">
+-0.49
+</td>
+<td style="text-align:right;">
+0.02
+</td>
+<td style="text-align:right;">
+1.11
+</td>
+<td style="text-align:left;">
+Jerome Kersey (1984, 46)
+</td>
+<td style="text-align:left;">
+Greg Oden (2007, 1)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:left;">
+ATL
+</td>
+<td style="text-align:right;">
+76
+</td>
+<td style="text-align:right;">
+-0.50
+</td>
+<td style="text-align:right;">
+-0.22
+</td>
+<td style="text-align:right;">
+0.75
+</td>
+<td style="text-align:left;">
+Doc Rivers (1983, 31)
+</td>
+<td style="text-align:left;">
+Keith Edmonson (1982, 10)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:left;">
+DAL
+</td>
+<td style="text-align:right;">
+82
+</td>
+<td style="text-align:right;">
+-0.51
+</td>
+<td style="text-align:right;">
+-0.16
+</td>
+<td style="text-align:right;">
+0.89
+</td>
+<td style="text-align:left;">
+Josh Howard (2003, 29)
+</td>
+<td style="text-align:left;">
+Doug Smith (1991, 6)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:left;">
+DEN
+</td>
+<td style="text-align:right;">
+71
+</td>
+<td style="text-align:right;">
+-0.51
+</td>
+<td style="text-align:right;">
+-0.17
+</td>
+<td style="text-align:right;">
+0.84
+</td>
+<td style="text-align:left;">
+Kenneth Faried (2011, 22)
+</td>
+<td style="text-align:left;">
+Nikoloz Tskitishvili (2002, 5)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:left;">
+MIA
+</td>
+<td style="text-align:right;">
+51
+</td>
+<td style="text-align:right;">
+-0.51
+</td>
+<td style="text-align:right;">
+-0.05
+</td>
+<td style="text-align:right;">
+0.92
+</td>
+<td style="text-align:left;">
+Grant Long (1988, 33)
+</td>
+<td style="text-align:left;">
+Michael Beasley (2008, 2)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:left;">
+NOP
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+-0.52
+</td>
+<td style="text-align:right;">
+0.18
+</td>
+<td style="text-align:right;">
+1.23
+</td>
+<td style="text-align:left;">
+Chris Paul (2005, 4)
+</td>
+<td style="text-align:left;">
+Cedric Simmons (2006, 15)
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup>*</sup> Best and worst picks show player, year drafted, and pick number.
+</td>
+</tr>
+</tfoot>
+</table>
+</div>
+<p>The difference in average scores between all teams on the list is small, especially given the range of player outcomes within each team. There is also little difference between each team’s median result and the player population median (-0.38). A box plot confirms this result (orange line shows the population median):</p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/team.boxplot-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>A possible explanation for this monotony is that 1980 to 2013 is a long period of time, with teams possibly going through multiple owners and general managers. Periods of strong culture and highly productive front offices could be followed by turbulent periods of terrible ownership groups and revolving door management. We could separate the results into smaller time spans such as decades, but any cut points built like that are arbitrary, not guaranteeing any homogeneity of team management.</p>
+</div>
+<div id="general-managers" class="section level2">
+<h2>General Managers</h2>
+<p>We will look directly at the heads of the front offices who are responsible for having the final say on who teams draft. People in these positions usually possess the title of president of basketball operations or general manager, but this varies depending on the organization. We will use the term general manager (GM) for simplicity. It is the GMs who we assign credit or blame for the success of draft picks (although some team owners have a greater handprint on their teams’ moves than others). Again, using information from <a href="https://www.basketball-reference.com/executives/">Basketball Reference</a>, we are able to credit draft picks to specific general managers (only 20 out of the 1,982 picks were missing a corresponding general manager). General managers that have presided over at least 12 draft picks throughout their careers (possibly over multiple tenures under different organizations), are sorted from best to worst using median scores in both a table and boxplot:</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:390px; ">
+<table class="table table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;">
+<caption>
+<span id="tab:unnamed-chunk-4">Table 4: </span>Draft picks by GM (1980-2013)
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Rk
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+GM
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Players
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Med
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+Mean
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+SD
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+Best Pick*
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+Worst Pick*
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+John Paxson
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+0.29
+</td>
+<td style="text-align:right;">
+0.43
+</td>
+<td style="text-align:right;">
+0.93
+</td>
+<td style="text-align:left;">
+Chris Duhon (2004, 38)
+</td>
+<td style="text-align:left;">
+Tyrus Thomas (2006, 4)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+Frank Layden
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+0.19
+</td>
+<td style="text-align:right;">
+0.53
+</td>
+<td style="text-align:right;">
+1.47
+</td>
+<td style="text-align:left;">
+Karl Malone (1985, 13)
+</td>
+<td style="text-align:left;">
+John Duren (1980, 19)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+Isiah Thomas
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+0.16
+</td>
+<td style="text-align:right;">
+0.57
+</td>
+<td style="text-align:right;">
+1.35
+</td>
+<td style="text-align:left;">
+David Lee (2005, 30)
+</td>
+<td style="text-align:left;">
+Mardy Collins (2006, 29)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+John Hammond
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+0.09
+</td>
+<td style="text-align:right;">
+0.42
+</td>
+<td style="text-align:right;">
+1.24
+</td>
+<td style="text-align:left;">
+Giannis Antetokounmpo (2013, 15)
+</td>
+<td style="text-align:left;">
+Joe Alexander (2008, 8)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+Neil Olshey
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+0.04
+</td>
+<td style="text-align:right;">
+0.18
+</td>
+<td style="text-align:right;">
+0.82
+</td>
+<td style="text-align:left;">
+Damian Lillard (2012, 6)
+</td>
+<td style="text-align:left;">
+Trey Thompkins (2011, 37)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+Allan Bristow
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+0.04
+</td>
+<td style="text-align:right;">
+0.29
+</td>
+<td style="text-align:right;">
+0.98
+</td>
+<td style="text-align:left;">
+Chris Paul (2005, 4)
+</td>
+<td style="text-align:left;">
+Kevin Lynch (1991, 28)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+Danny Ainge
+</td>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:right;">
+-0.10
+</td>
+<td style="text-align:right;">
+0.32
+</td>
+<td style="text-align:right;">
+1.07
+</td>
+<td style="text-align:left;">
+Ryan Gomes (2005, 50)
+</td>
+<td style="text-align:left;">
+Fab Melo (2012, 22)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+Bob Bass
+</td>
+<td style="text-align:right;">
+46
+</td>
+<td style="text-align:right;">
+-0.12
+</td>
+<td style="text-align:right;">
+0.19
+</td>
+<td style="text-align:right;">
+0.99
+</td>
+<td style="text-align:left;">
+Vernon Maxwell (1988, 47)
+</td>
+<td style="text-align:left;">
+Alfredrick Hughes (1985, 14)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+Chris Wallace
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+-0.13
+</td>
+<td style="text-align:right;">
+-0.19
+</td>
+<td style="text-align:right;">
+0.90
+</td>
+<td style="text-align:left;">
+Darius Songaila (2002, 49)
+</td>
+<td style="text-align:left;">
+Hasheem Thabeet (2009, 2)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+Daryl Morey
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+-0.15
+</td>
+<td style="text-align:right;">
+0.27
+</td>
+<td style="text-align:right;">
+1.21
+</td>
+<td style="text-align:left;">
+Chandler Parsons (2011, 38)
+</td>
+<td style="text-align:left;">
+Royce White (2012, 16)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:left;">
+Wayne Embry
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+-0.16
+</td>
+<td style="text-align:right;">
+0.16
+</td>
+<td style="text-align:right;">
+0.94
+</td>
+<td style="text-align:left;">
+Chris Mills (1993, 22)
+</td>
+<td style="text-align:left;">
+Randolph Keys (1988, 22)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:left;">
+Joe Dumars
+</td>
+<td style="text-align:right;">
+34
+</td>
+<td style="text-align:right;">
+-0.16
+</td>
+<td style="text-align:right;">
+0.27
+</td>
+<td style="text-align:right;">
+1.20
+</td>
+<td style="text-align:left;">
+Mehmet Okur (2001, 37)
+</td>
+<td style="text-align:left;">
+Darko Milicic (2003, 2)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:left;">
+Bryan Colangelo
+</td>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:right;">
+-0.18
+</td>
+<td style="text-align:right;">
+0.25
+</td>
+<td style="text-align:right;">
+0.99
+</td>
+<td style="text-align:left;">
+Michael Finley (1995, 21)
+</td>
+<td style="text-align:left;">
+Andrea Bargnani (2006, 1)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:left;">
+Mitch Kupchak
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+-0.18
+</td>
+<td style="text-align:right;">
+0.22
+</td>
+<td style="text-align:right;">
+1.37
+</td>
+<td style="text-align:left;">
+Marc Gasol (2007, 48)
+</td>
+<td style="text-align:left;">
+Javaris Crittenton (2007, 19)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:left;">
+Donnie Walsh
+</td>
+<td style="text-align:right;">
+42
+</td>
+<td style="text-align:right;">
+-0.19
+</td>
+<td style="text-align:right;">
+0.04
+</td>
+<td style="text-align:right;">
+0.83
+</td>
+<td style="text-align:left;">
+Reggie Miller (1987, 11)
+</td>
+<td style="text-align:left;">
+George McCloud (1989, 7)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:left;">
+Danny Ferry
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+-0.20
+</td>
+<td style="text-align:right;">
+0.24
+</td>
+<td style="text-align:right;">
+0.96
+</td>
+<td style="text-align:left;">
+Danny Green (2009, 46)
+</td>
+<td style="text-align:left;">
+Christian Eyenga (2009, 30)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:left;">
+Wally Walker
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+-0.20
+</td>
+<td style="text-align:right;">
+0.23
+</td>
+<td style="text-align:right;">
+1.16
+</td>
+<td style="text-align:left;">
+Rashard Lewis (1998, 32)
+</td>
+<td style="text-align:left;">
+Sherell Ford (1995, 26)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:left;">
+Bernie Bickerstaff
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+-0.21
+</td>
+<td style="text-align:right;">
+-0.27
+</td>
+<td style="text-align:right;">
+0.77
+</td>
+<td style="text-align:left;">
+Dikembe Mutombo (1991, 4)
+</td>
+<td style="text-align:left;">
+Adam Morrison (2006, 3)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:left;">
+Sam Presti
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+-0.22
+</td>
+<td style="text-align:right;">
+0.26
+</td>
+<td style="text-align:right;">
+1.05
+</td>
+<td style="text-align:left;">
+Serge Ibaka (2008, 24)
+</td>
+<td style="text-align:left;">
+Cole Aldrich (2010, 11)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:left;">
+Billy Knight
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+-0.22
+</td>
+<td style="text-align:right;">
+-0.04
+</td>
+<td style="text-align:right;">
+0.76
+</td>
+<td style="text-align:left;">
+Pau Gasol (2001, 3)
+</td>
+<td style="text-align:left;">
+Acie Law (2007, 11)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:left;">
+Geoff Petrie
+</td>
+<td style="text-align:right;">
+36
+</td>
+<td style="text-align:right;">
+-0.25
+</td>
+<td style="text-align:right;">
+0.28
+</td>
+<td style="text-align:right;">
+2.06
+</td>
+<td style="text-align:left;">
+Isaiah Thomas (2011, 60)
+</td>
+<td style="text-align:left;">
+Thomas Robinson (2012, 5)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:left;">
+R.C. Buford
+</td>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:right;">
+-0.25
+</td>
+<td style="text-align:right;">
+0.14
+</td>
+<td style="text-align:right;">
+1.08
+</td>
+<td style="text-align:left;">
+Kawhi Leonard (2011, 15)
+</td>
+<td style="text-align:left;">
+Livio Jean-Charles (2013, 28)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:left;">
+Steve Patterson
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+-0.29
+</td>
+<td style="text-align:right;">
+0.12
+</td>
+<td style="text-align:right;">
+0.96
+</td>
+<td style="text-align:left;">
+Popeye Jones (1992, 41)
+</td>
+<td style="text-align:left;">
+Dave Jamerson (1990, 15)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:left;">
+Jerry West
+</td>
+<td style="text-align:right;">
+39
+</td>
+<td style="text-align:right;">
+-0.29
+</td>
+<td style="text-align:right;">
+0.19
+</td>
+<td style="text-align:right;">
+1.14
+</td>
+<td style="text-align:left;">
+Nick Van Exel (1993, 37)
+</td>
+<td style="text-align:left;">
+Troy Bell (2003, 16)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:left;">
+Garry St. Jean
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+-0.29
+</td>
+<td style="text-align:right;">
+0.14
+</td>
+<td style="text-align:right;">
+1.27
+</td>
+<td style="text-align:left;">
+Gilbert Arenas (2001, 30)
+</td>
+<td style="text-align:left;">
+Steve Logan (2002, 29)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:left;">
+Larry Bird
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+-0.29
+</td>
+<td style="text-align:right;">
+0.09
+</td>
+<td style="text-align:right;">
+0.83
+</td>
+<td style="text-align:left;">
+Danny Granger (2005, 17)
+</td>
+<td style="text-align:left;">
+James White (2006, 31)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:left;">
+Jack McCloskey
+</td>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+-0.30
+</td>
+<td style="text-align:right;">
+0.23
+</td>
+<td style="text-align:right;">
+1.22
+</td>
+<td style="text-align:left;">
+Micheal Williams (1988, 48)
+</td>
+<td style="text-align:left;">
+Donyell Marshall (1994, 4)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:left;">
+Billy King
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:right;">
+-0.32
+</td>
+<td style="text-align:right;">
+0.19
+</td>
+<td style="text-align:right;">
+1.09
+</td>
+<td style="text-align:left;">
+Kyle Korver (2003, 51)
+</td>
+<td style="text-align:left;">
+Tyshawn Taylor (2012, 41)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:left;">
+Harry Weltman
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+-0.32
+</td>
+<td style="text-align:right;">
+0.09
+</td>
+<td style="text-align:right;">
+1.32
+</td>
+<td style="text-align:left;">
+Hot Rod Williams (1985, 45)
+</td>
+<td style="text-align:left;">
+Dennis Hopson (1987, 3)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:left;">
+Jerry Reynolds
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+-0.32
+</td>
+<td style="text-align:right;">
+-0.36
+</td>
+<td style="text-align:right;">
+0.51
+</td>
+<td style="text-align:left;">
+Anthony Bonner (1990, 23)
+</td>
+<td style="text-align:left;">
+Bobby Hurley (1993, 7)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:left;">
+Gregg Popovich
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+-0.33
+</td>
+<td style="text-align:right;">
+0.58
+</td>
+<td style="text-align:right;">
+1.72
+</td>
+<td style="text-align:left;">
+Tony Parker (2001, 28)
+</td>
+<td style="text-align:left;">
+Bill Curley (1994, 22)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+32
+</td>
+<td style="text-align:left;">
+Al Attles
+</td>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:right;">
+-0.34
+</td>
+<td style="text-align:right;">
+-0.16
+</td>
+<td style="text-align:right;">
+0.77
+</td>
+<td style="text-align:left;">
+Larry Smith (1980, 24)
+</td>
+<td style="text-align:left;">
+Russell Cross (1983, 6)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:left;">
+Joe Axelson
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+-0.34
+</td>
+<td style="text-align:right;">
+-0.20
+</td>
+<td style="text-align:right;">
+0.53
+</td>
+<td style="text-align:left;">
+Otis Thorpe (1984, 9)
+</td>
+<td style="text-align:left;">
+Joe Kleine (1985, 6)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+34
+</td>
+<td style="text-align:left;">
+Scott Layden
+</td>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+-0.35
+</td>
+<td style="text-align:right;">
+0.13
+</td>
+<td style="text-align:right;">
+1.25
+</td>
+<td style="text-align:left;">
+Shandon Anderson (1996, 54)
+</td>
+<td style="text-align:left;">
+Luther Wright (1993, 18)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:left;">
+Mike Dunleavy
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+-0.35
+</td>
+<td style="text-align:right;">
+0.12
+</td>
+<td style="text-align:right;">
+1.06
+</td>
+<td style="text-align:left;">
+Voshon Lenard (1994, 46)
+</td>
+<td style="text-align:left;">
+Shawn Respert (1995, 8)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+36
+</td>
+<td style="text-align:left;">
+Bob Whitsitt
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:right;">
+-0.36
+</td>
+<td style="text-align:right;">
+0.11
+</td>
+<td style="text-align:right;">
+0.93
+</td>
+<td style="text-align:left;">
+Shawn Kemp (1989, 17)
+</td>
+<td style="text-align:left;">
+Rich King (1991, 14)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:left;">
+Kevin McHale
+</td>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+-0.37
+</td>
+<td style="text-align:right;">
+-0.12
+</td>
+<td style="text-align:right;">
+0.78
+</td>
+<td style="text-align:left;">
+Craig Smith (2006, 36)
+</td>
+<td style="text-align:left;">
+William Avery (1999, 14)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:left;">
+Ernie Grunfeld
+</td>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:right;">
+-0.37
+</td>
+<td style="text-align:right;">
+-0.04
+</td>
+<td style="text-align:right;">
+0.99
+</td>
+<td style="text-align:left;">
+Michael Redd (2000, 43)
+</td>
+<td style="text-align:left;">
+Jan Vesely (2011, 6)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+39
+</td>
+<td style="text-align:left;">
+Don Nelson
+</td>
+<td style="text-align:right;">
+46
+</td>
+<td style="text-align:right;">
+-0.38
+</td>
+<td style="text-align:right;">
+0.10
+</td>
+<td style="text-align:right;">
+1.05
+</td>
+<td style="text-align:left;">
+Josh Howard (2003, 29)
+</td>
+<td style="text-align:left;">
+Pavel Podkolzin (2004, 21)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:left;">
+John Nash
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+-0.40
+</td>
+<td style="text-align:right;">
+-0.19
+</td>
+<td style="text-align:right;">
+0.71
+</td>
+<td style="text-align:left;">
+Gheorghe Muresan (1993, 30)
+</td>
+<td style="text-align:left;">
+Sebastian Telfair (2004, 13)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:left;">
+Dave Twardzik
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+-0.41
+</td>
+<td style="text-align:right;">
+-0.20
+</td>
+<td style="text-align:right;">
+0.72
+</td>
+<td style="text-align:left;">
+Andrew DeClercq (1995, 34)
+</td>
+<td style="text-align:left;">
+Todd Fuller (1996, 11)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+42
+</td>
+<td style="text-align:left;">
+Stu Jackson
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+-0.42
+</td>
+<td style="text-align:right;">
+-0.25
+</td>
+<td style="text-align:right;">
+0.57
+</td>
+<td style="text-align:left;">
+Steve Francis (1999, 2)
+</td>
+<td style="text-align:left;">
+Bryant Reeves (1995, 6)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+43
+</td>
+<td style="text-align:left;">
+Pat Williams
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+-0.43
+</td>
+<td style="text-align:right;">
+-0.11
+</td>
+<td style="text-align:right;">
+0.90
+</td>
+<td style="text-align:left;">
+Charles Barkley (1984, 5)
+</td>
+<td style="text-align:left;">
+Leo Rautins (1983, 17)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+44
+</td>
+<td style="text-align:left;">
+Jerry Colangelo
+</td>
+<td style="text-align:right;">
+45
+</td>
+<td style="text-align:right;">
+-0.44
+</td>
+<td style="text-align:right;">
+0.05
+</td>
+<td style="text-align:right;">
+1.25
+</td>
+<td style="text-align:left;">
+Jeff Hornacek (1986, 46)
+</td>
+<td style="text-align:left;">
+William Bedford (1986, 6)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+45
+</td>
+<td style="text-align:left;">
+Rick Sund
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+-0.44
+</td>
+<td style="text-align:right;">
+-0.25
+</td>
+<td style="text-align:right;">
+0.59
+</td>
+<td style="text-align:left;">
+Jeff Teague (2009, 19)
+</td>
+<td style="text-align:left;">
+Mouhamed Sene (2006, 10)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+46
+</td>
+<td style="text-align:left;">
+Kevin O’Connor
+</td>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:right;">
+-0.45
+</td>
+<td style="text-align:right;">
+0.19
+</td>
+<td style="text-align:right;">
+1.42
+</td>
+<td style="text-align:left;">
+Paul Millsap (2006, 47)
+</td>
+<td style="text-align:left;">
+Curtis Borchardt (2002, 18)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+47
+</td>
+<td style="text-align:left;">
+Kiki Vandeweghe
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+-0.47
+</td>
+<td style="text-align:right;">
+-0.10
+</td>
+<td style="text-align:right;">
+1.08
+</td>
+<td style="text-align:left;">
+Ryan Anderson (2008, 21)
+</td>
+<td style="text-align:left;">
+Nikoloz Tskitishvili (2002, 5)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:left;">
+John Gabriel
+</td>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+-0.49
+</td>
+<td style="text-align:right;">
+-0.11
+</td>
+<td style="text-align:right;">
+0.84
+</td>
+<td style="text-align:left;">
+Zaza Pachulia (2003, 42)
+</td>
+<td style="text-align:left;">
+Reece Gaines (2003, 15)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+49
+</td>
+<td style="text-align:left;">
+Glen Grunwald
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+-0.49
+</td>
+<td style="text-align:right;">
+-0.03
+</td>
+<td style="text-align:right;">
+1.04
+</td>
+<td style="text-align:left;">
+Matt Bonner (2003, 45)
+</td>
+<td style="text-align:left;">
+Jonathan Bender (1999, 5)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+50
+</td>
+<td style="text-align:left;">
+Rod Thorn
+</td>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:right;">
+-0.49
+</td>
+<td style="text-align:right;">
+-0.02
+</td>
+<td style="text-align:right;">
+1.00
+</td>
+<td style="text-align:left;">
+Michael Jordan (1984, 3)
+</td>
+<td style="text-align:left;">
+Sidney Green (1983, 5)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+51
+</td>
+<td style="text-align:left;">
+Kevin Pritchard
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+-0.49
+</td>
+<td style="text-align:right;">
+0.02
+</td>
+<td style="text-align:right;">
+1.13
+</td>
+<td style="text-align:left;">
+Nicolas Batum (2008, 25)
+</td>
+<td style="text-align:left;">
+Greg Oden (2007, 1)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+52
+</td>
+<td style="text-align:left;">
+Donn Nelson
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+-0.51
+</td>
+<td style="text-align:right;">
+-0.31
+</td>
+<td style="text-align:right;">
+0.79
+</td>
+<td style="text-align:left;">
+Jae Crowder (2012, 34)
+</td>
+<td style="text-align:left;">
+Maurice Ager (2006, 28)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+53
+</td>
+<td style="text-align:left;">
+Bob Ferry
+</td>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:right;">
+-0.51
+</td>
+<td style="text-align:right;">
+-0.07
+</td>
+<td style="text-align:right;">
+0.91
+</td>
+<td style="text-align:left;">
+Jeff Ruland (1980, 25)
+</td>
+<td style="text-align:left;">
+Kenny Green (1985, 12)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+54
+</td>
+<td style="text-align:left;">
+Norm Sonju
+</td>
+<td style="text-align:right;">
+45
+</td>
+<td style="text-align:right;">
+-0.51
+</td>
+<td style="text-align:right;">
+-0.19
+</td>
+<td style="text-align:right;">
+0.75
+</td>
+<td style="text-align:left;">
+Kiki Vandeweghe (1980, 11)
+</td>
+<td style="text-align:left;">
+Doug Smith (1991, 6)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+55
+</td>
+<td style="text-align:left;">
+Stu Inman
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+-0.51
+</td>
+<td style="text-align:right;">
+0.39
+</td>
+<td style="text-align:right;">
+1.67
+</td>
+<td style="text-align:left;">
+Jerome Kersey (1984, 46)
+</td>
+<td style="text-align:left;">
+Sam Bowie (1984, 2)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+56
+</td>
+<td style="text-align:left;">
+Jerry Krause
+</td>
+<td style="text-align:right;">
+51
+</td>
+<td style="text-align:right;">
+-0.53
+</td>
+<td style="text-align:right;">
+-0.25
+</td>
+<td style="text-align:right;">
+0.74
+</td>
+<td style="text-align:left;">
+Horace Grant (1987, 10)
+</td>
+<td style="text-align:left;">
+Jay Williams (2002, 2)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+57
+</td>
+<td style="text-align:left;">
+Stan Kasten
+</td>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+-0.53
+</td>
+<td style="text-align:right;">
+-0.21
+</td>
+<td style="text-align:right;">
+0.92
+</td>
+<td style="text-align:left;">
+Doc Rivers (1983, 31)
+</td>
+<td style="text-align:left;">
+Keith Edmonson (1982, 10)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+58
+</td>
+<td style="text-align:left;">
+Robert Salyers
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+-0.53
+</td>
+<td style="text-align:right;">
+-0.17
+</td>
+<td style="text-align:right;">
+0.70
+</td>
+<td style="text-align:left;">
+Vern Fleming (1984, 18)
+</td>
+<td style="text-align:left;">
+Devin Durrant (1984, 25)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+59
+</td>
+<td style="text-align:left;">
+Ray Patterson
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+-0.53
+</td>
+<td style="text-align:right;">
+0.01
+</td>
+<td style="text-align:right;">
+0.91
+</td>
+<td style="text-align:left;">
+Jim Petersen (1984, 51)
+</td>
+<td style="text-align:left;">
+Derrick Chievous (1988, 16)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+60
+</td>
+<td style="text-align:left;">
+Randy Pfund
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+-0.53
+</td>
+<td style="text-align:right;">
+-0.11
+</td>
+<td style="text-align:right;">
+0.91
+</td>
+<td style="text-align:left;">
+Mario Chalmers (2008, 34)
+</td>
+<td style="text-align:left;">
+Michael Beasley (2008, 2)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+61
+</td>
+<td style="text-align:left;">
+Elgin Baylor
+</td>
+<td style="text-align:right;">
+55
+</td>
+<td style="text-align:right;">
+-0.55
+</td>
+<td style="text-align:right;">
+-0.41
+</td>
+<td style="text-align:right;">
+0.69
+</td>
+<td style="text-align:left;">
+DeAndre Jordan (2008, 35)
+</td>
+<td style="text-align:left;">
+Michael Olowokandi (1998, 1)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+62
+</td>
+<td style="text-align:left;">
+Carroll Dawson
+</td>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:right;">
+-0.55
+</td>
+<td style="text-align:right;">
+-0.11
+</td>
+<td style="text-align:right;">
+1.17
+</td>
+<td style="text-align:left;">
+Cuttino Mobley (1998, 41)
+</td>
+<td style="text-align:left;">
+Rodrick Rhodes (1997, 24)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+63
+</td>
+<td style="text-align:left;">
+Red Auerbach
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+-0.55
+</td>
+<td style="text-align:right;">
+-0.23
+</td>
+<td style="text-align:right;">
+0.89
+</td>
+<td style="text-align:left;">
+Danny Ainge (1981, 31)
+</td>
+<td style="text-align:left;">
+Michael Young (1984, 24)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+64
+</td>
+<td style="text-align:left;">
+Lewis Schaffel
+</td>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:right;">
+-0.56
+</td>
+<td style="text-align:right;">
+-0.09
+</td>
+<td style="text-align:right;">
+0.99
+</td>
+<td style="text-align:left;">
+Grant Long (1988, 33)
+</td>
+<td style="text-align:left;">
+Alec Kessler (1990, 12)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+65
+</td>
+<td style="text-align:left;">
+Carl Scheer
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+-0.56
+</td>
+<td style="text-align:right;">
+-0.49
+</td>
+<td style="text-align:right;">
+0.76
+</td>
+<td style="text-align:left;">
+Kurt Nimphius (1980, 47)
+</td>
+<td style="text-align:left;">
+James Ray (1980, 5)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+66
+</td>
+<td style="text-align:left;">
+Pete Babcock
+</td>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:right;">
+-0.57
+</td>
+<td style="text-align:right;">
+-0.41
+</td>
+<td style="text-align:right;">
+0.54
+</td>
+<td style="text-align:left;">
+Jason Terry (1999, 10)
+</td>
+<td style="text-align:left;">
+DerMarr Johnson (2000, 6)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+67
+</td>
+<td style="text-align:left;">
+David Kahn
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+-0.58
+</td>
+<td style="text-align:right;">
+-0.61
+</td>
+<td style="text-align:right;">
+0.54
+</td>
+<td style="text-align:left;">
+Robbie Hummel (2012, 58)
+</td>
+<td style="text-align:left;">
+Jonny Flynn (2009, 6)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+68
+</td>
+<td style="text-align:left;">
+Bucky Buckwalter
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+-0.59
+</td>
+<td style="text-align:right;">
+-0.08
+</td>
+<td style="text-align:right;">
+1.17
+</td>
+<td style="text-align:left;">
+Clifford Robinson (1989, 36)
+</td>
+<td style="text-align:left;">
+Ronnie Murphy (1987, 17)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+69
+</td>
+<td style="text-align:left;">
+Jim Paxson
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+-0.62
+</td>
+<td style="text-align:right;">
+0.15
+</td>
+<td style="text-align:right;">
+1.70
+</td>
+<td style="text-align:left;">
+Carlos Boozer (2002, 34)
+</td>
+<td style="text-align:left;">
+Dajuan Wagner (2002, 6)
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup>*</sup> Best and worst picks show player, year drafted, and pick number.
+</td>
+</tr>
+</tfoot>
+</table>
+</div>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The boxplot only shows the top 10 (blue) and bottom 10 (red) general managers that have made at least 12 draft picks, along with a green line for the median score of all players drafted. Note that because a minimum is placed on the number of draft picks for a general manager to qualify for the list, only those with relatively lengthy careers are included. Truly terrible GMs with short tenures that never worked a second job heading a front office are not mentioned. The ones that somehow stayed in their owners’ good graces and continued to hold on to jobs whilst performing badly (to the bewilderment of their teams’ fans) are included.</p>
+<p>Again, there is wide a range of outcomes for the set of draft picks made by any general manager. Daryl Morey and Danny Ainge, considered two of the best general managers in the current NBA, both finished in the top ten. David Kahn, who famously passed up Stephen Curry in favor of point guards Ricky Rubio and Jonny Flynn (among other terrible decisions), finished near the bottom. John Paxson, currently half of a maligned Bulls front office along with partner Gar Heard, has actually drafted relatively well historically with his 13 picks. His brother Jim Paxson placed dead last on the last (he drafted LeBron James, but that was an obvious decision). But it is difficult to put too much stock into any these conclusions given the small n sizes for each GM. Only 25 GMs have made at least 25 draft picks from 1980 to 2013. This is not an unexpected result, given that each team, absent any trades, have exactly two picks per draft.</p>
+<p>We can perform Mann-Whitney tests to compare each general manager’s draft history to the population of draft outcomes to find significant differences. Unsurprisingly, Elgin Baylor and Pete Babcock, two GMs at the bottom of the list that have made a large number of draft picks relatively to their peers (55 and 33, respectively) are significant at the 0.01 level. Baylor presided over the Los Angeles Clippers for 22 years, one of the longest reigns in NBA history. With him at the helm, the team spent top 10 picks on Michael Olowokandi (ranked the very worst pick using this method), Bo Kimble, Danny Ferry, and others.</p>
+<p>Pete Babcock had two tenures as general manager: two and a half years with the Denver Nuggets and then a 13-year stint with the Atlanta Hawks from 1990 to 2013. While he did not always have the opportunity to select early in the draft, Babcock still made 33 picks combined for both teams, finding only three players who had lengthy NBA careers (Jason Terry, Stacey Augmon, and Alan Henderson).</p>
+<p>What about the San Antonio Spurs and their draft success mentioned in the introduction? Coach Gregg Popovich was the team’s general manager from 1994 to July 1, 2002 (a few days after the 2002 NBA Draft) before handing the job over to R.C. Buford, who still holds the position today. Popovich made three all-time picks in Parker, Ginobili, and also Tim Duncan at number one overall. In addition, he drafted two other international players with long NBA careers late in the draft: Gordan Giricek at 40 in 1999 and Luis Scola at 55 in 2002. Popovich was not able to reap the rewards from either Giricek or Scola as each stayed overseas for multiple years before having their rights traded to other teams. Kawhi Leonard and other strong picks like George Hill and DeJuan Blair came under Buford’s helm. It is difficult to say who should actually get the credit for these selections given that Popovich and Buford head the team’s front office together. The Spurs also spent these last 20 years being a very good basketball team, mostly getting late draft picks. Because it is more likely for a team to miss on these late picks, no matter how talented they are at spotting and developing talent, Popovich and Buford may be underrated under this ranking system.</p>
+<p>As for the Sacramento Kings, their draft blunders were also spread out over different general managers. Geoff Petrie was in charge from 1994 to 2013, Pete D’Alessandro from 2013 to 2015, and Vlade Divac from 2015 to present. The Fredette and Robinson picks were made by Petrie while the McLemore pick was made by D’Alessandro. Recent draft picks that already look like busts, but have no yet crossed the five year mark and are not included in the analysis, include Nik Stauskas and Georgios Papagiannis and fall under the D’Alessandro/Divac reigns (although the <a href="https://youtu.be/JOS0ynEuYC4">owner</a> may have actually made the selections here). Despite these failures, the Kings also made one of the greatest draft picks of all-time in Isaiah Thomas at 60.</p>
+</div>
+<div id="parting-thoughts" class="section level2">
+<h2>Parting Thoughts</h2>
+<p>We did not come away with strong conclusions on the best and worst NBA front offices at drafting. Our analysis was hindered by the fact that most general managers do not preside over that many draft picks over their careers and that draft position strongly affects the possible outcomes of any pick. Ideally, we would have each GM take part in hundreds of drafts, with multiple picks at every draft position to get meaningful statistics. Without this, it seems like luck is driving some of the results and noise is masking the differences between GMs.</p>
+<p>As an improvement for this analysis in the future, we could take into account the players passed up at each position instead of viewing each draft pick in a vacuum. Anthony Bennett being drafted first overall in 2013 is a bad pick, but most of the players drafted after him were also underwhelming. Drafting Darko Milicic second in 2003 is much more egregious, given that the next three players drafted (Carmelo Anthony, Chris Bosh, Dwyane Wade) are all going to end up in the Hall of Fame when their careers are over. Some type of adjustment should be made for the players passed up to capture the WS gained or lost by making a particular selection. Maybe when we revisit all this later on.</p>
+</div>

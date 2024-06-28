@@ -1,0 +1,583 @@
+---
+title: NBA Awards Voting - Hometown Bias
+author: Robert Huang
+date: '2018-11-13'
+slug: nba-awards-voting-hometown-bias
+categories: []
+tags:
+  - nba
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(DT)
+library(plotly)
+
+### reading in data
+ballots <- read_csv("data//nba awards hometown bias//ballots2.csv", na = "")
+ballots$Team.Aff <- gsub("/", " / ", ballots$Team.Aff)
+
+ballots.home <- read_csv("data//nba awards hometown bias//ballots.home.csv", na = "")
+final.summary <- read_csv("data//nba awards hometown bias//final.summary.csv", na = "")
+team.colors <- read_csv("data//nba awards hometown bias//team.colors.csv", na = "")
+
+```
+
+## Background
+
+The end of season awards for the NBA are voted upon by a panel of media members that include national writers, national broadcasters/announcers, studio analysts, and team beat writers. Up until the 2016-17 season, this group also included team employed broadcasters. NBA fans who have spent enough time watching games on League Pass may have noticed why this  was an issue, with hometown biases among many local announcers evident during the call of games. There was nothing to stop this homerism from seeping into awards voting. This was especially an issue when the amount of money available for player contracts sometimes depended on how the player performed in the awards.
+
+The NBA [stopped](https://basketball.realgm.com/wiretap/245507/NBA-Removes-Team-Employed-Media-From-Award-Voting) this practice starting with the awards for the 2016-17 season, no longer giving ballots to team-employed media members. About 70-80 local radio and TV announcers who voted after the 2013-14, 2014-15, and 2015-16 seasons were not able to participate in the vote anymore. Other non-team employed, but still team associated media, continued to receive ballots. This includes beat writers and local analysts. While not team employees, they could be susceptible to the same biases as the local announcers given the amount of time they spend around a specific team.
+
+```{r}
+
+team.aff.table <- ballots %>%
+  select(Voter, year, Team.Aff) %>%
+  distinct() %>%
+  mutate(team.tf = grepl("[A-Z]{3}", Team.Aff)) %>%
+  group_by(year) %>%
+  summarise(`Total Voters` = n(),
+            `Team-Affiliated` = sum(team.tf),
+            Percent = mean(team.tf)) %>%
+  rename(Year = year)
+
+kable(team.aff.table, digits = 2) %>%
+  kable_styling(bootstrap_options = c("bordered"),
+                full_width = FALSE)
+
+```
+
+With the change in voting, the percentage of voters who had team-affiliations declined from about 80% in the three-year period from 2013/14 to 2015/16 to about 40% these last two seasons. Note that the panel of voters is not the same every year and that not every member voted in every category. Every ballot since the 2013-14 awards has been [made](http://official.nba.com/2014-nba-year-annual-award-voting-results/) [public](http://official.nba.com/2015-nba-year-annual-award-voting-results/) [by](http://official.nba.com/2015-16-nba-annual-award-voting-results/)
+[the](http://official.nba.com/2016-17-nba-annual-award-voting-results/)
+[NBA](http://pr.nba.com/voting-results-2017-18-nba-regular-season-awards/). This makes it possible to analyze the overall results from the last five seasons in detail for hometown bias. We will attempt to quantify this bias among team-affiliated media members to identify the voters most or least abusing their awards ballots and whether any of the remaining team-affiliated voters (almost all beat writers) show any team biases.
+
+## Quantifying Hometown Bias
+
+Before any calculations for hometown bias, we must link voters to a hometown team (or teams if multiple affiliations), if applicable. This is simple for local announcers and beat writers. The voters without any team affiliation are generally national TV broadcasters/analysts (Rachel Nichols, Ernie Johnson, Chris Webber, etc.) or writers for national outlets without a focus on a specific team (Zach Lowe, Sean Deveney, Lang Whitaker, etc.). International media started voting in in 2016-17 and also do not have team affiliations. The area where this gets tricky is with a few national writers who have a link to a specific team. Brian Windhorst and Jackie MacMullan are national writers for ESPN, but both have generally had a focus on a specific team. For Windhorst, this is any team that LeBron James is on. For MacMullan, this is Boston Celtics. There are few situations like this and any determinations of team affiliation are judgement calls. Once every non-national voter is linked with a team, we can try to measure homerism.
+
+#### Step 1: Compare where each team-affiliated voter places players from his or her team on their ballot against those same players' average positions on ballots from voters not associated with those players' respective teams (place differential).
+
+For any specific ballot, if a voter places a hometown player higher than average, this is evidence for hometown bias for that vote. Conversely, if a voter places a hometown player lower than average, this is evidence against bias.
+
+Note that if a player is left completely off a ballot, that player is given a placement of last place plus one. For MVP, this will be sixth place because there are five slots for that award type. For Defensive Player, Coach, Sixth Man, Most Improved, and Rookie of the Year, this will be fourth place because those awards each have three slots. For the All-NBA, All-Defense, and All-Rookie teams, all of the first team are treated as first place, all of the second team are treated as second place, and so on. Under this method, we make the assumption that any player not voted for is only one place away from the lowest slot on each ballot. This is absolutely not true, but there is no way of quantifying how voters rate players they do not vote for.
+
+#### Step 2: For each voter, sum the place differentials from step 1 for all hometown players for a specific year-award combination.
+
+This results in an overall bias score for a voter's ballot for a single award. Similarly to step one, a net positive differential signals possible hometown bias and a net negative differential signals possible anti-hometown bias.
+
+As an example of these first two steps, we can look at Los Angeles Clipper play-by-play announcer Ralph Lawler's 2015-16 ballot for All-NBA:
+
+```{r}
+
+lawler.ex <- ballots %>%
+  filter(Voter == "Ralph Lawler",
+         year == "15/16",
+         award == "All NBA") %>%
+  select(variable, value, team) %>%
+  rename(Place = variable,
+         Player = value,
+         Team = team)
+
+lawler.clips <- which(lawler.ex$Team %in% "LAC")
+lawler.cols <- team.colors %>%
+  filter(Abbreviation %in% "LAC")
+
+kable(lawler.ex, digits = 2) %>%
+  kable_styling(bootstrap_options = c("bordered"),
+                full_width = FALSE) %>%
+  row_spec(lawler.clips, bold = TRUE, color = lawler.cols$hex1, 
+           background = lawler.cols$hex2)
+
+```
+
+The ballot has five first place votes (first team), five second place votes (second team), and five third place votes (third team). Of the 15 slots on the ballot, Lawler gave votes to two Clippers: DeAndre Jordan as first team center and Chris Paul as second team guard. We will compare Lawler's votes with how Clippers performed on All-NBA ballots from all voters not affiliated with the Clippers:
+
+```{r}
+
+lawler.ex2 <- ballots.home %>%
+  filter(Voter == "Ralph Lawler",
+         year == "15/16",
+         award == "All NBA") %>%
+  select(value, n, nhome.n, nhome.mentions, 
+         nhome.avg.place, `1`, `2`, `3`, diff.place) %>%
+  arrange(nhome.avg.place) %>%
+  mutate(value = gsub("\\.", " ", value)) %>%
+  rename(Player = value,
+         `Voters` = n,
+         `Non-Team Voters` = nhome.n,
+         `Non-Team Mentions` = nhome.mentions,
+         `Non-Team Avg Place` = nhome.avg.place,
+         `1st` = `1`,
+         `2nd` = `2`,
+         `3rd` = `3`,
+         `Place Differential` = diff.place)
+
+kable(lawler.ex2, digits = 2) %>%
+  kable_styling(bootstrap_options = c("bordered"), 
+                full_width = FALSE)
+
+```
+
+There are `r lawler.ex2$Voters[1]` total ballots for 2013/14 All-NBA. Of those `r lawler.ex2$Voters[1]`, `r lawler.ex2$Voters[1] - lawler.ex2$'Non-Team Voters'[1]` are from voters associated with the Clippers, leaving `r lawler.ex2$'Non-Team Voters'[1]` non-Clipper ballots. With those `r lawler.ex2$'Non-Team Voters'[1]` voters, `r nrow(lawler.ex2)` players from the Clippers received at least one vote. Chris Paul received `r lawler.ex2[lawler.ex2$Player == "Chris Paul", ]$'Non-Team Mentions'` mentions (`r lawler.ex2[lawler.ex2$Player == "Chris Paul", ]$'1st'` first team, `r lawler.ex2[lawler.ex2$Player == "Chris Paul", ]$'2nd'` second team, `r lawler.ex2[lawler.ex2$Player == "Chris Paul", ]$'3rd'` third team, and was left off of `r lawler.ex2[lawler.ex2$Player == "Chris Paul", ]$'Non-Team Voters' - lawler.ex2[lawler.ex2$Player == "Chris Paul", ]$'1st' - lawler.ex2[lawler.ex2$Player == "Chris Paul", ]$'2nd' - lawler.ex2[lawler.ex2$Player == "Chris Paul", ]$'3rd'` ballots—"fourth place"), resulting in a mean placement of `r round(lawler.ex2[lawler.ex2$Player == "Chris Paul", ]$'Non-Team Avg Place', 2)` from the non-Clipper voters. Lawler placed Paul second on his ballot, `r round(lawler.ex2[lawler.ex2$Player == "Chris Paul", ]$'Non-Team Avg Place' - 2, 2)` places higher than average. Similarly for DeAndre Jordan, Lawler has him `r round(lawler.ex2[lawler.ex2$Player == "DeAndre Jordan", ]$'Non-Team Avg Place' - 1, 2)` places higher than average. Blake Griffin received one third place vote from other voters. By leaving Griffin off his ballot, Lawler has Griffin about `r round(4 - lawler.ex2[lawler.ex2$Player == "Blake Griffin", ]$'Non-Team Avg Place', 2)` places lower than average. If we sum these place differentials together, we get `r round(sum(lawler.ex2$'Place Differential'), 2)`, the net difference in places that Lawler has Clippers compared to other non-Clipper voters.
+
+#### Step 3: For each year-award, standardize the summed place differentials.
+
+We can use the differentials from step 2 as the ultimate measure of homerism, but this ignores the fact that the distributions for each year and award are not the same. Boxplots of total place differentials for all voters within each award are created:
+
+```{r, warning = FALSE, fig.align = "center", fig.height = 7, fig.cap = "Grids are sorted by overall mean for each award (all years combined) from smallest to largest. Red points mark the means for each award. Note that all variables are skewed right, showing that voters with team affiliations generally place their own players higher on ballots compared to average."}
+
+award.means <- final.summary %>%
+  select(matches("^\\d{2}/")) %>%
+  gather() %>%
+  mutate(year = sapply(strsplit(key, " "), "[", 1),
+         award = gsub("^.{5} ", "", key)) %>%
+  group_by(award) %>%
+  summarise(ovr.mean = mean(value, na.rm = TRUE))
+
+all.awards.scores <- final.summary %>%
+  select(matches("^\\d{2}/")) %>%
+  gather() %>%
+  mutate(year = sapply(strsplit(key, " "), "[", 1),
+         award = gsub("^.{5} ", "", key)) %>%
+  mutate(year = factor(year, levels = rev(unique(ballots$year))),
+         award = factor(award, levels = 
+                          award.means$award[order(award.means$ovr.mean)]))
+
+ggplot(all.awards.scores, aes(x = year, y = value)) +
+  geom_boxplot(outlier.alpha = 0.2, outlier.size = 1, fill = "lemonchiffon") +
+  stat_summary(fun.y = mean, geom = "point", shape = 21, fill = "red", size = 2) +
+  facet_grid(award ~ .) +
+  scale_y_continuous(breaks = seq(-2, 8, by = 2)) +
+  labs(x = "Season", y = "Place Differential") +
+  coord_flip() +
+  theme_bw()
+
+```
+
+It is obvious that the means and standard deviations for each award are not the same, but there are some explanations for this. The three awards with the most slots on the ballost—All-NBA (15), All-Defense (10), and All-Rookie (10)—have the largest variances. The rest of the awards apart from MVP have only three slots and have most of their values near zero.
+
+Rookie of the Year and All Rookie Team are the least susceptible to hometown bias relative to the other awards given their average values. For the two rookie awards, this can be explained by the fact that only a small pool of players are eligibile for the awards. A voter might not have to ability to make a homer vote for Rookie of the Year/All-Rookie Team even if they wanted to because their team did not have any rookies. Similarly to qualify for Sixth Man of the Year, players must have come off the bench for a certain proportion of games. For Coach of the Year, there are generally only about 30 candidates who qualify for the award and only three slots on the ballot. All-Defense and All-NBA, on the other hand, are crapshoots given that these awards have no requirements and have a large number of slots available. Add in the fact that even people who follow the NBA closely have trouble measuring good defense will present a great opportunity for homerism with All-Defense. 
+
+Even within each award, the means and standard deviations are not always consistent. Look at the Most Improved Player for 2013/14 compared to other years. There is much more variation in place differentials than other years. In this case, measure values of the same magnitude for different years should not have the same impact. For example, if an award has three slots and there are three established candidates in year one but only two worthy candidates in year two, a hometown vote in the year one should be more egregious than a hometown vote in the year two.
+
+Standardizing the place differentials within each award and year combination should help with these issues. With z-scores, values from different awards and years can be compared. This is especially important because not every voter votes for every award.
+
+#### Step 4: For each voter, take the mean of all their scores from each award.
+
+We can summarize the results from step 3 to generate a final hometown bias (homer score) for every team-affiliated voter. We will do this using the mean of all of a voter's scores for every award they vote in. Voters with the highest homer scores have the most hometown bias relative to all other team-affiliated voters. Voters with the lowest homer scores have the least (and possibly an anti-) hometown bias. Scores near zero imply average hometown bias relative to all team-affiliated voters. National media members without team affiliations do not have homer scores, but are used as part of the calculation for baseline player ballot positions in step 1.
+
+## Hometown Bias Results
+
+The homer scores for all 188 team-affiliated voters (out of 249 total voters) from 2013/14 to 2017/18 are presented in the table below, along with the number of awards they had ballots for (N). Scores are also broken down into two periods—when team broadcasters still voted (Pre: 2013/14, 2014/15, 2015/16) and when they did not (Post: 2016/17, 2017/18). Some voters have multiple team affilations, generally as the result of job changes over different seasons. Only the team affiliated with the voter for that season is used for the award scores for that same season.
+
+```{r}
+
+options(knitr.kable.NA = "")
+
+### standardized scores
+final.summary.z <- final.summary %>%
+  mutate_at(vars(matches("\\d{2}/\\d{2}")),
+            funs((. - mean(., na.rm = TRUE)) / sd(., na.rm = TRUE)))
+
+final.summary.z <- final.summary.z %>%
+  mutate(avg = rowMeans(select(final.summary.z, matches("\\d{2}/\\d{2}")), na.rm = TRUE),
+         avg.pre = rowMeans(select(final.summary.z, matches("(13/14|14/15|15/16)")),
+                            na.rm = TRUE),
+         avg.post = rowMeans(select(final.summary.z, matches("(16/17|17/18)")),
+                             na.rm = TRUE),
+         n.pre = rowSums(!is.na(select(final.summary.z, matches("(13/14|14/15|15/16)")))),
+         n.post = rowSums(!is.na(select(final.summary.z, matches("(16/17|17/18)")))))
+
+
+### table of all voters
+# also include whether they had ballots each year
+homer.sort <- final.summary.z %>%
+  arrange(-avg) %>%
+  mutate(Rank = row_number()) %>%
+  select(Rank, Voter, Team.Aff, Role, n, avg, n.pre, avg.pre, n.post, avg.post)
+
+# adding ballot by year
+homer.sort <- homer.sort %>%
+  rename(Team = Team.Aff,
+         Score = avg,
+         N = n,
+         `Pre N` = n.pre,
+         `Pre Score` = avg.pre,
+         `Post N` = n.post,
+         `Post Score` = avg.post)
+
+# datatable(homer.sort, class = "cell-border nowrap",
+#           rownames = FALSE,
+#           options = list(dom = "lftp",
+#                          scrollX = TRUE)) %>%
+#   formatRound(columns = c("Score", "Pre Score", "Post Score"))
+
+homer.sort %>% 
+  kbl(digits = 2) %>% 
+  kable_styling(bootstrap_options = c("bordered")) %>% 
+  scroll_box(height = "500px")
+
+```
+
+```{r}
+
+# simplify roles
+homer.sort <- homer.sort %>%
+  mutate(role.simp = ifelse(grepl("radio|color|play-by-play", Role),
+                            "announcer", Role))
+
+# summary by role
+homer.sum <- homer.sort %>%
+  group_by(role.simp) %>%
+  summarise(mean = mean(Score),
+            n.mean = mean(N),
+            n = n())
+
+```
+
+Some observations from the results:
+
+* About half of team-affiliated media are broadcasters and the other half are beat writers (with a few sideline reporters and TV analysts making up the remainder). Announcers, who stopped receiving ballots starting 2016/17, had an average score of `r round(homer.sum$mean[homer.sum$role.simp %in% c("announcer")], 2)`, versus writers, who had an average of `r round(homer.sum$mean[homer.sum$role.simp %in% c("writer")], 2)`. This stronger bias among announcers can be seen at the top of list, as 14 of the top 20 voters with the highest homer scores are announcers.
+
+* It is most fitting that the two voters finishing with the highest hometown bias scores, Boston's Tommy Heinsohn and Houston's Bill Worrell, are notorious for being among the biggest homers of all local broadcasters. We will take a closer look at their offending ballots later on. 
+
+* Nearly all the broadcasters in the top 10 have been calling games for their respective teams for over 20 years (the exceptions being Eric Collins and Brian Davis).
+
+* As a Los Angeles native who has watched many Clipper games, I was surprised to see Ralph Lawler finish so high, given that he was never as extreme in his homerism as some of his peers.
+
+* Voters with multiple team affiliations or that also have a national role generally finished with lower hometown bias scores than single team media. Jackie MacMullan has the highest score in this group of `r sum(nchar(homer.sort$Team) > 3)` and has a rank of `r which(homer.sort$Voter == "Jackie MacMullan")`.
+
+* There is little difference in score between TV play-by-play announcers and TV color commentators.
+
+* We can summarize the results by team to see which franchises have the most biased groups of voters. Voters associated with multiple teams are excluded. The mean score for all voters is indicated by the thick gray horizontal line near 0:
+
+```{r, warning = FALSE, message = FALSE}
+
+team.sum <- homer.sort %>%
+  mutate(Team = gsub("national / ", "", Team)) %>%
+  group_by(Team) %>%
+  summarise(mean = mean(Score),
+            n = n(),
+            Voters = list(paste(Voter, ": ", round(Score, 2), sep = ""))) %>%
+  filter(nchar(Team) == 3) %>%
+    left_join(team.colors, by = c("Team" = "Abbreviation"))
+
+team.sum$Voters <- map_chr(team.sum$Voters, function(x) paste(x, collapse = "\n"))
+
+team.plot <- ggplot(team.sum, aes(x = n, y = mean, text = Voters)) +
+  geom_hline(yintercept = mean(homer.sort$Score),
+             color = "gray70", size = 2) +
+  geom_text(aes(label = Team, size = n, color = hex1)) +
+  scale_color_identity() +
+  scale_x_continuous(breaks = seq(0, 12, by = 2)) +
+  scale_size_continuous(guide = FALSE) +
+  labs(x = "Number of Voters", y = "Mean Score") +
+  theme_bw()
+
+team.plot <- ggplotly(team.plot, tooltip = c("text"))
+hide_legend(team.plot)
+
+```
+
+The average hometown score of all Boston Celtics voters is the highest of any team with at least 10 voters. The two New York teams each have large voting blocs, but unfortunately for the Knicks and Nets, tend not to vote for their own players. The Clippers' five voters average the higher homer scores of any team. The Los Angeles Lakers, barely visible in the bottom left corner, have had only one voter these last five years. Bill Oram and Dave McMenamin are Laker beat writers, but were excluded because of multiple team affiliations.
+
+
+## Detailed Ballots
+
+We will take a closer look at some of the more interesting voters and ballots. These votes will be presented together with the actual result totals for the awards from all voters.
+
+```{r}
+
+# individual ballot scores, sorted most to least bias
+ind.ballots <- ballots %>%
+  distinct(Voter, Affiliation, year, award, z) %>%
+  mutate(id = paste(year, award)) %>%
+  arrange(desc(z))
+
+# award results
+award.results <- ballots %>%
+  group_by(year, award, value, team) %>%
+  summarise(pts = sum(pts)) %>%
+  arrange(year, award, desc(pts)) %>%
+  group_by(year, award) %>%
+  mutate(rank = rank(-pts, ties.method = "min")) %>%
+  ungroup() %>%
+  mutate(id = paste(year, award)) %>%
+  left_join(ballots %>%
+              select(year, award, value, n, mentions, avg.place, `1`:`5`) %>%
+              distinct(),
+            by = c("year", "award", "value")) %>%
+  mutate(value = gsub("\\.", " ", value))
+
+```
+
+```{r}
+
+options(knitr.kable.NA = "")
+
+# function for individual ballots and formatting tables
+ind.ballot.fun <- function(cur.voter, cur.team, cur.rank) {
+  
+  # create tables
+  # ballot
+  out1 <- ballots %>%
+    mutate(id = paste(year, award)) %>%
+    filter(id %in% ind.ballots$id[ind.ballots$Voter == cur.voter][cur.rank],
+           Voter == cur.voter) %>%
+    select(Voter, year, award, place, value, team,
+           n, mentions, avg.place, `1`, `2`, `3`, `4`, `5`) %>%
+    mutate(value = gsub("\\.", " ", value),
+           Voter = ifelse(Voter == cur.voter, cur.voter, "-"),
+           place = ifelse(Voter == cur.voter, place, NA)) %>%
+    distinct() %>%
+    arrange(place) %>%
+    rename(Place = place,
+           Player = value,
+           Team = team,
+           Ballots = n,
+           Mentions = mentions,
+           'Avg Place' = avg.place)
+  
+  # results (with all team affiliated players receiving votes)
+  out2 <- award.results %>%
+    filter(id %in% ind.ballots$id[ind.ballots$Voter == cur.voter][cur.rank] &
+           (team == cur.team|rank <= 5)) %>%
+    select(rank, everything(), -id) %>%
+    rename(Actual = rank,
+           Player = value,
+           Team = team,
+           Pts = pts,
+           Ballots = n,
+           Mentions = mentions,
+           'Avg Place' = avg.place)
+  
+  # title
+  title.bal <- paste(out1$year, out1$award, sep = " ")[1]
+  
+  # ballot, kable
+  bal.team <- which(out1$Team %in% cur.team)
+  bal.col <- team.colors %>%
+    filter(Abbreviation %in% cur.team)
+  
+  out1 <- out1 %>%
+    select(-(Voter:award)) %>%
+    kable(digits = 2) %>%
+    kable_styling(bootstrap_options = c("bordered"), 
+                  full_width = FALSE) %>%
+    row_spec(bal.team, bold = TRUE, color = bal.col$hex1, 
+             background = bal.col$hex2)
+  
+  # results, kable
+  result.team <- which(out2$Team %in% cur.team)
+  
+  out2 <- out2 %>%
+    select(-(year:award)) %>%
+    kable(digits = 2) %>%
+    kable_styling(bootstrap_options = c("bordered"), 
+                  full_width = FALSE) %>%
+    row_spec(result.team, bold = TRUE, color = bal.col$hex1, 
+             background = bal.col$hex2)
+  
+  # print(title.bal)
+  # print(out1)
+  # print(out2)
+  
+  list(title.bal, out1, out2)
+  
+}
+
+```
+
+### Tommy Heinsohn {.tabset}
+
+Topping the hometown bias list is Tommy Heinsohn. Heinsohn had a nine year career playing with the Boston Celtics from 1956 to 1965, winning six championships alongside Bill Russell, but is now the TV color commentator for those same Celtics. Heinsohn took part in 12 awards from 2013/14 to 2015/16, about half of which contributed to his high homer score.
+
+#### `r ind.ballot.fun("Tom Heinsohn", "BOS", 1)[[1]]`
+
+```{r}
+
+# print for voter
+ind.ballot.fun("Tom Heinsohn", "BOS", 1)[[2]]
+ind.ballot.fun("Tom Heinsohn", "BOS", 1)[[3]]
+
+```
+
+#### `r ind.ballot.fun("Tom Heinsohn", "BOS", 2)[[1]]`
+
+```{r}
+
+ind.ballot.fun("Tom Heinsohn", "BOS", 2)[[2]]
+ind.ballot.fun("Tom Heinsohn", "BOS", 2)[[3]]
+
+```
+
+#### `r ind.ballot.fun("Tom Heinsohn", "BOS", 3)[[1]]`
+
+```{r}
+
+ind.ballot.fun("Tom Heinsohn", "BOS", 3)[[2]]
+ind.ballot.fun("Tom Heinsohn", "BOS", 3)[[3]]
+
+```
+
+###
+
+Among Heinsohn's 12 ballots, his picks for 2014/15 Most Improved Player scored the highest for hometown bias. Out of the 129 ballots for 2014/15 Most Improved Player, Heinsohn was the only participant to give Tyler Zeller a vote, placing the Celtic big man at the very top of his ballot. He ignored Jimmy Butler, who was mentioned by over 90% of other voters. He did resist mentioning Jae Crowder, who received a single second place vote (from Celtic radio color man Cedric Maxwell in another homer pick).
+
+The 2014/15 and 2015/16 ballots for Coach of the Year were Heinsohn’s second and third most homer selections, respectively. The announcer placed Celtics coach Brad Stevens second in 2014/15 (finished just outside the top three overall and received only six first or second place votes) and first in 2015/16 (finished sixth overall with only five first place votes). Heinsohn was only 1 of 5 voters to leave Golden State coach Steve Kerr off their 2014/15 Coach ballot and only 1 of 19 voters to leave Portland coach Terry Stotts off their 2015/16 Coach ballot. The 2014/15 vote had a higher homer score than the 2015/16 vote because of the greater variation in average places among vote-getters in 2015/16.
+
+### Bill Worrell {.tabset}
+
+Finishing just behind Tommy Heinsohn in hometown bias score is Bill Worrell, the Houston Rockets’ TV play-by-play announcer for over 30 years. Of Worrell’s 13 ballots over a 3 year period, 9 contributed positively to his homer score.
+
+#### `r ind.ballot.fun("Bill Worrell", "HOU", 1)[[1]]`
+
+```{r}
+
+ind.ballot.fun("Bill Worrell", "HOU", 1)[[2]]
+ind.ballot.fun("Bill Worrell", "HOU", 1)[[3]]
+
+```
+
+#### `r ind.ballot.fun("Bill Worrell", "HOU", 2)[[1]]`
+
+```{r}
+
+ind.ballot.fun("Bill Worrell", "HOU", 2)[[2]]
+ind.ballot.fun("Bill Worrell", "HOU", 2)[[3]]
+
+```
+
+### {.tabset}
+
+Worrell’s two most biased award ballots were for 2013/14 MVP and 2015/16 MVP, both cases where he placed Rocket guard James Harden third. There was a solid consensus for the 2013/14 MVP, with Kevin Durant first, LeBron James second, and Blake Griffin or Joakim Noah third and fourth. Worrell broke this consensus, placing Rocket guard James Harden third on his ballot for MVP ahead of Blake Griffin (who was mentioned by 83% of voters and finished 3rd overall, but was left off of Worrell’s ballot completely) and Joakim Noah (appeared on more than twice as many ballots as Harden).
+
+Comparing Bill Worrell’s 2015/16 MVP ballot to his 2013/14 MVP ballot above highlights a case where the homer score gives a result that is unanticpated. From looking at the two MVP ballots, it is expected that Worrell’s third place vote for Harden in 2015/16 (where the Houston star received only three mentions with Worrell providing the highest placement of any voter) should have generated a higher homer score than the third place vote for Harden in 2013/14 (where there were 37 mentions for the Rocket guard). This is a consequence of using standardized instead of raw scores in calculating values. Score may be scaled up or down because of the mean and variance of all scores for a particualar award.
+
+#### `r ind.ballot.fun("Bill Worrell", "HOU", 5)[[1]]`
+
+```{r}
+
+ind.ballot.fun("Bill Worrell", "HOU", 5)[[2]]
+ind.ballot.fun("Bill Worrell", "HOU", 5)[[3]]
+
+```
+
+#### `r ind.ballot.fun("Bill Worrell", "HOU", 8)[[1]]`
+
+```{r}
+
+ind.ballot.fun("Bill Worrell", "HOU", 8)[[2]]
+ind.ballot.fun("Bill Worrell", "HOU", 8)[[3]]
+
+```
+
+###
+
+Some more interesting Worrell results came from two ballots that had lower homertown bias values than the MVP ballots. The Spurs’ Kawhi Leonard won the 2015/16 Defensive Player of the Year Award in almost unanimous fashion, being mentioned on 129 out of 130 ballots. The only media member to not have voted for Leonard was Worrell, with a ballot that included spots for Anthony Davis (only two mentions) and Rocket Trevor Ariza (his sole mention). Worrell claimed this oversight was because of an [error](https://www.mysanantonio.com/sports/spurs/article/The-mystery-of-Kawhi-Leonard-s-missing-Defensive-7291371.php) and that he meant to vote Leonard first, but there was a similar situation with the previous year’s Defensive Player of the Year award. Leonard also won the 2014/15 award, appearing on 80% of ballots (103 out of 129). Worrell again left the Spur off his ballot, instead giving Trevor Ariza his only vote (again). If we go back to Worrell's 2015/16 MVP ballot above, we see a third instance where he completely ignored Leonard. Leonard finished third and was mentioned by 93% of all voters.
+
+### Darnell Mayberry {.tabset}
+
+On the opposite end of the homer spectrum are media members who tend to place their own players lower than average or leave them off their ballots altogether. Of voters that have participated in at least 10 awards, Darnell Mayberry has the lowest homer score (although there is little separation between him and many of his peers at the bottom of the list). Mayberry covered the Oklahoma City Thunder from 2005 to 2015, over which he was involved in a few [incidents](https://www.welcometoloudcity.com/2014/1/10/5294586/kd-smokes-perk-calls-out-darnell-mayberry-on-twitter) with players (but so did many other [media](http://grantland.com/the-triangle/nba-russell-westbrook-kevin-durant-oklahoma-city-thunder-sports-media/) with the Thunder). We will review a few of his most anti-homer ballots.
+
+#### `r ind.ballot.fun("Darnell Mayberry", "OKC", 15)[[1]]`
+
+```{r}
+
+ind.ballot.fun("Darnell Mayberry", "OKC", 15)[[2]]
+ind.ballot.fun("Darnell Mayberry", "OKC", 15)[[3]]
+
+```
+
+#### `r ind.ballot.fun("Darnell Mayberry", "OKC", 14)[[1]]`
+
+```{r}
+
+ind.ballot.fun("Darnell Mayberry", "OKC", 14)[[2]]
+ind.ballot.fun("Darnell Mayberry", "OKC", 14)[[3]]
+
+```
+
+#### `r ind.ballot.fun("Darnell Mayberry", "OKC", 13)[[1]]`
+
+```{r}
+
+ind.ballot.fun("Darnell Mayberry", "OKC", 13)[[2]]
+ind.ballot.fun("Darnell Mayberry", "OKC", 13)[[3]]
+
+```
+
+###
+
+Of Mayberry's 15 ballots, his 2014/15 MVP vote has the lowest hometown bias score. Russell Westbrook appeared on 83% of ballots and finished fourth in MVP voting in a season where he led the Oklahoma City Thunder to a 45-37 record (barely missing the playoffs) after Kevin Durant went down with a season-ending injury. Mayberry left Westbrook completely off of his MVP ballot, preferring Chris Paul and Anthony Davis. While Davis finished fifth in voting and garnered nearly a hundred mentions, Paul was mentioned on only half as many ballots as Westbrook.
+
+Mayberry again left Westbrook, who was mentioned by 17% of voters, off of his 2014/15 All-Defense ballot. Also for the same award, he ignored Thunder center Serge Ibaka who was mentioned on 6% of ballots. For 2013/14 Sixth Man of the Year, Mayberry left off Thunder guard Reggie Jackson, who appeared on 20% of ballots and finished fifth overall. These are minor snubs, but taken together, do enough to generate an aggregate score that puts Mayberry at the bottom of the homer list. 
+
+### Most Homer Ballots {.tabset}
+
+Here are the individual ballots with the three highest hometown bias scores. The voters themselves do not necessarily have the highest aggregate homer scores.
+
+#### Ron Boone (UTA) 13/14 Rookie
+
+```{r}
+
+ind.ballot.fun("Ron Boone", "UTA", 1)[[2]]
+ind.ballot.fun("Ron Boone", "UTA", 1)[[3]]
+
+```
+
+####  Jason Kosmicki (DEN) 15/16 Improved
+
+```{r}
+
+ind.ballot.fun("Jason Kosmicki", "DEN", 1)[[2]]
+ind.ballot.fun("Jason Kosmicki", "DEN", 1)[[3]]
+
+```
+
+####  Ron Tillery (MEM) 16/17 Sixth Man
+
+```{r}
+
+ind.ballot.fun("Ron Tillery", "MEM", 1)[[2]]
+ind.ballot.fun("Ron Tillery", "MEM", 1)[[3]]
+
+```
+
+
+### Most Anti-Homer Ballots {.tabset}
+
+#### Cedric Maxwell (BOS) 14/15 Sixth Man
+
+```{r}
+
+ind.ballot.fun("Cedric Maxwell", "BOS", 14)[[2]]
+ind.ballot.fun("Cedric Maxwell", "BOS", 14)[[3]]
+
+```
+
+#### Gary Washburn (BOS) 17/18 Coach
+
+```{r}
+
+ind.ballot.fun("Gary Washburn", "BOS", 45)[[2]]
+ind.ballot.fun("Gary Washburn", "BOS", 45)[[3]]
+
+```
+
+###
+
+Cedric Maxwell, the Boston Celtic's radio color commentator and former NBA Finals MVP for the same team, owns the most anti-homer ballot. This is actually outlier result for Maxwell, as many of his other ballots have high homer scores, giving him a rank of `r which(homer.sort$Voter == "Cedric Maxwell")` overall for hometown bias. The offending ballot is for 2014/15 Sixth Man of the Year, when he left off Celtic guard Isaiah Thomas. A possible explanation for this may be that Thomas joined Boston midway through the season via trade, playing only 21 games for the Celtics.
+
+The ballot with the second lowest hometown bias score is Darnell Mayberry's 2014/15 MVP vote, already discussed above. Coming in third is Celtic beat writer Gary Washburn's 2017/18 Coach of the Year ballot. These are atypical results given the general homerism of the Boston voting bloc. A takeaway from these results is that it takes little to generate a high negative bias score. Because of how the scores are calculated, leaving off a player that finished middle of the pack in the results may lead to a very low score depending on how everyone else votes.
+
+
+## Parting Thoughts
+
+Given the hometown bias results, the NBA made a justified decision in removing team broadcasters from the panel of award voters. This is not to say that all announcers showed bias in their awards ballots, as there were many announcers that placed at the bottom of the table ranking team-affiliated voters. A good number of these broadcasters are associated with the two New York teams. This is not surprising for anyone who has watched many Knicks and Nets broadcasts, given the even-handedness of their announcing crews. Mark Boyle of the Pacers and George Balaha of the Pistons are a couple of non-New York examples who also score low. 
+
+As previously mentioned, international voters were introduced with the removal of broadcasters for the 2016/17 end-of-season awards. While there is no way for international voters to show hometown bias, a few ballots from these media members made you question how much they actually follow the NBA. But that is an idea for a different post.

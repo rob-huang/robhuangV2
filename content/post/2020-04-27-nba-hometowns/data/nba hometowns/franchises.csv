@@ -1,0 +1,105 @@
+"Status","Franchise","Abbreviation","Team","Lg","From","To","City","State","lon","lat","COUNTYGEOID","COUNTY","CBSA.Code"
+"active","Atlanta Hawks","ATL","Atlanta Hawks","NBA",1969,2020,"Atlanta","GA",-84.3879824,33.7489954,13121,"Fulton County",12060
+"active","Atlanta Hawks","STL","St. Louis Hawks","NBA",1956,1968,"St. Louis","MO",-90.1994042,38.6270025,29510,"St. Louis city",41180
+"active","Atlanta Hawks","MLH","Milwaukee Hawks","NBA",1952,1955,"Milwaukee","WI",-87.9064736,43.0389025,55079,"Milwaukee County",33340
+"active","Atlanta Hawks","TRI","Tri-Cities Blackhawks","NBA",1950,1951,"Moline","IL",-90.5151342,41.5067003,17161,"Rock Island County",19340
+"active","Boston Celtics","BOS","Boston Celtics","NBA",1947,2020,"Boston","MA",-71.0588801,42.3600825,25025,"Suffolk County",14460
+"active","Brooklyn Nets","BRK","Brooklyn Nets","NBA",2013,2020,"Brooklyn","NY",-73.9441579,40.6781784,36047,"Kings County",35620
+"active","Brooklyn Nets","NJN","New Jersey Nets","NBA",1978,2012,"East Rutherford","NJ",-74.1062582,40.8339964,34003,"Bergen County",35620
+"active","Brooklyn Nets","NYN","New York Nets","NBA",1977,1977,"Uniondale","NY",-73.5929056,40.7003793,36059,"Nassau County",35620
+"active","Brooklyn Nets","NYA","New York Nets","ABA",1969,1976,"Uniondale","NY",-73.5929056,40.7003793,36059,"Nassau County",35620
+"active","Brooklyn Nets","NJA","New Jersey Americans","ABA",1968,1968,"Teaneck","NJ",-74.0116536,40.8932469,34003,"Bergen County",35620
+"active","Charlotte Hornets","CHO","Charlotte Hornets","NBA",2015,2020,"Charlotte","NC",-80.8431267,35.2270869,37119,"Mecklenburg County",16740
+"active","Charlotte Hornets","CHA","Charlotte Bobcats","NBA",2005,2014,"Charlotte","NC",-80.8431267,35.2270869,37119,"Mecklenburg County",16740
+"active","Charlotte Hornets","CHH","Charlotte Hornets","NBA",1989,2002,"Charlotte","NC",-80.8431267,35.2270869,37119,"Mecklenburg County",16740
+"active","Chicago Bulls","CHI","Chicago Bulls","NBA",1967,2020,"Chicago","IL",-87.6297982,41.8781136,17031,"Cook County",16980
+"active","Cleveland Cavaliers","CLE","Cleveland Cavaliers","NBA",1971,2020,"Cleveland","OH",-81.6943605,41.49932,39035,"Cuyahoga County",17460
+"active","Dallas Mavericks","DAL","Dallas Mavericks","NBA",1981,2020,"Dallas","TX",-96.7969879,32.7766642,48113,"Dallas County",19100
+"active","Denver Nuggets","DEN","Denver Nuggets","NBA",1977,2020,"Denver","CO",-104.990251,39.7392358,8031,"Denver County",19740
+"active","Denver Nuggets","DNA","Denver Nuggets","ABA",1975,1976,"Denver","CO",-104.990251,39.7392358,8031,"Denver County",19740
+"active","Denver Nuggets","DNR","Denver Rockets","ABA",1968,1974,"Denver","CO",-104.990251,39.7392358,8031,"Denver County",19740
+"active","Detroit Pistons","DET","Detroit Pistons","NBA",1958,2020,"Detroit","MI",-83.0457538,42.331427,26163,"Wayne County",19820
+"active","Detroit Pistons","FTW","Fort Wayne Pistons","NBA",1949,1957,"Fort Wayne","IN",-85.1393513,41.079273,18003,"Allen County",23060
+"active","Golden State Warriors","GSW","Golden State Warriors","NBA",1972,2020,"Oakland","CA",-122.2711137,37.8043637,6001,"Alameda County",41860
+"active","Golden State Warriors","SFW","San Francisco Warriors","NBA",1963,1971,"Daly City","CA",-122.4776028,37.6855343,6081,"San Mateo County",41860
+"active","Golden State Warriors","PHW","Philadelphia Warriors","NBA",1947,1962,"Philadelphia","PA",-75.1652215,39.9525839,42101,"Philadelphia County",37980
+"active","Houston Rockets","HOU","Houston Rockets","NBA",1972,2020,"Houston","TX",-95.3698028,29.7604267,48201,"Harris County",26420
+"active","Houston Rockets","SDR","San Diego Rockets","NBA",1968,1971,"San Diego","CA",-117.1610838,32.715738,6073,"San Diego County",41740
+"active","Indiana Pacers","IND","Indiana Pacers","NBA",1977,2020,"Indianapolis","IN",-86.158068,39.768403,18097,"Marion County",26900
+"active","Indiana Pacers","INA","Indiana Pacers","ABA",1968,1976,"Indianapolis","IN",-86.158068,39.768403,18097,"Marion County",26900
+"active","Los Angeles Clippers","LAC","Los Angeles Clippers","NBA",1985,2020,"Los Angeles","CA",-118.2436849,34.0522342,6037,"Los Angeles County",31080
+"active","Los Angeles Clippers","SDC","San Diego Clippers","NBA",1979,1984,"San Diego","CA",-117.1610838,32.715738,6073,"San Diego County",41740
+"active","Los Angeles Clippers","BUF","Buffalo Braves","NBA",1971,1978,"Buffalo","NY",-78.8783689,42.8864468,36029,"Erie County",15380
+"active","Los Angeles Lakers","LAL","Los Angeles Lakers","NBA",1961,2020,"Los Angeles","CA",-118.2436849,34.0522342,6037,"Los Angeles County",31080
+"active","Los Angeles Lakers","MNL","Minneapolis Lakers","NBA",1949,1960,"Minneapolis","MN",-93.2650108,44.977753,27053,"Hennepin County",33460
+"active","Memphis Grizzlies","MEM","Memphis Grizzlies","NBA",2002,2020,"Memphis","TN",-90.0489801,35.1495343,47157,"Shelby County",32820
+"active","Memphis Grizzlies","VAN","Vancouver Grizzlies","NBA",1996,2001,"Vancouver",,,,,,
+"active","Miami Heat","MIA","Miami Heat","NBA",1989,2020,"Miami","FL",-80.1917902,25.7616798,12086,"Miami-Dade County",33100
+"active","Milwaukee Bucks","MIL","Milwaukee Bucks","NBA",1969,2020,"Milwaukee","WI",-87.9064736,43.0389025,55079,"Milwaukee County",33340
+"active","Minnesota Timberwolves","MIN","Minnesota Timberwolves","NBA",1990,2020,"Minneapolis","MN",-93.2650108,44.977753,27053,"Hennepin County",33460
+"active","New Orleans Pelicans","NOP","New Orleans Pelicans","NBA",2014,2020,"New Orleans","LA",-90.0715323,29.9510658,22071,"Orleans Parish",35380
+"active","New Orleans Pelicans","NOK","NO/Ok. City Hornets","NBA",2006,2007,"Oklahoma City","OK",-97.5164276,35.4675602,40109,"Oklahoma County",36420
+"active","New Orleans Pelicans","NOH","New Orleans Hornets","NBA",2003,2013,"New Orleans","LA",-90.0715323,29.9510658,22071,"Orleans Parish",35380
+"active","New York Knicks","NYK","New York Knicks","NBA",1947,2020,"New York","NY",-74.0059728,40.7127753,36061,"New York County",35620
+"active","Oklahoma City Thunder","OKC","Oklahoma City Thunder","NBA",2009,2020,"Oklahoma City","OK",-97.5164276,35.4675602,40109,"Oklahoma County",36420
+"active","Oklahoma City Thunder","SEA","Seattle SuperSonics","NBA",1968,2008,"Seattle","WA",-122.3320708,47.6062095,53033,"King County",42660
+"active","Orlando Magic","ORL","Orlando Magic","NBA",1990,2020,"Orlando","FL",-81.3792365,28.5383355,12095,"Orange County",36740
+"active","Philadelphia 76ers","PHI","Philadelphia 76ers","NBA",1964,2020,"Philadelphia","PA",-75.1652215,39.9525839,42101,"Philadelphia County",37980
+"active","Philadelphia 76ers","SYR","Syracuse Nationals","NBA",1950,1963,"Syracuse","NY",-76.1474244,43.0481221,36067,"Onondaga County",45060
+"active","Phoenix Suns","PHO","Phoenix Suns","NBA",1969,2020,"Phoenix","AZ",-112.0740373,33.4483771,4013,"Maricopa County",38060
+"active","Portland Trail Blazers","POR","Portland Trail Blazers","NBA",1971,2020,"Portland","OR",-122.6764815,45.5230622,41051,"Multnomah County",38900
+"active","Sacramento Kings","SAC","Sacramento Kings","NBA",1986,2020,"Sacramento","CA",-121.4943996,38.5815719,6067,"Sacramento County",40900
+"active","Sacramento Kings","KCK","Kansas City Kings","NBA",1976,1985,"Kansas City","MO",-94.5785667,39.0997265,29095,"Jackson County",28140
+"active","Sacramento Kings","KCO","Kansas City-Omaha Kings","NBA",1973,1975,"Kansas City","MO",-94.5785667,39.0997265,29095,"Jackson County",28140
+"active","Sacramento Kings","CIN","Cincinnati Royals","NBA",1958,1972,"Cincinnati","OH",-84.5120196,39.1031182,39061,"Hamilton County",17140
+"active","Sacramento Kings","ROC","Rochester Royals","NBA",1949,1957,"Rochester","NY",-77.6109219,43.16103,36055,"Monroe County",40380
+"active","San Antonio Spurs","SAS","San Antonio Spurs","NBA",1977,2020,"San Antonio","TX",-98.4936282,29.4241219,48029,"Bexar County",41700
+"active","San Antonio Spurs","SAA","San Antonio Spurs","ABA",1974,1976,"San Antonio","TX",-98.4936282,29.4241219,48029,"Bexar County",41700
+"active","San Antonio Spurs","TEX","Texas Chaparrals","ABA",1971,1971,"Fort Worth","TX",-97.3307658,32.7554883,48439,"Tarrant County",19100
+"active","San Antonio Spurs","DLC","Dallas Chaparrals","ABA",1968,1973,"Dallas","TX",-96.7969879,32.7766642,48113,"Dallas County",19100
+"active","Toronto Raptors","TOR","Toronto Raptors","NBA",1996,2020,"Toronto",,,,,,
+"active","Utah Jazz","UTA","Utah Jazz","NBA",1980,2020,"Salt Lake City","UT",-111.8910474,40.7607793,49035,"Salt Lake County",41620
+"active","Utah Jazz","NOJ","New Orleans Jazz","NBA",1975,1979,"New Orleans","LA",-90.0715323,29.9510658,22071,"Orleans Parish",35380
+"active","Washington Wizards","WAS","Washington Wizards","NBA",1998,2020,"Washington","DC",-77.0368707,38.9071923,11001,"District of Columbia",47900
+"active","Washington Wizards","WSB","Washington Bullets","NBA",1975,1997,"Landover","MD",-76.8966397,38.9340002,24033,"Prince George's County",47900
+"active","Washington Wizards","CAP","Capital Bullets","NBA",1974,1974,"Landover","MD",-76.8966397,38.9340002,24033,"Prince George's County",47900
+"active","Washington Wizards","BAL","Baltimore Bullets","NBA",1964,1973,"Baltimore","MD",-76.6121893,39.2903848,24510,"Baltimore city",12580
+"active","Washington Wizards","CHZ","Chicago Zephyrs","NBA",1963,1963,"Chicago","IL",-87.6297982,41.8781136,17031,"Cook County",16980
+"active","Washington Wizards","CHP","Chicago Packers","NBA",1962,1962,"Chicago","IL",-87.6297982,41.8781136,17031,"Cook County",16980
+"defunct","Anderson Packers","AND","Anderson Packers","NBA",1950,1950,"Anderson","IN",-85.6802541,40.1053196,18095,"Madison County",26900
+"defunct","Baltimore Bullets (1948-55)","BLB","Baltimore Bullets","NBA",1948,1955,"Baltimore","MD",-76.6121893,39.2903848,24510,"Baltimore city",12580
+"defunct","Chicago Stags","CHS","Chicago Stags","NBA",1947,1950,"Chicago","IL",-87.6297982,41.8781136,17031,"Cook County",16980
+"defunct","Cleveland Rebels","CLR","Cleveland Rebels","BAA",1947,1947,"Cleveland","OH",-81.6943605,41.49932,39035,"Cuyahoga County",17460
+"defunct","Denver Nuggets (1950)","DNN","Denver Nuggets","NBA",1950,1950,"Denver","CO",-104.990251,39.7392358,8031,"Denver County",19740
+"defunct","Detroit Falcons","DTF","Detroit Falcons","BAA",1947,1947,"Detroit","MI",-83.0457538,42.331427,26163,"Wayne County",19820
+"defunct","Indianapolis Jets","INJ","Indianapolis Jets","BAA",1949,1949,"Indianapolis","IN",-86.158068,39.768403,18097,"Marion County",26900
+"defunct","Indianapolis Olympians","INO","Indianapolis Olympians","NBA",1950,1953,"Indianapolis","IN",-86.158068,39.768403,18097,"Marion County",26900
+"defunct","Kentucky Colonels","KEN","Kentucky Colonels","ABA",1968,1976,"Louisville","KY",-85.7584557,38.2526647,21111,"Jefferson County",31140
+"defunct","Memphis Sounds","MMS","Memphis Sounds","ABA",1975,1975,"Memphis","TN",-90.0489801,35.1495343,47157,"Shelby County",32820
+"defunct","Memphis Sounds","MMT","Memphis Tams","ABA",1973,1974,"Memphis","TN",-90.0489801,35.1495343,47157,"Shelby County",32820
+"defunct","Memphis Sounds","MMP","Memphis Pros","ABA",1971,1972,"Memphis","TN",-90.0489801,35.1495343,47157,"Shelby County",32820
+"defunct","Memphis Sounds","NOB","New Orleans Buccaneers","ABA",1968,1970,"New Orleans","LA",-90.0715323,29.9510658,22071,"Orleans Parish",35380
+"defunct","Pittsburgh Condors","PTC","Pittsburgh Condors","ABA",1971,1972,"Pittsburgh","PA",-79.9958864,40.4406248,42003,"Allegheny County",38300
+"defunct","Pittsburgh Condors","MNP","Minnesota Pipers","ABA",1969,1969,"Bloomington","MN",-93.2982799,44.840798,27053,"Hennepin County",33460
+"defunct","Pittsburgh Condors","PTP","Pittsburgh Pipers","ABA",1968,1970,"Pittsburgh","PA",-79.9958864,40.4406248,42003,"Allegheny County",38300
+"defunct","Pittsburgh Ironmen","PIT","Pittsburgh Ironmen","BAA",1947,1947,"Pittsburgh","PA",-79.9958864,40.4406248,42003,"Allegheny County",38300
+"defunct","Providence Steam Rollers","PRO","Providence Steam Rollers","BAA",1947,1949,"Providence","RI",-71.4128343,41.8239891,44007,"Providence County",39300
+"defunct","San Diego Sails","SDS","San Diego Sails","ABA",1976,1976,"San Diego","CA",-117.1610838,32.715738,6073,"San Diego County",41740
+"defunct","San Diego Sails","SDA","San Diego Conquistadors","ABA",1973,1975,"San Diego","CA",-117.1610838,32.715738,6073,"San Diego County",41740
+"defunct","Sheboygan Red Skins","SHE","Sheboygan Red Skins","NBA",1950,1950,"Sheboygan","WI",-87.71453,43.7508284,55117,"Sheboygan County",43100
+"defunct","Spirits of St. Louis","SSL","Spirits of St. Louis","ABA",1975,1976,"St. Louis","MO",-90.1994042,38.6270025,29510,"St. Louis city",41180
+"defunct","Spirits of St. Louis","CAR","Carolina Cougars","ABA",1970,1974,"Greensboro","NC",-79.7919754,36.0726354,37081,"Guilford County",24660
+"defunct","Spirits of St. Louis","HSM","Houston Mavericks","ABA",1968,1969,"Houston","TX",-95.3698028,29.7604267,48201,"Harris County",26420
+"defunct","St. Louis Bombers","STB","St. Louis Bombers","NBA",1947,1950,"St. Louis","MO",-90.1994042,38.6270025,29510,"St. Louis city",41180
+"defunct","The Floridians","FLO","The Floridians","ABA",1971,1972,"Miami","FL",-80.1917902,25.7616798,12086,"Miami-Dade County",33100
+"defunct","The Floridians","MMF","Miami Floridians","ABA",1969,1970,"Miami Beach","FL",-80.1300455,25.790654,12086,"Miami-Dade County",33100
+"defunct","The Floridians","MNM","Minnesota Muskies","ABA",1968,1968,"Bloomington","MN",-93.2982799,44.840798,27053,"Hennepin County",33460
+"defunct","Toronto Huskies","TRH","Toronto Huskies","BAA",1947,1947,"Toronto",,,,,,
+"defunct","Utah Stars","UTS","Utah Stars","ABA",1971,1976,"Salt Lake City","UT",-111.8910474,40.7607793,49035,"Salt Lake County",41620
+"defunct","Utah Stars","LAS","Los Angeles Stars","ABA",1969,1970,"Los Angeles","CA",-118.2436849,34.0522342,6037,"Los Angeles County",31080
+"defunct","Utah Stars","ANA","Anaheim Amigos","ABA",1968,1968,"Anaheim","CA",-117.9143012,33.8365932,6059,"Orange County",31080
+"defunct","Virginia Squires","VIR","Virginia Squires","ABA",1971,1976,"Norfolk","VA",-76.2858726,36.8507689,51710,"Norfolk city",47260
+"defunct","Virginia Squires","WSA","Washington Capitols","ABA",1970,1970,"Washington","DC",-77.0368707,38.9071923,11001,"District of Columbia",47900
+"defunct","Virginia Squires","OAK","Oakland Oaks","ABA",1968,1969,"Oakland","CA",-122.2711137,37.8043637,6001,"Alameda County",41860
+"defunct","Washington Capitols","WSC","Washington Capitols","NBA",1947,1951,"Washington","DC",-77.0368707,38.9071923,11001,"District of Columbia",47900
+"defunct","Waterloo Hawks","WAT","Waterloo Hawks","NBA",1950,1950,"Waterloo","IA",-92.4830837,42.4962397,19013,"Black Hawk County",47940

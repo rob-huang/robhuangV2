@@ -1,0 +1,385 @@
+---
+title: NBA Awards Voting - Outlier Ballots Using PCA
+author: Robert Huang
+date: '2018-12-10'
+slug: nba-awards-voting-outlier-ballots-using-pca
+categories: []
+tags:
+  - nba
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      fig.align = "center")
+```
+
+
+## Background
+
+We follow up the previous [post](https://robhuang.netlify.com/post/2018/11/13/nba-awards-voting-hometown-bias/) on NBA awards voting with a closer look at the Most Valuable Player (MVP) award. MVP is voted on by a panel of about 100 to 130 media members (a different group depending on the year) after the end of the regular NBA season. Voters rank 5 players on their ballots in preferential order with 1st place receiving 10 points, 2nd place 7 points, 3rd place 5 points, 4th place 3 points, and 5th place 1 point.
+
+There is generally some consensus in the results for each year, with one or two frontrunners finishing far ahead of the other players, a larger group jostling for position in the middle of the pack, and finally a few players receiving some stray votes at the bottom. Despite this groupthink, there are always media members with ballots that deviate more than average from the overall results. These outlier ballots may be the result of votes for players that no other voters mention, placing a player higher than most other voters, or something else. We will attempt to identify extreme ballots and visualize voting results from different seasons of MVP voting using principal component analysis (PCA).
+
+
+## Dataset
+
+Our dataset consists of all MVP votes for five seasons, 2013/14 to 2017/18.
+
+```{r}
+
+library(tidyverse)
+
+ballots <- read.csv("data//nba awards outlier ballots//mvp ballots.csv", 
+                    na = "", stringsAsFactors = FALSE)
+
+head(ballots, 10)
+
+```
+
+Player placements on ballots are given in the "variable" column. While the NBA uses a scoring system of 10-7-5-3-1 points mentioned above, we will instead use 5-4-3-2-1 points for 1st to 5th place for simpler calculations. This allows us to focus more on player placements on ballots rather than the arbitrary points set by the NBA.
+
+```{r}
+
+# the created ballots column contains the number of MVP voters for that year
+# this will be useful later when summarizing the results
+ballots <- ballots %>%
+  mutate(place = as.integer(str_extract(variable, "\\d"))) %>%
+  group_by(year) %>%
+  mutate(pts = max(place) - place + 1,
+         ballots = n_distinct(Voter)) %>%
+  ungroup() %>%
+  select(-variable)
+
+```
+
+Because we have multiple years of data and want to repeat this analysis for each season of MVP voting, nesting the ballots by year will allow for more convenient handling and access of results.
+
+```{r}
+
+mvp <- ballots %>%
+  select(year, Voter, value, place, pts, ballots) %>%
+  group_by(year) %>%
+  nest()
+
+```
+
+We will start off by summarizing the votes and overall results for MVP for each season. This provides a general picture of how media members filled out their ballots and also a baseline to compare each individual ballot for the identificaiton of outliers. For each player, we obtain the number of votes at each place, total number of mentions, total points, percent of voters that mentioned the player, and the average number of points per voter.
+
+```{r}
+
+# results1 counts the number of votes at each place (from 1st to 5th)
+# results2 totals the number of mentions and points
+mvp <- mvp %>%
+  mutate(results1 = map(data, . %>%
+                          count(value, place) %>%
+                          spread(key = place, value = n, fill = 0)),
+         results2 = map(data, . %>%
+                          group_by(value) %>%
+                          summarise(ballots = min(ballots),
+                                    mentions = sum(pts > 0),
+                                    tot.pts = sum(pts)) %>%
+                          ungroup()))
+
+mvp <- mvp %>%
+  mutate(results = map2(results1, results2,
+                        ~left_join(.x, .y, by = "value") %>%
+                          mutate(pct = mentions / ballots,
+                                 avg = tot.pts / ballots) %>%
+                          arrange(desc(tot.pts)))) %>%
+  select(-(results1:results2))
+
+```
+
+For 2013/14, we have:
+
+```{r}
+
+mvp$results[[1]]
+
+```
+
+Kevin Durant won the MVP, with LeBron James stealing a few first place votes to prevent Durant from winning the award unanimously. Blake Griffin and Joakim Noah battled for third place. Thirteen other players received mentions, resulting in a larger pool of candidates than any of the next four years. A quick reminder that the points used here differ from the actual values used by the NBA, but the standings are very close to the official results.
+
+
+## Point Differentials
+
+A simple way of determining outlier ballots is to compare the number of points a voter gives to each player compared to the same players' average points from all voters. Summing these absolute differences gives an overall point differential for each voter. As an example, let us look at ex-Salt Lake Tribune writer Aaron Falk's 2013/14 ballot:
+
+```{r}
+
+mvp$data[[1]] %>%
+  filter(Voter == "Aaron Falk")
+
+```
+
+Compare the above table with the overall results:
+
+```{r}
+
+(a.falk.14 <- mvp$data[[1]] %>%
+   filter(Voter == "Aaron Falk") %>%
+   select(value, Voter, pts) %>%
+   complete(value = mvp$results[[1]]$value,
+            fill = list(pts = 0)) %>%
+   left_join(mvp$results[[1]] %>%
+               select(value, avg),
+             by = "value") %>%
+   arrange(desc(pts)) %>%
+   mutate(diff = pts - avg))
+
+```
+
+Falk gave Kevin Durant a difference of `r a.falk.14$diff[a.falk.14$value == "Kevin Durant"]` points compared to average, LeBron James `r a.falk.14$diff[a.falk.14$value == "LeBron James"]` points compared to average, and so on. Note that we also include all the players that showed up on other voters' ballots, but that Falk did not vote for. Summing these absolute differences gives `r sum(abs(a.falk.14$diff))`, Falk's overall difference in points for his ballot.
+
+This score is calculated for every voter across all five years:
+
+```{r}
+
+mvp <- mvp %>%
+  mutate(raw.diff = map2(data, results,
+                           ~.x %>%
+                             select(Voter, value, pts) %>%
+                             complete(Voter, nesting(value = .y$value), 
+                                      fill = list(pts = 0)) %>%
+                             left_join(.y %>%
+                                         select(value, avg),
+                                       by = "value") %>%
+                             group_by(Voter) %>%
+                             summarise(diff = sum(abs(avg - pts))) %>%
+                             arrange(desc(diff))
+                         )
+         )
+
+```
+
+The 2013/14 voters with the greatest deviations from average are:
+
+```{r}
+
+mvp$raw.diff[[1]]
+
+```
+
+These scores pick out voters that deviate the most compared to other voters in terms of the raw placements of players on their ballots, but this ignore the variances and correlations among the all the ballots. As an example of how variance comes into play, suppose there are 100 voters. Player A receives one fifth place vote but is ignored by all other media. This results in a point differential of 0.99 for the only voter of Player A. Player B receives 50 first place votes and 49 fith place votes. If another voter gives Player B a fourth place vote, this results in a differential that is the same as the first case despite the uneven situations.
+
+For an example of correlation among ballots, suppose Players C and D are teammates who end up splitting ballots. Because of that, they generally do not appear on any ballots together. If there exists a media member that votes for both players, the scores calculated above would not capture this idiosyncrasy.
+
+
+## Principal Component Analysis
+
+Principal component analysis (PCA) is a technique that can be used to simplify high dimensional data into a fewer number of new variables (principal components) that still contain information about the entire dataset. We will use it here to visualize MVP ballots and identify outlier voters. 
+
+As a preliminary step, we need to transform our data into a form that is suitable for PCA. The data will be set up such that:
+
+  + Each variable (column) is a player that received at least one mention
+  from any voter for that season.
+
+  + Each observation (row) is a voter.
+
+  + Each value is the number of points a player has received from a
+  voter, or equivalently, the number of points a voter has given to a player (5 for 1st
+  place, 4 for 2nd place, ... and 0 if not mentioned).
+
+For 2013/14, this results in:
+
+```{r}
+
+mvp <- mvp %>%
+  mutate(votes = map(data, . %>%
+                       select(-place, -ballots) %>%
+                       spread(key = value, value = pts, fill = 0) %>%
+                       as.data.frame() %>%
+                       column_to_rownames(var = "Voter")))
+
+mvp$votes[[1]][1:10, 1:4]
+
+```
+
+We can apply PCA to each year's data. Before doing that, we need to make one adjustment. If there are players that receive unanimous votes at only one ballot slot (Stephen Curry received all the first place votes in 2015/16), the columns for those players will be constant and provide no extra information. These columns need to be removed.
+
+```{r}
+
+mvp <- mvp %>%
+  mutate(keep = map(votes,
+                    function(x) map_lgl(x, function(y) length(unique(y)) > 1)),
+         votes = map2(votes, keep, function(x, y) x[, y])) %>%
+  select(-keep)
+
+```
+
+PCA is applied for all years:
+
+```{r}
+
+mvp <- mvp %>%
+  mutate(pca = map(votes, ~prcomp(., scale. = TRUE)))
+
+```
+
+
+## 2013/14
+
+We will start with the results for 2013/14, visualizing the MVP voting using a biplot of the first two principal components.
+
+```{r}
+
+library(ggfortify)
+
+autoplot(mvp$pca[[1]],
+         loadings = TRUE,
+         loadings.label = TRUE,
+         label = TRUE, shape = FALSE) +
+  theme_bw()
+
+```
+
+The loadings (in red) shed light on the general structures of MVP ballots for the season. Compare the above plot to the voting results shown earlier. Kevin Durant and LeBron James are negatively correlated because media voters chose between the two players for first and second place on their ballots. Los Angeles Clippers Blake Griffin and Chris Paul are negatively correlated because the teammates split votes, with voters rarely placing both players on their ballots. This can be confirmed by looking through the raw data.
+
+To gain insight into how voters are being graphed on the biplot, they can be colored based on groupings we want to study in more detail. First, we look at how media used their first and second place slots.
+
+```{r, fig.width = 9}
+
+groups.14.1 <- mvp$votes[[1]] %>%
+  mutate(group.1 = case_when(`Kevin Durant` == 5 & `LeBron James` == 4 ~
+                               "1: Durant, 2: LeBron",
+                             `Kevin Durant` == 4 & `LeBron James` == 5 ~
+                               "1: LeBron, 2: Durant",
+                             TRUE ~
+                               "1: Durant, 2: Griffin")) %>%
+  select(group.1)
+
+autoplot(mvp$pca[[1]],
+         loadings = TRUE,
+         loadings.label = TRUE,
+         label = TRUE, shape = FALSE,
+         data = groups.14.1, colour = "group.1") +
+  scale_color_manual(name = "", values = c("blue", "orange", "black")) +
+  theme_bw()
+
+```
+
+Most voters have Kevin Durant first and LeBron James second. The five voters that have LeBron first also have Durant second and are plotted in the top right along the LeBron James loading. Chris Sheridan, the only voter to have leave LeBron outside his top two, is plotted farther left than any other observation. Sheridan is an outlier using PCA, something that looking at the raw score differentials alone does not tell us. Under that metric, Sheridan ranks 42 out of 125 for largest score differential.
+
+What separates the two groups of voters that have LeBron first on their ballots? Looking at how they ranked Blake Griffin and Joakim Noah—the third and fourth place finishers, respectively—on their ballots provides the answer.
+
+```{r, fig.width = 9}
+
+groups.14.2 <- mvp$votes[[1]] %>%
+  mutate(group.2 = ifelse(`Blake Griffin` > 0 & `Joakim Noah` > 0,
+                          "both Griffin & Noah",
+                          ifelse(`Blake Griffin` > 0 | `Joakim Noah` > 0,
+                                 "one of Griffin/Noah", "neither"))) %>%
+  select(contains("group"))
+
+autoplot(mvp$pca[[1]],
+         loadings = TRUE,
+         loadings.label = TRUE,
+         label = TRUE, shape = FALSE,
+         data = groups.14.2, colour = "group.2") +
+  scale_color_manual(name = "", values = c("black", "green", "purple")) +
+  theme_bw()
+
+```
+
+Observations are grouped by whether they included both Griffin and Noah (black), just one of Griffin and Noah (purple), or left both off (green). Most of the voters that included both are plotted higher with the Griffin/Noah loadings. Al McCoy and Cedric Maxwell are separated from the other three LeBron voters because they did not include both Griffin and Noah on their ballots. Maxwell included only Noah and McCoy voted for neither. Both voters also scored the highest using the point differentials seen above.
+
+The other voter with that had a high score (tied with Maxwell) is Ron Tillery, plotted at the bottom of the biplot. Tillery is an outlier because he placed LeBron first, left off both Griffin and Noah, and was the only media member to mention Mike Conley.
+
+
+## 2017/18
+
+We will look at one more year of MVP voting, choosing 2017/18 because the results for the other years are less interesting.
+
+```{r}
+
+mvp$results[[5]]
+
+```
+
+James Harden won his first MVP award this season, garnering 86 of the 101 first place votes. Like 2013/14, LeBron James stole a few first place votes but finished solidly in second place. Anthony Davis received a majority of the third place votes while the bottom half of the ballot did not show as much consensus.
+
+```{r}
+
+autoplot(mvp$pca[[5]],
+         loadings = TRUE,
+         loadings.label = TRUE,
+         label = TRUE, shape = FALSE) +
+  theme_bw()
+
+```
+
+In the PCA plot, the Harden and LeBron loadings have opposite directions because of how they split the first and second place votes (similar to Kevin Durant and LeBron in 2013/14). While only three media members voted for Stephen Curry, none of those that did also voted for Warrior teammate Durant (similar to Blake Griffin/Chris Paul in 2013/14).
+
+To see how PCA is grouping voters, we color the observations by how they used their first and second place votes.
+
+```{r, fig.width = 9}
+
+groups.18 <- mvp$votes[[5]] %>%
+  mutate(group.1 = case_when(`James Harden` == 5 & `LeBron James` == 4 ~
+                               "1: Harden, 2: LeBron",
+                             `James Harden` == 5 & `Anthony Davis` == 4 ~
+                               "1: Harden, 2: Davis",
+                             `LeBron James` == 5 & `James Harden` == 4 ~
+                               "1: LeBron, 2: Harden",
+                             TRUE ~
+                               "1: LeBron, 2: Davis")) %>%
+  select(group.1)
+
+autoplot(mvp$pca[[5]],
+         loadings = TRUE,
+         loadings.label = TRUE,
+         label = TRUE, shape = FALSE,
+         data = groups.18, colour = "group.1") +
+  scale_color_manual(name = "", values = c("green3", "black", "blue", "orange")) +
+  theme_bw()
+
+```
+
+The media members are plotted along the first principal component by how they voted first and second.
+The largest group of voters have Harden first and LeBron second and have values close to zero, along the center of the graph. Voters with LeBron first and Harden second have positive values, and those with Harden first and Davis second have negative values.
+
+Joe Cowley and Gary Washburn stand out as obvious outliers.
+
+```{r}
+
+mvp$data[[5]] %>%
+  filter(Voter == "Joe Cowley")
+
+```
+
+The main reason Cowley is outlier is because of his vote for Jimmy Butler. Not only was he the only voter to give Butler a mention, he gave put the Timberwolf third on his ballot.
+
+```{r}
+
+mvp$data[[5]] %>%
+  filter(Voter == "Gary Washburn")
+
+```
+
+Washburn was one of two voters to give Victor Oladipo a vote and one of six voters to leave Anthony Davis off his ballot. This is in addition to picking LeBron over Harden at first.
+
+```{r}
+
+mvp$data[[5]] %>%
+  filter(Voter == "Bill Simmons")
+
+mvp$data[[5]] %>%
+  filter(Voter == "Diego Martinez Cabrera")
+
+```
+
+Bill Simmons and Diego Martinez Cabrera also stand out, but not to the extent of Cowley and Washburn. Simmons separated himself from the rest of the media because he was the other voter to give Oladipo a mention. The reason for Cabrera is less apparent, but is because of his combination of player placements.
+
+Compare the plot to the results given by point differentials.
+
+```{r}
+
+mvp$raw.diff[[5]]
+
+```
+
+Both Cowley and Washburn finish high, but Simmons and Cabrera do not. The point differential metric rates the NBA Fan Component (fan vote) as the ballot that differs the most compared to average, but it is not noticeable as an outlier using the PCA plot.
+
+Similar analysis can be repeated for the other seasons.

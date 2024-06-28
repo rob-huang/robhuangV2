@@ -1,0 +1,47 @@
+baseurl: "https://robhuang.netlify.com/"
+languageCode: "en-us"
+title: "Robert Huang"
+theme: "hugo-xmin"
+googleAnalytics: "G-DQ4793W4Q0"
+disqusShortname: ""
+ignoreFiles: ["\\.Rmd$", "\\.Rmarkdown$", "_cache$"]
+footnotereturnlinkcontents: "↩"
+
+permalinks:
+  note: "/note/:year/:month/:day/:slug/"
+  post: "/post/:year/:month/:day/:slug/"
+
+menu:
+  main:
+    - name: Home
+      url: ""
+      weight: 1
+    - name: About
+      url: "about/"
+      weight: 2
+    - name: Posts
+      url: "post/"
+      weight: 3
+
+params:
+  description: "A website built through Hugo and blogdown."
+  footer: "[XMin](https://github.com/yihui/hugo-xmin/) theme for [Hugo](https://gohugo.io/)."
+
+markup:
+  highlight:
+    codeFences: false
+  goldmark:
+    renderer:
+      unsafe: true
+    extensions:
+      passthrough:
+        enable: true
+        delimiters:
+          block:
+          - - \[
+            - \]
+          - - $$
+            - $$
+          inline:
+          - - \(
+            - \)

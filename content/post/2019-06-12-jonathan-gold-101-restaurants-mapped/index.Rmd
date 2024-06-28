@@ -1,0 +1,467 @@
+---
+title: Jonathan Gold 101 Restaurants - Mapped
+author: Robert Huang
+date: '2019-06-12'
+slug: jonathan-gold-101-restaurants-mapped
+categories: []
+tags:
+  - food
+  - los angeles
+---
+
+```{r setup, include = FALSE}
+
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      message = FALSE,
+                      fig.align = "center")
+
+library(tidyverse)
+library(ggmap)
+library(sf)
+library(kableExtra)
+library(DT)
+
+
+# database of restaurants
+rest <- read.csv("data//jonathan gold mapped//all.rest.csv",
+                 stringsAsFactors = FALSE, na = "")
+
+# every restaurant listed once
+rest.all <- rest %>%
+  select(rest, address, lat, lon, close, neigh, region) %>%
+  distinct()
+
+```
+
+### Background
+
+The late Jonathan Gold, former Pulitzer Prize winning food critic for the *Los Angeles Times* and before that, *LA Weekly*, released an annual list of the city's best restaurants between 2005 and 2017. These restaurants spanned Los Angeles and Orange County and included all types of cuisines and price points. Despite the yearly lists being the work of a single critic, they provided a sense of the pulse of the Los Angeles dining scene for each of those years. This is true because of the breadth of restaurants Gold included, as Michelin-type kitchens with $150 tasting menus were as likely to be mentioned as regional Chinese mom-and-pops in suburban strip malls. These restaurants can be mapped to locate the neighboods with the highest density of good restaurants while also spotlighting the city's foodie deserts.
+
+From 2005 to 2011, these articles were released as unranked lists in *LA Weekly* under the title "Jonathan Gold's 99 Essential Restaurants" (although some years included more than the nominal 99). From 2013 to 2017, they became ranked lists in the *Los Angeles Times* as "Jonathan Gold's 101 Best Restaurants." Twelve years worth of articles were scraped, leading to a total of `r length(unique(rest.all$rest))` different restaurants receiving mentions. If restaurants with multiple addresses, whether because they relocated or had more than one location, are all counted separately, this total grows to `r nrow(rest.all)`. Of these `r nrow(rest.all)`, `r sum(!rest.all$close)` are still open as of April 9, 2019.
+
+
+### Mapping the County
+
+We start by plotting every restaurant that has been mentioned by Gold using a map from Google Maps. Note that some businesses have the same addresses either because they are located in the same plaza or took over the building of a previously closed restaurant. Food trucks without fixed locations not plotted:
+
+```{r}
+
+# google map centered on central LA
+load(file = "data//jonathan gold mapped//la_roadmap.RData")
+
+la.gmap <- ggmap(la.roadmap) +
+  theme(axis.title = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text = element_blank())
+
+la.gmap +
+  geom_point(data = rest.all,
+             aes(x = lon, y = lat, fill = close),
+             shape = 21, alpha = 0.5) +
+  scale_fill_manual(values = c("blue", "red"),
+                    name = "Status", labels = c("Open", "Closed"))
+
+```
+
+Most of Gold's restaurants are located near the center of the map, corresponding to Central and West Los Angeles. Other cities in the county outside of Los Angeles are also represented, with the San Fernando Valley, western San Gabriel Valley, Glendale, and Pasadena also getting their restaurants highlighted. Cities in the South Bay and Orange County only have a few scattered entries on the annual lists, although this could be less an indication of the quality of food in those areas and more a reflection of Gold's focus on Los Angeles proper, especially in regards to Orange County.
+
+```{r, results = "hide"}
+
+# regions
+la.neigh <- read.csv("data//jonathan gold mapped//la neighborhoods.csv",
+                     stringsAsFactors = FALSE)
+
+
+### neighborhood shapes
+la.neigh.shp <- st_read("data//jonathan gold mapped//la_county.shp//la_county.shp")
+
+# fix entry with special character
+la.neigh.shp$Name <- as.character(la.neigh.shp$Name)
+la.neigh.shp[115, ]$Name <- "La Cañada Flintridge"
+
+# add regions to shapes
+la.neigh.shp <- la.neigh.shp %>%
+  left_join(la.neigh, by = "Name")
+
+
+### neighborhood centers
+la.neigh.shp <- la.neigh.shp %>%
+  mutate(
+    lon = map_dbl(geometry, ~st_centroid(.x)[[1]]),
+    lat = map_dbl(geometry, ~st_centroid(.x)[[2]])
+  ) 
+
+
+### separate long names
+la.neigh.shp <- la.neigh.shp %>%
+  mutate(Name2 = ifelse(nchar(Name) > 10, 
+                        gsub(" ", "\n", Name),
+                        Name))
+
+
+### subset of neighborhoods to label for zoom
+neigh.sub2 <- c("Baldwin Hills/Crenshaw",
+                "Bel-Air",
+                "Beverly Crest",
+                "Beverly Hills",
+                "Boyle Heights",
+                "Brentwood",
+                "Cheviot Hills",
+                "Chinatown",
+                "Culver City",
+                "Cypress Park",
+                "Downtown",
+                "Eagle Rock",
+                "Encino",
+                "Fairfax",
+                "Florence",
+                "Glassell Park",
+                "Griffith Park",
+                "Historic South-Central",
+                "Hollywood",
+                "Hollywood Hills",
+                "Hyde Park",
+                "Jefferson Park",
+                "Koreatown",
+                "Los Feliz",
+                "Mar Vista",
+                "Mid-City",
+                "Mid-Wilshire",
+                "Palms",
+                "Pico-Union",
+                "Playa Vista",
+                "Santa Monica",
+                "Sawtelle",
+                "Sherman Oaks",
+                "Silver Lake",
+                "Studio City",
+                "Venice",
+                "Vermont Square",
+                "Vernon",
+                "West Hollywood",
+                "Westwood")
+
+```
+
+```{r}
+
+### count regions
+rest.all <- rest.all %>%
+  mutate(region = factor(region, levels = sort(unique(la.neigh$Region))),
+         neigh = factor(neigh, levels = sort(unique(la.neigh$Name))))
+  
+region.count <- rest.all %>%
+  group_by(region, .drop = FALSE) %>%
+  summarise(Open = sum(!close),
+            Closed = sum(close),
+            Total = n()) %>%
+  rename(Region = region) %>%
+  filter(!is.na(Region)) %>%
+  arrange(desc(Total)) %>%
+  mutate(`% Still Open` = Open / Total)
+
+datatable(region.count, class = "cell-border nowrap",
+          rownames = FALSE,
+          options = list(dom = "tp")) %>%
+  formatPercentage(columns = "% Still Open", digits = 0)
+
+```
+
+The *Los Angeles Times*' [Mapping L.A.](http://maps.latimes.com/neighborhoods/) project breaks Los Angeles County up into 16 regions, which are in turn further broken down into 272 neighborhoods, providing maps and demographic information for each. The above table summarizes the region counts for all 12 years of data. Central L.A. is the clear leader, containing about half of all of Jonathan Gold's favorite restaurants. The five regions with no restaurants on the list, while technically parts of Los Angeles County, are on the outskirts of the county and contain independent cities generally not considered as part of Los Angeles when dealing the city. Of regions that actually contain neighborhoods in the city of Los Angeles, the Harbor (which also contains Long Beach) is the most bereft of acclaimed food spots. The Harbor region encompasses only one Gold pick, Harbor Gateway's Sanuki no Sato, which appeared on the list in 2008 and 2009. Orange County, not listed in the table, has a total of `r rest.all %>% filter(is.na(region), !is.na(address)) %>% nrow()` restaurants, `r rest.all %>% filter(is.na(region), !is.na(address), !close) %>% nrow()` of which are still open.
+
+
+### Mapping the City
+
+Zooming in on Central Los Angeles and the Westside gives a clearer look at the more food dense regions:
+
+```{r, results = "hide"}
+
+### zoom on central LA
+# plot restaurants open/closed
+la.neigh.bound <- c(-118.5, -118.2, 33.98, 34.15)
+
+la.neigh.shp %>%
+  st_zm() %>% 
+  ggplot() +
+  geom_sf(size = 0.25, color = "gray") +
+  geom_text(data = la.neigh.shp %>%
+              filter(Name %in% neigh.sub2),
+            aes(label = Name2, x = lon, y = lat),
+            size = 3, fontface = "italic", lineheight = 0.9) +
+  geom_point(data = rest.all,
+             aes(x = lon, y = lat, fill = close),
+             shape = 21, alpha = 0.5) +
+  scale_fill_manual(values = c("blue", "red"),
+                    name = "Status", labels = c("Open", "Closed"), guide = FALSE) +
+  coord_sf(xlim = c(la.neigh.bound[1], la.neigh.bound[2]),
+           ylim = c(la.neigh.bound[3], la.neigh.bound[4]),
+           datum = NA) +
+  theme_nothing()
+
+```
+
+The above map was created using the *Los Angeles Times*' [Mapping L.A.](http://maps.latimes.com/neighborhoods/) definitions of neighborhood boundaries. Unsurprisingly, neighborhoods that have been written up about for their strong food scenes (Downtown, Koreatown, Beverly Grove/Fairax, and others) stand out as hot spots. Many neighborhoods without any restaurants lean residential or industrial.
+
+```{r}
+
+# count neighborhoods
+neigh.count <- rest.all %>%
+  filter(!is.na(neigh)) %>%
+  group_by(neigh,) %>%
+  summarise(Open = sum(!close),
+            Closed = sum(close),
+            Total = n()) %>%
+  ungroup() %>%
+  left_join(la.neigh, by = c("neigh" = "Name")) %>%
+  arrange(desc(Total)) %>%
+  rename(Neighborhood = neigh) %>%
+  select(Neighborhood, Region, everything()) %>%
+  mutate(`% Still Open` = Open / Total)
+
+datatable(neigh.count, class = "cell-border nowrap",
+          rownames = FALSE,
+          options = list(dom = "tp")) %>%
+  formatPercentage(columns = "% Still Open", digits = 0)
+
+```
+
+Similarly as for regions previously, restaurants are counted at the neighborhood level. Downtown has had nearly twice as many restaurants grace Gold's lists as the second place neighborhood, Beverly Grove—also in Central L.A. With 11 restaurants (nearly all of which are Chinese/Vietnamese), the city of San Gabriel is the highest placing area outside of Central L.A. or the Westside to show up in the top 10.
+
+
+### Density
+
+The points on the two maps above can be used to create density estimates, giving simple summaries of the locations of Jonathan Gold's best of Los Angeles. Unlike the previous plots, the following filter points to only businesses that are still open:
+
+```{r}
+
+### density - still open
+la.gmap +
+  stat_density2d(data = rest.all %>%
+                   filter(!close), 
+                 aes(x = lon, y = lat, fill = ..level..),
+                 bins = 30, alpha = 0.1, geom = "polygon") +
+  geom_point(data = rest.all %>%
+               filter(!close),
+             aes(x = lon, y = lat, label = rest),
+             size = 0.5) +
+  scale_fill_viridis_c(guide = FALSE, option = "plasma")
+
+### zoom on central LA - ignore points outside of map
+# density - still open
+la.neigh.shp %>%
+  st_zm() %>% 
+  ggplot() +
+  geom_sf(size = 0.25, color = "gray") +
+  geom_text(data = la.neigh.shp %>%
+              filter(Name %in% neigh.sub2),
+            aes(label = Name2, x = lon, y = lat),
+            size = 3, fontface = "italic", lineheight = 0.9) +
+  stat_density2d(data = rest.all %>%
+                   filter(!close), 
+                 aes(x = lon, y = lat, fill = ..level..),
+                 bins = 30, alpha = 0.05, geom = "polygon") +
+  geom_point(data = rest.all %>%
+               filter(!close),
+             aes(x = lon, y = lat),
+             size = 0.5) +
+  coord_sf(xlim = c(la.neigh.bound[1], la.neigh.bound[2]),
+           ylim = c(la.neigh.bound[3], la.neigh.bound[4]),
+           datum = NA) +
+  scale_fill_viridis_c(guide = FALSE, option = "plasma") +
+  theme_nothing()
+
+```
+
+Even with the results filtered to only restaurants still open, the plots confirm the results seen in the earlier maps. Central Los Angeles has the highest density of Jonathan Gold's best restaurants in all of Los Angeles County, with two  noticeable groups of points in orange. Zooming in on Central Los Angeles for a more detailed view of the more brightly colored blots, notice the concentration of points in the areas of West Hollywood/Fairfax/Beverly Grove and Downtown.
+
+### Lists by Year
+
+Plotting the densities for all 12 years of lists separately gives a sense of the changing food scene in Los Angeles. Again, there are two plots, with the first showing all restaurants that made the yearly list and the second focusing in on Central Los Angeles:
+
+```{r}
+### facet
+la.gmap +
+  stat_density2d(data = rest, 
+                 aes(x = lon, y = lat, fill = stat(nlevel)),
+                 alpha = 0.3, bins = 15, geom = "polygon") +
+  facet_wrap(~ year) +
+  scale_fill_viridis_c(guide = FALSE, option = "plasma") +
+  theme(axis.title = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        strip.background = element_rect(color = "black", size = 0.75))
+
+
+### zoom on central LA - facet on year
+la.neigh.shp %>%
+  st_zm() %>% 
+  ggplot() +
+  geom_sf(size = 0.25, color = "gray") +
+  stat_density2d(data = rest,
+                 aes(x = lon, y = lat, fill = stat(nlevel)),
+                 bins = 15, alpha = 0.15, geom = "polygon") +
+  facet_wrap(~ year) +
+  coord_sf(xlim = c(la.neigh.bound[1], la.neigh.bound[2]),
+           ylim = c(la.neigh.bound[3], la.neigh.bound[4]),
+           datum = NA) +
+  scale_fill_viridis_c(guide = FALSE, option = "plasma") +
+  theme(axis.title = element_blank(),
+        panel.background = element_rect(fill = NA),
+        strip.background = element_rect(color = "black", size = 0.75))
+
+```
+
+Looking at the first map of all of Los Angeles and Orange County, little has changed. Most of Gold's picks still focus on the middle of the map, bounded east to west by Santa Monica and Downtown, respectively. The second plot, which zooms in on the densest parts of the map, suggests that there has been a slight westward shift in the locations of the acclaimed restaurants. This is most apparent comparing 2005 to 2017. While Beverly Grove/Fairfax has been the single densest region in almost every year, starting 2009, more and more restaurants from Downtown were included on the lists. By 2016, both Beverly Grove/Fairfax and Downtown were equally flowing with quality restaurants.
+
+
+### Other Observations
+
+```{r}
+
+### restaurants appearing on every list
+every.year <- rest %>%
+  select(year, rest) %>%
+  distinct() %>%
+  count(rest) %>%
+  filter(n == 12)
+
+```
+
+<div class = "row">
+<div class = "col-md-9">
+```{r}
+
+### plot all time restaurants
+la.neigh.shp %>%
+  st_zm() %>% 
+  ggplot() +
+  geom_sf(size = 0.25, color = "gray") +
+  geom_text(data = la.neigh.shp %>%
+              filter(Name %in% neigh.sub2),
+            aes(label = Name2, x = lon, y = lat),
+            size = 3, fontface = "italic", lineheight = 0.9) +
+  geom_label(data = rest.all %>%
+               filter(rest %in% every.year$rest,
+                      !close) %>%
+               mutate(row = row_number()),
+             aes(x = lon, y = lat, label = row),
+             size = 3, fill = "green3") +
+  coord_sf(xlim = c(la.neigh.bound[1], la.neigh.bound[2]),
+           ylim = c(la.neigh.bound[3], la.neigh.bound[4]),
+           datum = NA) +
+  theme_nothing()
+
+```
+</div>
+<div class = "col-md-3">
+```{r}
+
+### table of all time restaurants
+kable(every.year %>%
+        select(rest) %>%
+        mutate(Label = row_number()) %>%
+        select(Label, rest) %>%
+        rename("All-Timers" = rest)) %>%
+  kable_styling(bootstrap_options = c("bordered"),
+                full_width = FALSE)
+
+```
+</div>
+</div>
+
+* A total of `r nrow(every.year)` restaurants made it on all 12 years of Jonathan Gold's annual lists, as seen in the above map and table. This group of restaurants provides a great representation of the food that Los Angeles has to offer. Providence and Spago are fine dining restaurants where patrons will need to break the bank at. Langer's is an old school deli that has been open for over 70 years. The very casual Sapp Coffee Shop offers some of the city's best Thai at less than $10 a dish. Ethiopian is represented by Meals by Genet, Armenian/Lebanese by Marouch, and Mexican by Chichen Itza.
+
+```{r}
+
+### restaurants appearing exactly once
+one.year <- rest %>%
+  select(year, rest) %>%
+  distinct() %>%
+  count(rest) %>%
+  filter(n == 1)
+
+```
+
+* On the other hand, there were `r nrow(one.year)` restaurants that were mentioned on one year's list. There could be reasons not related to quality for businesses falling off the best-of list. Restaurants may have closed before having the chance to make it on next year's list. Given Gold's passing,tThe new entries from the 2017 article will never get another chance of appearing on another annual.  
+
+```{r}
+
+### addresses that have housed multiple businesses
+address.mult <- rest.all %>%
+  distinct(rest, address) %>%
+  group_by(address) %>%
+  filter(n() > 1) %>%
+  ungroup() %>%
+  arrange(address) %>%
+  left_join(rest.all %>%
+              distinct(rest, address, close),
+            by = c("rest", "address")) %>%
+  filter(!is.na(address))
+
+most.turnover <- address.mult %>%
+  group_by(address) %>%
+  mutate(n = n()) %>%
+  ungroup() %>%
+  filter(n >= 3)
+
+# rest %>%
+#   filter(address %in% "8009 Beverly Blvd, Los Angeles")
+
+```
+
+* The building at 8009 Beverly Blvd in Los Angeles appears cursed, experiencing more turnover than any other address mapped in this piece. Mimosa originally occupied the space and made the *LA Weekly* Essentials list from 2005 to 2007. It closed and made way for Bistro LQ, which made the list in both 2009 and 2010. Bistro LQ eventually closed and became Cooks County, which made the *Los Angeles Times* lists in 2013 and 2014. Cooks County ended up morphing into Market Provisions in 2015. Three quality restaurants all utilizing the same space, all closed. Market Provisions is still open as of 2019, but never gained a place in any of Jonathan Gold's mentions.
+
+```{r}
+
+### restaurants at edges
+rest.ext <- rest.all %>%
+  filter(!is.na(lat) & (lat %in% range(lat, na.rm = TRUE) |
+                          lon %in% range(lon, na.rm = TRUE)))
+
+```
+
+* The Chatsworth branch of Woodlands Indian Cuisine is both the northernmost and westernmost restaurant to have made the list. Costa Mesa's Marché Moderne, now relocated to Newport Beach, is the southernmost of the group of `r nrow(rest.all)` restaurants. The new address is actually farther south, but the move happened after the last edition of the article published. Playground, in Santa Ana, is the easternmost pick.
+
+```{r}
+
+### for every restaurant, the closest restaurant by distance
+# consider only restaurants still open
+rest.dist <- rest.all[!rest.all$close, c("lon", "lat")] %>% 
+  geosphere::distm(rest.all[!rest.all$close, c("lon", "lat")]) %>%
+  as.matrix()
+
+diag(rest.dist) <- NA
+rest.dist <- as.data.frame(rest.dist)
+
+colnames(rest.dist) <- paste(rest.all$rest[!rest.all$close],
+                             rest.all$address[!rest.all$close], sep = " - ")
+rest.dist$rest <- paste(rest.all$rest[!rest.all$close],
+                        rest.all$address[!rest.all$close], sep = " - ")
+
+rest.dist <- rest.dist %>%
+  gather(key = "dist.to", value = "dist", -rest) %>%
+  filter(!is.na(dist)) %>%
+  mutate(miles = dist * 0.00062137)
+
+most.iso <- rest.dist %>%
+  group_by(rest) %>%
+  filter(dist == min(dist)) %>%
+  ungroup() %>%
+  arrange(desc(dist))
+
+most.iso. <- most.iso %>%
+  select(-dist) %>%
+  rename(Restaurant = rest,
+         "Closest Restaurant" = dist.to,
+         Miles = miles) %>%
+  filter(row_number() <= 10)
+
+kable(most.iso., digits = 1) %>%
+  kable_styling(bootstrap_options = c("bordered"),
+                full_width = FALSE)
+
+```
+
+* Considering only businesses that are still open as of April 2019, the West Covina location of Krua Thai is the most isolated Gold favorite, with the next closest restaurant on the list—JTYH in Rosemead—about 7.5 miles away (note: This is the shortest distance between the two points, not the driving/walking distance).
+

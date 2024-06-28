@@ -1,0 +1,280 @@
+---
+title: Formula One Grand Prix Start Times
+author: Robert Huang
+date: '2022-05-13'
+slug: formula-one-grand-prix-start-times
+categories: []
+tags:
+  - f1
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+library(tidyverse)
+library(lubridate)
+library(kableExtra)
+library(ggridges)
+
+```
+
+```{r}
+
+### data
+tzs <- read.csv("data//f1 start times//tz.csv", na = "")
+race.add <- read.csv("data//f1 start times//race.add.csv", na = "") %>% 
+  mutate(date = ymd(date),
+         dt = ymd_hms(dt, tz = "UTC"))
+
+
+### labels for timezones
+tzs <- tzs %>% 
+  mutate(lab = gsub("_", " ", map_chr(strsplit(tz, "/"), 2)),
+         lab = paste0(lab, " ", ifelse(dst == "y", "(dst) ", ""), utc))
+
+
+### all races with timezones
+data.cx <- crossing(tzs %>% 
+                      select(tz),
+                    race.add %>% 
+                      filter(year >= 2005) %>% 
+                      select(raceId, year))
+
+data.cx <- data.cx %>% 
+  left_join(race.add %>% 
+              select(raceId, dt),
+            by = "raceId")
+
+data.cx <- data.cx %>%
+  mutate(tz.loc = map2(tz, dt, ~with_tz(.y, tzone = .x)),
+         hr = map_int(tz.loc, hour))
+
+
+### time group table
+time.gp <- data.frame(hr = 0:23,
+                      hr_gp = c(rep("sleep", 8),
+                                rep("early", 2),
+                                rep("prime", 12),
+                                rep("late", 2))) %>% 
+  mutate(hr_gp = factor(hr_gp, c("early", "prime", "late", "sleep")))
+
+
+### group start times
+data.cx.gp <- data.cx %>% 
+  left_join(time.gp,
+            by = "hr") %>% 
+  count(tz, year, hr_gp) %>% 
+  complete(tz = tzs$tz,
+           year = 2005:2023,
+           hr_gp = unique(time.gp$hr_gp),
+           fill = list(n = 0)) %>% 
+  group_by(tz, year) %>% 
+  mutate(pct = n / sum(n)) %>% 
+  ungroup() %>% 
+  left_join(tzs %>% 
+              select(tz, lab, utc, dst),
+            by = "tz") %>% 
+  mutate(utc.num = as.numeric(map_chr(strsplit(utc, ":"), 1)),
+         tz = factor(tz, levels = tzs$tz))
+
+
+### number of races by year and continent
+race.cont <- race.add %>% 
+  count(year, continent) %>% 
+  complete(year = 1950:2023,
+           continent = c("Africa",
+                         "Americas",
+                         "Asia",
+                         "Europe",
+                         "Oceania"),
+           fill = list(n = 0)) %>% 
+  group_by(year) %>% 
+  mutate(pct = n / sum(n)) %>% 
+  ungroup()
+
+```
+
+Formula One is an international racing series with Grand Prix held across the globe. The race calendar has expanded and moved around throughout the years, with a previously European-heavy lineup now being supplemented with more Middle Eastern/Asian and American events. Races generally start off in the afternoon, but there are locations that now feature night races. How many races fans get to easily experience live depends on where they live. We look at cities in different time zones throughout the world to find out how many races can be enjoyed during reasonable hours without the need of having to be up at odd hours of the day and night. Which fan bases have a schedule catered for them? Has this changed during the last few years as event locations and start times have been revised?
+
+The [Ergast](http://ergast.com/mrd/) database provides start times for Grand Prix since 2005, which can be converted to corresponding local times for specific time zones. These local start times can then be grouped into intervals based on how desirable they are for viewing at home. Prime hours are the most preferable. Early and late hours are slightly outside regular television times but in which people are likely to be awake for. To be able to catch races that start during sleep hours, people are required to go out of their ways and readjust their sleep schedules. The following table defines the groupings we will use:
+
+```{r}
+
+time.gp %>% 
+  group_by(Category = hr_gp) %>% 
+  summarise(start = min(hr),
+            end = max(hr)) %>% 
+  mutate(`Start Time` = paste0(start, ":00"),
+         `End Time` = paste0(end, ":59")) %>% 
+  select(Category,
+         `Start Time`,
+         `End Time`) %>% 
+  kbl() %>%
+  kable_styling(full_width = FALSE)
+
+```
+
+How these groupings are constructed is obviously arbitrary and may not make sense for everyone. What works for early birds may not work for night owls. Nearly every race takes place on track on Sunday, but this could be late Saturday or early Monday depending on where viewers live—possibly a factor for those that have to get up for work on Monday. For simplicity, we ignore these differences and assume the same schedule for everyone.
+
+The following cities from various time zones provide a comprehensive overview of the world:
+
+```{r}
+
+tzs %>% 
+  select(Location = tz,
+         UTC = utc,
+         DST = dst) %>% 
+  kbl() %>%
+  kable_styling(full_width = FALSE)
+
+```
+
+Cities that share the same UTC offset may have different daylight savings time rules, even if they are part of the same country.
+
+We begin by looking at the percent of races since 2005 that have start times during prime hours, 10:00 to 21:59, for each of our locations. As a comparison, we also include the percent of races with start times during extended prime hours, which include prime hours together with early/late hours—8:00 to 23:59.
+
+```{r, fig.align = "center", fig.width = 10, fig.height = 7}
+
+# prime/extended for all tz over time - facet 
+data.cx.gp %>% 
+  filter(hr_gp %in% c("prime")) %>% 
+  bind_rows(data.cx.gp %>% 
+              filter(hr_gp %in% c("prime", "early", "late")) %>% 
+              group_by(tz, lab, year) %>% 
+              summarise(n = sum(n),
+                        pct = sum(pct)) %>% 
+              ungroup() %>% 
+              mutate(hr_gp = c("prime - ext"))
+  ) %>% 
+  mutate(pt_shape = ifelse(year == 2023, 4, 19),
+         lab = factor(lab, levels = tzs$lab)) %>% 
+  ggplot(aes(x = year, y = pct, group = hr_gp, col = hr_gp)) +
+  geom_line() +
+  geom_point(aes(shape = pt_shape)) +
+  scale_x_continuous(limits = c(2005, 2023),
+                     breaks = seq(2005, 2025, by = 5)) +
+  scale_y_continuous(limits = c(0, 1), labels = scales::percent_format(1)) +
+  scale_color_manual(name = "", labels = c("prime hours (10-21)", "extended hours (8-23)"),
+                       values = c("black", "red")) +
+  scale_shape_identity() +
+  facet_wrap(~ lab) +
+  labs(x = "", y = "% of races") +
+  theme_bw() +
+  theme(panel.grid.minor.x = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        legend.position = "bottom")
+
+```
+
+Note: The 2022 season will include 23 races, but one of the locations is still unconfirmed after the removal of the Russian Grand Prix in Sochi. Values for 2023—marked by "x" in the above plot—are based on a projected calendar of 24 Grand Prix. This includes all races on the current 2022 calendar, with the exception of the French Grand Prix, and the additions of Qatar, Las Vegas, and Shanghai. Start times for these events are based on the most recent iteration of that race. Exact dates are unknown but will matter because of daylight savings time. The actual 2023 calendar may also feature more than 24 Grand Prix.
+
+For nearly the last two decades, regions such as Europe and the Middle East have been able to watch nearly every F1 event live without having to readjust sleep schedules. Waking up two hours earlier or staying up two hours later helps in the cities where there is a large difference between the red and black lines—Mexico City, New York, Tokyo, and Melbourne—but matters little otherwise. Recent changes in the race schedule have benefited Sao Paolo and its neighbors, but has hurt Tokyo and others in its time zone. This is shown more clearly in the following plot of race starts during prime hours:
+
+```{r, fig.align = "center"}
+
+# group by utc
+# good: Brazil/Argentina (-3) to China/Indonesia/Philippines (+8)
+# bad:  Japan/Korea (+9) to New Zealand (+12 dst); Hawaii (-10) to New York (-5 dst)
+# gain: sao paolo (-3)
+# drop: tokyo (+9)
+data.cx.gp %>% 
+  mutate(utc.gp = ifelse(utc.num >= -3 &
+                           utc.num <= 8,
+                         "-3 to +8",
+                         "-10 to -5\n+9 to +12"),
+         pt_shape = ifelse(year == 2023, 4, 19)) %>% 
+  filter(hr_gp == "prime") %>% 
+  ggplot(aes(x = year, y = pct, group = tz, col = utc.gp)) +
+  geom_point(aes(shape = pt_shape)) +
+  geom_line() +
+  scale_shape_identity() +
+  scale_y_continuous(limits = c(0, 1), labels = scales::percent_format(1)) +
+  scale_color_viridis_d(name = "UTC",
+                       breaks = c("-3 to +8",
+                                  "-10 to -5\n+9 to +12"),
+                       labels = c("-3 to +8",
+                                  "-10 to -5\n+9 to +12")) +
+  labs(x = "", y = "% of race starts during prime hours") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+```
+
+There is an obvious delineation between the winners and losers of the current race schedule. Time zones from GMT -3 to +8 (Brazil/Argentina to China/Indonesia/Philippines) experience over half of F1 races during prime hours. The other half of the world (Japan/Korea to New York) are likely to be asleep for more than half of race starts. The two regions with reversing fortunes (Brazil/Argentina vs. Japan/Korea) gained/lost from many race starts being [moved later an hour](https://www.skysports.com/f1/news/12430/11232101/f1-in-2018-race-start-times-pushed-back-for-new-formula-1-season) in recent years. This is illustrated with the following plot of local race start times:
+
+```{r, fig.align = "center"}
+
+race.add %>% 
+  filter(year >= 2005,
+         year <= 2023) %>% 
+  ggplot(aes(x = loc.hrmin, y = factor(year))) +
+  ggridges::geom_density_ridges() +
+  scale_x_continuous(breaks = seq(12, 21, by = 2)) +
+  labs(x = "Start Time", y = "") +
+  theme_bw()
+
+```
+
+Notice the big shift in 2018 of race starts moving from 14:00 to 15:00. Also of note is that night races are atypical and only started in 2008 with Singapore. Saudi Arabia, Bahrain, and the upcoming Las Vegas are the only other night races.
+
+We also look at how the locations of races have changed since the very beginning of Formula One for some extra context on the previous results. The following plot shows percent of races on each continent since 1950. Keep in mind that the number of races per year has grown considerably. There were only 7 races in the Championship in 1950 but possibly 24 in 2023.
+
+```{r, fig.align = "center", fig.width = 10}
+
+### plot - race continent
+race.cont %>% 
+  mutate(x23 = ifelse(year == 2023, 4, 16)) %>% 
+  ggplot(aes(x = year, y = pct, group = continent, col = continent)) +
+  geom_line() +
+  geom_point(aes(shape = x23)) +
+  labs(x = "", y = "% of races") +
+  scale_color_viridis_d(option = "plasma") +
+  scale_shape_identity() +
+  scale_y_continuous(labels = scales::percent_format(1),
+                     limits = c(0, 1)) +
+  theme_bw()
+
+```
+
+The biggest trend is the move away from Europe and toward Asia. The jump for Europe during 2020 is because of COVID, with double races in Austria, the United Kingdom, and Bahrain on the calendar. That number is creeping back down again as races return to the rest of the world. The decrease in European races since the start of Formula One is not captured in the start time results because that data only goes back to 2005. Adding events in the Middle East has had little effect on the European viewing experience because the time difference between the two regions is small.
+
+```{r, fig.align = "center", fig.width = 10}
+
+# compare 2005/2022/2023 - time groupings - bars with text
+data.cx.gp %>% 
+  mutate(lab = factor(lab, levels = tzs$lab),
+         lab2 = factor(ifelse(hr_gp == "early", as.character(lab), NA), levels = tzs$lab)) %>% 
+  group_by(tz, year) %>% 
+  mutate(n.tot = sum(n)) %>% 
+  ungroup() %>% 
+  filter(year %in% c(2005, 2022, 2023)) %>% 
+  mutate(year = ifelse(year == 2023, "2023 projected", year)) %>% 
+  ggplot(aes(y = lab, x = n, fill = forcats::fct_rev(hr_gp))) +
+  geom_bar(stat = "identity", width = 1, col = "black", size = 0.1) +
+  geom_text(aes(label = lab2, x = n.tot / 3 * 1.75),
+            size = 3,
+            hjust = 1) +
+  facet_wrap(~ year,
+             scales = "free_x") +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_discrete(expand = c(0, 0)) +
+  scale_fill_manual(name = "",
+                    values = c("lemonchiffon", "lightgreen", "lightsalmon", "white"),
+                    breaks = c("early", "prime", "late", "sleep"),
+                    labels = c("early (8-9)",
+                               "prime (10-21)",
+                               "late (22-23)",
+                               "sleep (0-7)")) +
+  labs(x = "# of races", y = "") +
+  theme_bw() +
+  theme(panel.grid = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.spacing = unit(0, "lines"),
+        axis.text.y = element_blank(),
+        strip.text = element_text(size = 10))
+
+```
+
+Finally, we look in more detail at three seasons in the data—comparing 2005, 2022, and a projected 2023. The above plot breaks down the number of early, prime, late, and sleep hour races for each city. Europe, represented by London and Paris, had an enviable viewing experience in 2005 and still benefits today, unsurprising given the number of events held in Europe and the Middle East. Australia, and now Japan/South Korea, have to stay up late. As pointed out earlier, this may be difficult because many local Sunday afternoon races equate to late Sunday/early Monday times in East Asia/Oceania. Most of the United States has to wake up early on Sundays—many of the sleep hour races for the West Coast are at 6:00. The biggest F1 fans should move to Istanbul or Athens, where they should have little trouble staying awake for every race start in 2022 and 2023.
+
+Any of this can easily change, especially as Formula One continues to try to [grow the American audience](https://www.forbes.com/sites/maurybrown/2022/04/01/espn-poised-to-have-the-highest-us-formula-1-viewership-ever/). Moving more races to the Americas or pushing back the start times of the events in Europe will make it much more convenient for countries west of the Atlantic to watch without a negative effect on Europe, but East Asia and Oceania will take a hit. There is no way of building a lineup that will work for the entire world, and that is probably not the goal for the owners of Formula One. If there are changes to the schedule, it will be whatever makes the most sense financially.

@@ -1,0 +1,528 @@
+---
+title: The Gender Age Gap in Hollywood Romances
+author: Robert Huang
+date: '2019-12-24'
+slug: the-gender-age-gap-in-hollywood-romances
+categories: []
+tags:
+  - film
+---
+
+```{r setup, include = FALSE}
+
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, fig.align = "center")
+
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(scales)
+library(english)
+
+```
+
+```{r}
+
+### film
+data.shape <- read.csv("data//film age gap//data.shape.csv",
+                       stringsAsFactors = FALSE, na = "")
+
+data2 <- read.csv("data//film age gap//data2.csv",
+                  stringsAsFactors = FALSE, na = "")
+
+
+### census
+census <- read.csv("data/film age gap//rolf.ferrie.gap.csv",
+                   stringsAsFactors = FALSE, na = "")
+
+```
+
+Humphrey Bogart and Audrey Hepburn in *Sabrina* (1954),  Cary Grant and Grace Kelly in *To Catch a Thief* (1955), and more recently, Daniel Day Lewis and Vicky Krieps in *Phantom Thread* (2017). What is immediately noticeable when watching those films (at least for this viewer) is the huge age difference between the male leads and their on-screen romantic partners. Humphrey Bogart is nearly 30 years older than Audrey Hepburn. Cary Grant and Daniel Day Lewis are each about 25 years older than Grace Kelly and Vicky Krieps, respectively. It is unlikely that audiences are fazed watching romances matching men with younger women because of the age gap in real life marriages, but the examples presented are out of the norm and feature immense chasms. A question we can look into further is whether the age differences that Hollywood romances present to us are more extreme than what we see in reality. Has this age gap changed throughout time, and does it mirror the differences in actual relationships?
+
+To answer those questions, we create a dataset of movies with the ages of the lead actors and actresses that are paired romantically. Using IMDb, American full-length features from 1930 to 2018 that list romance as one of its genres were sampled. Only the 25 most popular films from each year—the titles that received the most user votes for IMDb rating—were included. A lull in the Hollywood film industry from the 1960s to early 1980s led to fewer than 25 films fulfilling the above criteria in some years. This was especially apparent in 1975, with a low of eight qualifying titles. Despite this, our final dataset is made up of a robust `r comma(nrow(data.shape))` movies. The most popular films were used because we wanted to capture movies that were a part of mainstream culture and that a large number of people actually watched. This resulted in films that generally had wide theatrical releases across America, although there has been a shift toward streaming content in more recent years, with a number of Netflix releases in 2017 and 2018. One limitation of using the number of user votes as a measure of popularity is that this only applies to the films' statures today among IMDb users, not necessarily how they were considered at the time of their release.
+
+```{r, fig.height = 4, fig.width = 6}
+
+### number of films each year
+data.shape %>%
+  count(year) %>%
+  ggplot(aes(x = year, y = n)) +
+  geom_line() +
+  geom_point() +
+  scale_x_continuous(breaks = seq(1930, 2020, by = 10)) +
+  scale_y_continuous(limits = c(0, 26)) +
+  labs(title = "Number of films in sample by year", x = "Year", y = "# of Films") +
+  theme_bw()
+
+```
+
+For each film, we calculate the ages of the two actors involved in the main romance using the year of the film's release. The most difficult and time consuming stage of building the dataset was figuring out the romantic relationships. I have not seen all the movies included in the dataset, so this involved reading many plot summaries to deduce the two top billed actors that are paired. Something to keep in mind is that just because the film is categorized as a romance does not mean that the romance(s) featured in the film is a substantial part of the plot. Films that have romances but that are not tagged with the romance genre on IMDb are not included. An example is 1944's *Double Indemnity*, where the romantic relationship between Fred MacMurray and Barbara Stanwyck is a major part of the plot, but the film itself is not categorized as a romance.
+
+For a baseline to compare to, we need to know the age gap between real-life couples in relationships throughout the last 70 years. The paper ["The May-December relationship since 1850: Age homogamy in the U.S."](https://paa2008.princeton.edu/papers/80695) by Karen Rolf and Joseph P. Ferrie has summarized data on the age differences between husbands and wives using Census results since 1850. While the study is only limited to marriages, it should provide a good enough estimate for our analysis. The results from the paper are not surprising, with husbands on average being older than wives in every Census. This difference gets smaller with each Census, with a gap of 4.7 years in 1900 shrinking to a gap of only 2.3 years in 2000.
+
+```{r, fig.height = 4, fig.width = 6}
+
+### plot census
+census %>% 
+  filter(Census >= 1900) %>% 
+  ggplot(aes(x = Census, y = Gap)) +
+  geom_line() +
+  geom_point() +
+  scale_x_continuous(breaks = seq(1900, 2000, by = 20)) +
+  scale_y_continuous(limits = c(0, 5)) +
+  labs(x = "Census",
+       y = "Age Difference (Husband - Wife)",
+       title = "Age gap in marriages by Census",
+       caption = str_wrap('Adapted from "The May-December relationship since 1850: Age homogamy in the U.S." by Karen Rolf and Joseph P. Ferrie')) +
+  theme_bw()
+
+```
+
+```{r}
+
+### summary statistics
+ovr.sum <- data.shape %>%
+  select(actor.age, actress.age, diff) %>%
+  gather() %>% 
+  group_by(key) %>% 
+  summarise(
+    n = n(),
+    mean = mean(value),
+    median = median(value),
+    sd = sd(value),
+    min = min(value),
+    max = max(value),
+    se = sd / sqrt(n)
+  )
+
+```
+
+How does Hollywood compare to real life? We start with an overview of all films from 1930 to 2018. The mean age of the lead actors in our `r comma(nrow(data.shape))` film sample is `r round(ovr.sum$mean[ovr.sum$key == "actor.age"], 1)` with a standard deviation of `r round(ovr.sum$sd[ovr.sum$key == "actor.age"], 1)` years. For actresses, this is `r round(ovr.sum$mean[ovr.sum$key == "actress.age"], 1)` and `r round(ovr.sum$sd[ovr.sum$key == "actress.age"], 1)`, respectively. Male romantic leads are generally older than female leads, regardless of whether they are paired as couples, and also show more variation in age. The histograms of actor and actress ages also suggest that there is ageism in Hollywood, especially for female actors. There are fewer lead roles for actresses going into their 40s compared to the amount for male actors of the same age. Films starring actors in their 40s still make up a sizable portion of our dataset, with men not hitting their Hollywood shelf life until their 50s. Romantic roles for men range in age from the mid-20s to mid-40s while most roles for women are bunched up into the smaller range between the mid-20s and mid-30s.
+
+```{r, fig.height = 4, fig.width = 6}
+
+### plot all years - age and difference
+# histogram
+data.shape %>%
+  select(actor.age, actress.age, diff) %>%
+  rename(Actor = actor.age,
+         Actress = actress.age,
+         `Age Difference` = diff) %>% 
+  gather() %>% 
+  ggplot(aes(value)) +
+  geom_histogram(fill = "gray", color = "black", bins = 35) +
+  facet_grid(key ~ .) +
+  scale_x_continuous(breaks = seq(-60, 85, by = 10)) +
+  labs(x = "Years", y = "Count",
+       title = "Distribution of actor ages/age differences in romances") +
+  theme_bw() +
+  theme(panel.grid.minor = element_blank())
+
+```
+
+The mean age difference between male and female pairings in romances is `r round(ovr.sum$mean[ovr.sum$key == "diff"], 1)` years with a standard deviation of `r round(ovr.sum$sd[ovr.sum$key == "diff"], 1)`. The age differences range from `r round(ovr.sum$min[ovr.sum$key == "diff"], 1)` (actress is `r round(ovr.sum$min[ovr.sum$key == "diff"], 1) * -1` years older than the actor) to `r round(ovr.sum$max[ovr.sum$key == "diff"], 1)` (actor is `r round(ovr.sum$max[ovr.sum$key == "diff"], 1)` years older than the actress), with the largest proportion of movies featuring men paired with younger women. This result can be seen in both the histogram of age differences above and the following scatter plot.
+
+```{r, fig.height = 4, fig.width = 6}
+
+# scatter
+data.shape %>%
+  ggplot(aes(x = actor.age, y = actress.age)) +
+  geom_abline(slope = 1, intercept = 0) +
+  geom_jitter(alpha = 0.25) +
+  geom_smooth(method = "loess") +
+  # ggrepel::geom_text_repel(data = data.shape %>%
+  #                            filter(abs(diff) >= 40) %>%
+  #                            mutate(lab = paste0(title, "\n",
+  #                                                actor, " ", actor.age, "\n",
+  #                                                actress, " ", actress.age)),
+  #                          aes(label = lab)) +
+  labs(x = "Actor Age", y = "Actress Age",
+       title = "Ages of couples in all films") +
+  theme_bw()
+
+```
+
+Actor-actress pairings for all `r comma(nrow(data.shape))` films are plotted against one another. Points above the black line are films where the actress is older than the actor in the romance; points below the line are films where the actor is older. Men are older than their love interests in `r scales::percent(mean(data.shape$diff > 0), 1)` of films while women are older than their love interests in only `r scales::percent(mean(data.shape$diff < 0), 1)` of films. About `r scales::percent(mean(data.shape$diff == 0), 1)` feature romances between leads born in the same year. Note that age calculations only use birth years. Because of that, age differences are not exact, but they should all be within one year of their true values.
+
+The blue line in the plot models the relationship between the ages of romantic leads. Men start off with similar aged love interests, but the age gap between the leads grow as male movie stars start to age. Actors in their 20s are generally paired with actresses that are similar in age. As men enter their 30s, they are more likely to be paired with actresses younger than they are. Even as actors enter their mid-30s and 40s, they continue to have female love interests that are still in their early 30s. Given that an actor is 50-years-old, his love interest has an average age of 35. In fact, there are few cases where an actor 50 or older is paired with an actress older than he is. By that time, the men are generally `r round(data.shape %>% filter(actor.age >= 50) %>% pull(diff) %>% mean(), 1)` years older than their co-stars.
+
+```{r, fig.height = 4, fig.width = 6}
+
+### summary by year groupings
+sum.break <- function(gp.size) {
+  
+  data.shape %>%
+    mutate(year.rd = floor(year / gp.size) * gp.size) %>%
+    group_by(year.rd) %>%
+    summarise(n = n(),
+              mean = mean(diff),
+              median = median(diff),
+              sd = sd(diff),
+              min = min(diff),
+              max = max(diff),
+              se = sd / sqrt(n))
+  
+}
+
+# 5 year is grouped: 1930-34, 1935-39...
+# 10 year is grouped: 1930-39, 1940-49...
+sum.year <- sum.break(1)
+sum.year5 <- sum.break(5)
+sum.year10 <- sum.break(10)
+
+
+### plot mean with ci
+sum.year10 %>% 
+  select(year.rd, n, mean, se) %>% 
+  mutate(gp = "Film") %>% 
+  bind_rows(census %>% 
+              filter(Census >= 1930) %>% 
+              rename(year.rd = Census,
+                     n = Obs,
+                     mean = Gap) %>% 
+              mutate(gp = "Census")) %>% 
+  mutate(gp = factor(gp, levels = c("Film", "Census"))) %>% 
+  ggplot(aes(x = year.rd, y = mean, group = gp)) +
+  geom_errorbar(aes(ymin = mean - qt(0.95 / 2 + 0.5, n - 1) * se,
+                    ymax = mean + qt(0.95 / 2 + 0.5, n - 1) * se,
+                    color = gp),
+                width = 2, alpha = 0.75) +
+  geom_point(aes(color = gp)) +
+  geom_line(aes(color = gp)) +
+  scale_x_continuous(breaks = seq(1930, 2010, by = 10)) +
+  scale_y_continuous(breaks = seq(-10, 20, by = 5)) +
+  scale_color_manual(name = "", values = c("black", "blue")) +
+  labs(x = "Year", y = "Age Difference (Men - Women)",
+       title = "Age gap in film relationships versus Census results") +
+  theme_bw() +
+  theme(panel.grid.minor.x = element_blank())
+
+```
+
+```{r, fig.height = 4, fig.width = 6}
+
+### summary by year groupings
+sum.gender.break <- function(gp.size) {
+  
+  data.shape %>%
+    mutate(year.rd = floor(year / gp.size) * gp.size) %>%
+    select(year.rd, actor.age, actress.age) %>%
+    gather(key = "gender", value = "age", -year.rd) %>%
+    group_by(year.rd, gender) %>%
+    summarise(n = n(),
+              mean = mean(age),
+              median = median(age),
+              sd = sd(age),
+              min = min(age),
+              max = max(age),
+              se = sd / sqrt(n)) %>%
+    ungroup()
+  
+}
+
+sum.gender.year10 <- sum.gender.break(10)
+
+
+### plot gender
+plot.gender <- function(data, stat, ybk = NULL) {
+  
+  stat <- enquo(stat)
+  
+  data %>%
+    select(year.rd, gender, !!stat) %>%
+    ungroup() %>%
+    ggplot(aes(x = year.rd, y = !!stat, color = gender)) +
+    geom_point() +
+    geom_line() +
+    scale_x_continuous(breaks = seq(1930, 2010, by = 10)) +
+    scale_y_continuous(breaks = ybk) +
+    scale_color_discrete(name = "Gender", labels = c("Men", "Women")) +
+    labs(x = "Year", y = "Age",
+         title = "Average actor and actress age by decade") +
+    theme_bw() +
+    theme(panel.grid.minor = element_blank())
+  
+}
+plot.gender(sum.gender.year10, mean, seq(28, 40, by = 2))
+
+```
+
+We now consider year as a variable to see if age in film has changed over time. For each decade, the mean age differences between actors are plotted in black along with their 95% confidence intervals. These values are benchmarked against the Census results of age differences between married couples. The age differences between couples we see on screen are always higher than what we see in real life, no matter the era. While the age gap between married couples has declined in every Census since 1930, the Hollywood age gap shows much more variation. The 1950s has the greatest age disparity, with men on average being 10 years older than their screen partners. As seen in the plot of average actor age, this number was driven by actors being much older in the 1950s compared to other periods. The average lead romantic role for men in that era was 41-years-old; they were under 40 in every other decade. The dip in age difference in the 1970s was the result of a spike in average lead actress age to 33, higher than in any other decade. The caveat with results from the 70s is that there were a way smaller sample of films—romances or otherwise—from that period because that era saw the end of the studio system and the rise of New Hollywood. Unlike the 1930s to 1950s when mainstream romances made up a large part of studio releases, the 1970s featured more independent works, including a number of foreign and exploitation films.
+
+```{r}
+
+### biggest age gaps by movie
+# older actor
+film.max.diff <- data.shape %>%
+  arrange(desc(diff)) %>%
+  filter(diff >= 30) %>% 
+  select(year, title, actress, actress.age, actor, actor.age, diff) %>% 
+  rename(Year = year,
+         Title = title,
+         Actress = actress,
+         `Actress Age` = actress.age,
+         Actor = actor,
+         `Actor Age` = actor.age,
+         `Age Difference` = diff)
+
+film.max.diff %>% 
+  kable(caption = "Films with the largest age gaps between couples - older actor") %>% 
+  kable_styling(bootstrap_options = c("striped", "condensed"), full_width = FALSE)
+
+```
+
+Next, we take a closer look at the films that host the most extreme age differences. The table above shows all movies that feature romances between men that are at least 30 years older than their love interests. There were 21 films that fulfilled this criteria, with examples from nearly every decade. *Limelight* (1952) features a relationship between 63-year-old Charles Chaplin and 21-year-old Claire Bloom, an age difference of 42 years. This was a common occurence for Chaplin, both on and off screen. Chaplin's two other films in the dataset, *City Lights* (1931) and *Modern Times* (1936), give him love interests that are 19 and 21 years younger than him, respectively. Golden Raspberry Award winner for Worst Picture *Ghosts Can't Do It* (1989) pairs 74-year-old Anthony Quinn with 33-year-old Bo Derek, 41 years his junior. The film was written and directed by Derek's husband, John Derek, who was 30 years older than her. Both Cary Grant and Woody Allen appear on the list three times, appearing in multiple films while paired with younger love interests. Cary Grant had a career that spanned four decades, with the films in the table all from the latter part of it in the late fifties. Woody Allen wrote and directed all the films he starred in, always pairing himself with younger women. *Whatever Works* (2009), the third film on the list, did not star Allen, but was written and directed by him. Audrey Hepburn and Sophia Loren both appear twice for being paired with older actors. Loren was actually paired with Cary Grant in two different movies, one year after the other. Two of the more famous examples of romances between a much older man and a younger woman both feature Audrey Hepburn. *Sabrina* (1954) and *Funny Face* (1957) gave Hepburn co-stars that were 30 years older than her. *Sabrina* actually features a love triangle for Hepburn, where the other man—William Holden—is still 11 years older than her.
+
+```{r}
+
+### biggest age gaps by movie
+# older actress
+film.min.diff <- data.shape %>%
+  arrange(diff) %>%
+  filter(diff <= -15) %>% 
+  select(year, title, actress, actress.age, actor, actor.age, diff) %>% 
+  rename(Year = year,
+         Title = title,
+         Actress = actress,
+         `Actress Age` = actress.age,
+         Actor = actor,
+         `Actor Age` = actor.age,
+         `Age Difference` = diff)
+
+film.min.diff %>% 
+  kable(caption = "Films with the largest age gaps between couples - older actress") %>% 
+  kable_styling(bootstrap_options = c("striped", "condensed"), full_width = FALSE)
+
+```
+
+The second table shows all films where women have romances with men at least 15 years younger than they are. While the less strict threshold still results in a shorter list than the previous one for older men, it is topped by the two films with the largest age differences in the entire dataset. *Sextette* (1977) has 85-year-old Mae West married to 31-year-old Timothy Dalton, although this relationship seems to be played as a joke (I have not seen the movie). Not far behind is 1971's *Harold and Maude*, where the leads are separated by 52 years and that age difference drives the story. Other than these two outliers, the rest of the films in the table show age differences that are smaller than the corresponding group of films for men. One noticeable difference between the two tables is that the older actress list includes only two films from before 1960; the older actor list is made up of a much larger proportion of pre-1960s movies.
+
+```{r}
+
+### summarise by specific actor, filter to actors with at least 5 title credits
+act.sum <- function(gender.id, gender.name, gender.comp) {
+  
+  data.shape %>%
+    group_by(!!enquo(gender.id), !!enquo(gender.name)) %>%
+    summarise(
+      n = n(),
+      early = min(year),
+      late = max(year),
+      mean = mean(diff),
+      med = median(diff),
+      sd = sd(diff),
+      min = min(diff),
+      max = max(diff),
+      se = sd / sqrt(n),
+      partner = list(!!enquo(gender.comp)),
+      partner.diff = list(diff)
+    ) %>%
+    ungroup() %>%
+    filter(n >= 5) %>%
+    arrange(desc(mean)) %>%
+    mutate(partner.df = map2(partner, partner.diff,
+                             ~data.frame(partner = .x,
+                                         age.diff = .y) %>%
+                               count(partner, age.diff) %>%
+                               arrange(age.diff))) %>%
+    select(-partner, -partner.diff)
+  
+}
+
+actor.sum <- act.sum(actor.id, actor, actress)
+actress.sum <- act.sum(actress.id, actress, actor)
+
+
+### plot means with 95% CI
+plot.actor <- function(data, var, x.limits = NULL) {
+  
+  var <- enquo(var)
+  
+  data %>%
+    filter(n >= 10) %>% 
+    ggplot(aes(x = mean, y = reorder(!!var, mean))) +
+    geom_vline(xintercept = 0, color = "gray", size = 2, alpha = 0.3) +
+    geom_errorbarh(aes(xmin = mean - qt(0.95 / 2 + 0.5, n - 1) * se,
+                       xmax = mean + qt(0.95 / 2 + 0.5, n - 1) * se),
+                   color = "gray", height = 0.25) +
+    geom_text(aes(x = mean - qt(0.95 / 2 + 0.5, n - 1) * se,
+                  label = !!var),
+              hjust = 1, nudge_x = -0.25, size = 3) +
+    geom_point() +
+    labs(x = "Age Difference (Actor Age - Actress Age)", y = "",
+         title = "Average age gap in relationships for actors with at least 10 films in sample") +
+    scale_x_continuous(limits = x.limits) +
+    theme_bw() +
+    theme(panel.grid.major.y = element_blank(),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank())
+  
+}
+
+plot.actor(actor.sum, actor, c(-5, 22))
+
+```
+
+Given that there are actors and actresses in the sample that are represented by multiple films, we are able to look into whether some stars are always matched with older or younger love interests. All actors with at least 10 films in our dataset are plotted along with 95% confidence intervals for mean age difference. There are `r actor.sum %>% filter(n >= 10) %>% nrow()` actors that fulfill this criteria, and every one has an average age difference greater than zero. A reminder that filmographies for actors are not exhaustive, even for romances.
+
+Topping the list of actors is Fred Astaire who starred in 17 films in the dataset and was on average, 18 years older than the leading lady. Astaire has been paired with actresses at least 30 years younger than him twice and has not had a romance with anyone younger than him. The actress closest in age to him was regular co-star Ginger Rogers (they headlined 7 films together in our sample), still 12 years his junior.
+
+```{r}
+
+### Fred Astaire's co-stars
+fastaire.film <- actor.sum %>%
+  filter(actor == "Fred Astaire") %>%
+  .[["partner.df"]] %>%
+  .[[1]]
+
+fastaire.film %>% 
+  rename(`Co-Star` = partner,
+         `Age Difference` = age.diff,
+         `# of Films` = n) %>% 
+  kable(caption = "Fred Astaire's co-stars") %>% 
+  kable_styling(bootstrap_options = c("striped", "condensed"), full_width = FALSE)
+
+```
+
+Most of the actors with large samples of films were stars from the Classic Hollywood era, the 1930s to 1960s. One reason for this was the studio system casting the same group of lead actors in their major releases. Another possible reason is that the older films that receive the most IMDb votes—our criteria for being selected into the sample—may be driven by how popular the actors are rather than the films' popularity at the time of their releases. The number of votes received by more recent releases are likely a better reflection of their actual standing today.
+
+Of all actors with at least 10 romances, Rock Hudson is closest in age to his co-stars, on average only 1.5 years older than the leading ladies. Hudson starred opposite actresses across a range of ages. He was 13 years older than both Claudia Cardinale in *Blindfold* (1966) and Paula Prentiss in *Man's Favorite Sport?* (1964), but he was also paired with Doris Day, three years his senior, in three romantic comedies and Jane Wyman, eight years his senior, in two Douglas Sirk melodramas. 
+
+```{r}
+
+### Rock Hudson's co-stars
+rhudson.film <- actor.sum %>%
+  filter(actor == "Rock Hudson") %>%
+  .[["partner.df"]] %>%
+  .[[1]]
+
+rhudson.film %>% 
+  rename(`Co-Star` = partner,
+         `Age Difference` = age.diff,
+         `# of Films` = n) %>% 
+  kable(caption = "Rock Hudson's co-stars") %>% 
+  kable_styling(bootstrap_options = c("striped", "condensed"), full_width = FALSE)
+
+```
+
+There are actors that have been on average, younger than their love interests, but are not included in the above graph because they have fewer than 10 films in the sample. There is a group of actors from the 1980s to 2000s where this is true: John Travola is `r round(actor.sum$mean[actor.sum$actor == "John Travolta"], 1) * -1` years younger in `r as.character(english(actor.sum$n[actor.sum$actor == "John Travolta"]))` films, Ben Affleck is `r round(actor.sum$mean[actor.sum$actor == "Ben Affleck"], 1) * -1` years younger in `r as.character(english(actor.sum$n[actor.sum$actor == "Ben Affleck"]))` films, Ashton Kutcher is `r round(actor.sum$mean[actor.sum$actor == "Ashton Kutcher"], 1) * -1` years younger in `r as.character(english(actor.sum$n[actor.sum$actor == "Ashton Kutcher"]))` films, and Nicolas Cage is `r round(actor.sum$mean[actor.sum$actor == "Nicolas Cage"], 1) * -1` years younger in `r as.character(english(actor.sum$n[actor.sum$actor == "Nicolas Cage"]))` films. On the opposite end, Humphrey Bogart is only listed for `r as.character(english(actor.sum$n[actor.sum$actor == "Humphrey Bogart"]))` films and was on average `r round(actor.sum$mean[actor.sum$actor == "Humphrey Bogart"], 1)` years older than the lead actress. This total only includes one of his pairings with real-life wife Lauren Bacall—25 years younger—because many of their romances were in film noirs not included in the sample.
+
+```{r}
+
+### actresses with >= 10 films
+plot.actor(actress.sum, actress, c(-11, 22))
+
+```
+
+For women, Audrey Hepburn starred in `r actress.sum$n[actress.sum$actress == "Audrey Hepburn"]` romances and was on average `r round(actress.sum$mean[actress.sum$actress == "Audrey Hepburn"], 1)` years younger than her love interest. Hepburn was only in her early twenties in the 1950s and was paired with major actors such as Humphrey Bogart, Fred Astaire, Gary Cooper, Cary Grant, and Henry Fonda, all of who started their careers in the 1930s or earlier. She was not casted regularly with actors her own age until a little later in her career.
+
+```{r}
+
+### Audrey Hepburn's co-stars
+ahepburn.film <- actress.sum %>%
+  filter(actress == "Audrey Hepburn") %>%
+  .[["partner.df"]] %>%
+  .[[1]]
+
+ahepburn.film %>% 
+  rename(`Co-Star` = partner,
+         `Age Difference` = age.diff,
+         `# of Films` = n) %>% 
+  kable(caption = "Audrey Hepburn's co-stars") %>% 
+  kable_styling(bootstrap_options = c("striped", "condensed"), full_width = FALSE)
+
+```
+
+On the opposite end is Irene Dunne, who in `r actress.sum$n[actress.sum$actress == "Irene Dunne"]` films was about `r round(actress.sum$mean[actress.sum$actress == "Irene Dunne"], 1) * -1` years older than her love interest. In fact, Dunne has never had an on screen love interest that was more than a year older than her (at least in this sample). Randolph Scott is the closest in age, but both Scott and her were born in the same year. Cary Grant, her most frequent romantic co-lead, was six years younger than Dunne.
+
+```{r}
+
+### Irene Dunne's co-stars
+idunne.film <- actress.sum %>%
+  filter(actress == "Irene Dunne") %>%
+  .[["partner.df"]] %>%
+  .[[1]]
+
+idunne.film %>% 
+  rename(`Co-Star` = partner,
+         `Age Difference` = age.diff,
+         `# of Films` = n) %>% 
+  kable(caption = "Irene Dunne's co-stars") %>% 
+  kable_styling(bootstrap_options = c("striped", "condensed"), full_width = FALSE)
+
+```
+
+The next three actresses that were on average older than their male co-stars—Joan Crawford, Marion Davies, and Jean Arthur—all started their careers in the 20s and 30s. This is also true of Dunne who was a star in the 30s and 40s. It is surprising that the bottom of the list does not include a larger number of newer actresses, given that age differences between film couples became smaller in the more recent decades. Loosening the film count requirement down from 10 to 5 brings in more actresses from 1970s and beyond, but Dunne, Crawford, Davies, and Arthur still have the most negative mean age differences. At the top of the graph, if we drop the requirement to five, Sophia Loren would end up with the largest value. Loren appeared in `r as.character(english(actress.sum$n[actress.sum$actress == "Sophia Loren"]))` films and was on average `r round(actress.sum$mean[actress.sum$actress == "Sophia Loren"], 1)` years younger than her romantic partners.
+
+Lastly, we look at romances between same-sex couples. This was a much more difficult dataset to build because there are few mainstream Hollywood films centered on gay and lesbian romances, and the ones that we have are all from the last few decades. The most popular films from IMDb, regardless of year, with the tags "gay romance," "gay relationship," "lesbian romance," or "lesbian relationship" were sampled. To allow for more films, we looked at all English-language films—regardless of whether they were American—resulting in the addition of a few films from the United Kingdom and Australia into the dataset. This gave a final sample of only `r nrow(data2)` films, `r nrow(data2 %>% filter(gender == "F"))` featuring relationships between two women and `r nrow(data2 %>% filter(gender == "M"))` featuring relationships between two men. The earliest title was from 1968, but most were from the 1990s and after. Compare this to the dataset for opposite-sex couples which maxed out at 25 American titles per year but still had `r comma(nrow(data.shape))` films.
+
+```{r}
+
+### summary of age differences
+same.sum <- data2 %>% 
+  group_by(gender) %>% 
+  summarise(
+    n = n(),
+    mean = mean(diff),
+    median = median(diff),
+    sd = sd(diff),
+    min = min(diff),
+    max = max(diff),
+    se = sd / sqrt(n)
+  )
+
+
+### summary of actor ages
+same.age <- data2 %>% 
+  select(gender, old.age, young.age) %>% 
+  gather(key = "key", value = "value", -gender) %>% 
+  group_by(gender) %>% 
+  summarise(
+    n = n(),
+    mean = mean(value),
+    median = median(value),
+    sd = sd(value),
+    min = min(value),
+    max = max(value),
+    se = sd / sqrt(n)
+  )
+
+
+### opposite sex - 1990 and after
+ovr.sum.90 <- data.shape %>%
+  filter(year >= 1990) %>% 
+  select(actor.age, actress.age, diff) %>%
+  gather() %>% 
+  group_by(key) %>% 
+  summarise(
+    n = n(),
+    mean = mean(value),
+    median = median(value),
+    sd = sd(value),
+    min = min(value),
+    max = max(value),
+    se = sd / sqrt(n)
+  )
+
+```
+
+The mean age difference between lesbian couples is `r round(same.sum$mean[same.sum$gender == "F"], 1)` years with a standard deviation of `r round(same.sum$sd[same.sum$gender == "F"], 1)`. The mean age difference between gay couples is `r round(same.sum$mean[same.sum$gender == "M"], 1)` years with a standard deviation of `r round(same.sum$sd[same.sum$gender == "M"], 1)`. Both values are larger than the average age difference between opposite-sex couples of `r round(ovr.sum$mean[ovr.sum$key == "diff"], 1)` years, with this number going down to `r round(ovr.sum.90$mean[ovr.sum.90$key == "diff"], 1)` years if only films since 1990 are considered, to better match the same-sex dataset.
+
+```{r, fig.height = 4, fig.width = 6}
+
+### plot younger actor vs older actor
+data2 %>%
+  mutate(gender = factor(ifelse(gender == "F", "Women", "Men"),
+                         levels = c("Women", "Men"))
+         ) %>% 
+  ggplot(aes(x = young.age, y = old.age)) +
+  geom_abline(slope = 1, intercept = 0) +
+  geom_jitter() +
+  # geom_smooth(method = "loess") +
+  labs(x = "Age (Younger)", y = "Age (Older)",
+       title = "Ages of couples in same sex romances") +
+  facet_wrap(gender ~ .) +
+  theme_bw()
+
+```
+
+As we did previously for opposite sex couples, we plot the ages of couples for all films. Instead of using gender on the x- and y-axes, we plot the younger person in the relationship against the older person. There is little difference between the two graphs, with gay and lesbian romances pairing couples with similar age differences. Most of the lead actors in same-sex romances are in their 20s and 30s, with the average woman at `r round(same.age$mean[same.age$gender == "F"], 1)`-years-old and the average man at `r round(same.age$mean[same.age$gender == "M"], 1)`-years-old. If we look at the same statistics for opposite-sex couples since 1990, we see that the average lead actress is `r round(ovr.sum.90$mean[ovr.sum.90$key == "actress.age"], 1)`-years-old and the average lead actor is `r round(ovr.sum.90$mean[ovr.sum.90$key == "actor.age"], 1)`-years-old. Gay romances skew a little younger and lesbian romances skew a little older compared to opposite-sex romances. There are also very few actors and actresses over the age of 50 starring in gay and lesbian romances.

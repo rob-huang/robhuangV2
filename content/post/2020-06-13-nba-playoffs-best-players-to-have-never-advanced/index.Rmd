@@ -1,0 +1,314 @@
+---
+title: NBA Playoffs - Best Players to Have Never Advanced
+author: Robert Huang
+date: '2020-06-13'
+slug: nba-playoffs-best-players-to-have-never-advanced
+categories: []
+tags:
+  - nba
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
+
+library(tidyverse)
+library(lubridate)
+library(DT)
+library(kableExtra)
+
+```
+
+```{r}
+
+### simplified df
+po.great <- read.csv("data//nba playoffs//po.greatest.csv",
+                     stringsAsFactors = FALSE, na = "") %>% 
+  mutate(simp.lab = gsub(" / ", "; ", simp.lab),
+         simp.lab = gsub(":", "", simp.lab),
+         simp.lab = ifelse(!is.na(simp.lab),
+                           paste0(simp.lab, " (", games.away.min, ")"),
+                           NA))
+
+
+### change porzingis end year to 2019 because still active
+po.great$end[po.great$id == "porzikr01"] <- 2019
+
+```
+
+There is no greater measure of success in the NBA than performance in the playoffs. For the biggest names in the sport, whether their resumes include an NBA championship is sometimes a referendum on their careers. Michael Jordan and Bill Russell finish atop many greatest players of all-time lists because of their postseason achievements. Conversely, guys like Karl Malone and Charles Barkley are knocked down some rankings because they never won a ring. In this post, we expand on this further by looking at the best NBA players to have never advanced to each round of the playoffs.
+
+
+#### Ousted in the Finals
+
+```{r}
+
+### no champ
+form.Finals <- po.great %>% 
+  filter(Champ == 0,
+         Finals > 0,
+         end < 2019,
+         All.NBA.tot > 0 | AS.NBA > 0) %>% 
+  select(Player,
+         G,
+         WS,
+         AllNBA = All.NBA.tot,
+         AllStar = AS.NBA,
+         Finals,
+         `Best Finish` = simp.lab) %>% 
+  arrange(desc(AllStar))
+
+form.Finals %>% 
+  datatable(rownames = FALSE, options = list(dom = "tip")) %>% 
+  formatRound(columns = c("WS"), digits = 1)
+
+```
+
+We start with players that have made at least one All-NBA or All-Star team and have reached the NBA Finals but never pulled off winning the championship. There are `r nrow(form.Finals)` retired players that meet this criteria, with the group headlined by legends famous among NBA fans for being ringless. Note that the best finish column in the above table gives the year(s) and the opponent(s) of the series in which the player was closest to advancing, along with the wins away he was in parentheses.
+
+Teammates Karl Malone and John Stockton led the Utah Jazz to the Finals in 1997 and 1998, but were knocked out in game sixes both years by Michael Jordan's Chicago Bulls. The same is true for Charles Barkley who, in his only Finals appearance in 1993, was also dispatched by Jordan. Patrick Ewing and Reggie Miller are others from the same era that always came up short, with Jordan eliminating Ewing—obviously earlier than the Finals—in five different seasons.
+
+Elgin Baylor has more Finals appearances without winning the title than any other player, going zero for eight in his career. Baylor was one game away in half of those series; in 1962, 1966, and 1969, his Lakers could not get past the Bill Russell Celtics in game sevens decided by three, two, and two points, respectively; he was blown out by the Willis Reed/Walt Frazier Knicks in 1970's game seven. Larry Foust was sent home from five Finals for three different franchises, but he was a driving force for only the 1955 and 1956 teams.
+
+
+#### Ousted in the Semifinals
+
+```{r}
+
+### no Finals
+form.semis <- po.great %>% 
+  filter(Champ == 0,
+         Finals == 0,
+         Semis > 0,
+         end < 2019,
+         All.NBA.tot > 0 | AS.NBA > 0) %>% 
+  select(Player,
+         G,
+         WS,
+         AllNBA = All.NBA.tot,
+         AllStar = AS.NBA,
+         Semis,
+         `Best Finish` = simp.lab) %>% 
+  arrange(desc(AllStar))
+
+form.semis %>% 
+  datatable(rownames = FALSE, options = list(dom = "tip")) %>% 
+  formatRound(columns = c("WS"), digits = 1)
+
+```
+
+Next are the players that have made it to the semifinal round, but could not take the next step into the Finals. The semifinal round is currently known as the Conference Finals but was known as the Division Finals before 1971 and the Semifinals in some of the BAA years.
+
+Seven time All-NBAers George Gervin and Steve Nash are the greatest players to have never made it to the NBA Finals. Gervin was sent packing three times in the semifinal round, each as a member of the San Antonio Spurs. Unlike other ex-ABA stars discussed below, Gervin's postseason results in that league are also underwhelming—no title or Finals appearances. He came closest to advancing in 1979; the Spurs held a three games to one lead against the Washington Bullets in the Conference Finals, but the Bullets rallied back to a game seven and took that game by two points. Nash lost four Conference Finals, never winning more than two games in any of those series—disappointing results given the regular season records of some of those teams.
+
+Richie Guerin and Zelmo Beaty have each been elminated five times in the semifinal round without ever advancing further, more than any other players. Beaty would triumph in the ABA, leading the Utah Stars to a title in 1971 while winning the Playoffs MVP award.
+
+Other big names that have made it no further than the semifinal round include Alex English, Bob Lanier, Grant Hill, and Artis Gilmore—although Gilmore has made two ABA Finals, winning the title once along with the Playoffs MVP award.
+
+
+#### Ousted in the Quarterfinals
+
+```{r}
+
+### no semis
+form.quarters <- po.great %>% 
+  filter(Champ == 0,
+         Finals == 0,
+         Semis == 0,
+         Quarters > 0,
+         end < 2019,
+         All.NBA.tot > 0 | AS.NBA > 0) %>% 
+  select(Player,
+         G,
+         WS,
+         AllNBA = All.NBA.tot,
+         AllStar = AS.NBA,
+         Quarters,
+         `Best Finish` = simp.lab) %>% 
+  arrange(desc(AllStar))
+
+form.quarters %>% 
+  datatable(rownames = FALSE, options = list(dom = "tip")) %>% 
+  formatRound(columns = c("WS"), digits = 1)
+
+```
+
+A total of `r nrow(form.quarters)` retired All-NBAers or All-Stars never got past the quarterfinal round—either the Conference or Division Semifinals in most years.
+
+Dominique Wilkins headlines this group, never making it further than the Conference Semifinals. His Atlanta Hawks were knocked out in this round three consecutive years from 1986 to 1988—by the Celtics, Pistons, and Celtics, respectively. Wilkins' greatest success was that last matchup in 1988, losing a game seven by 2 points despite a 47 point performance. He would advance no further than the First Round for the rest of his career. Other greats stuck in the quarterfinal round include Yao Ming, Dave Bing, Bernard King, and Connie Hawkins—who owns an ABA title and Playoffs MVP.
+
+Kiki Vandeweghe and Rickey Green have a league leading five Conference Semifinals exits without advancing any further, though neither were arguably the best players on those playoff teams and definitely not on the same level as the stars in this group.
+
+
+#### Ousted in the First Round
+
+```{r}
+
+### only first round
+form.first <- po.great %>% 
+  filter(Champ == 0,
+         Finals == 0,
+         Semis == 0,
+         Quarters == 0,
+         First > 0,
+         end < 2019,
+         All.NBA.tot > 0 | AS.NBA > 0) %>% 
+  select(Player,
+         G,
+         WS,
+         AllNBA = All.NBA.tot,
+         AllStar = AS.NBA,
+         First,
+         `Best Finish` = simp.lab) %>% 
+  arrange(desc(AllStar))
+
+form.first %>% 
+  datatable(rownames = FALSE, options = list(dom = "tip")) %>% 
+  formatRound(columns = c("WS"), digits = 1)
+
+```
+
+The group of players that have made at least one All-NBA or All-Star team and whose only playoff experience is the First Round consists of just `r nrow(form.first)` players. This list is limited only to more recent players because the First Round was introduced in the 1975 season with four teams, expanding to eight in 1977, and the full sixteen teams in 1984. 
+
+There are no all-time greats represented here, with Brandon Roy probably the top dog. Roy only played about four heathly seasons in a career cut short by knee issues. His Blazers made First Round exits from 2009 to 2011, all in game six. Tracy McGrady is well-known for his First Round struggles, but he actually made the NBA Finals as a member of the San Antonio Spurs in 2013, albeit as an end-of-the-bench player. If we remove that from his record and only consider years in which McGrady was a difference maker, his playoff record is a depressing zero for eight in the First Round. No player of his caliber has a comparably lackluster record. The closest is Carmelo Anthony, who had nine First Round exits, but also made postseason runs that ended with the Conference Finals and Conference Semifinals.
+
+
+#### Playoff-less
+
+```{r}
+
+### no playoffs
+form.no <- po.great %>% 
+  filter(Champ == 0,
+         Finals == 0,
+         Semis == 0,
+         Quarters == 0,
+         First == 0,
+         end < 2019,
+         All.NBA.tot > 0 | AS.NBA > 0) %>% 
+  select(Player,
+         G,
+         WS,
+         AllNBA = All.NBA.tot,
+         AllStar = AS.NBA,
+         `Missed Playoffs` = missed) %>% 
+  arrange(desc(AllStar))
+
+form.no %>% 
+  datatable(rownames = FALSE, options = list(dom = "tip")) %>% 
+  formatRound(columns = c("WS"), digits = 1)
+
+```
+
+This list of All-Stars/All-NBAers that have never made the playoffs is small and contains only players from the 1940s to 1970s. Tom Van Arsdale is the best (least worst?) player here, holding the record for most regular season games and seasons without advancing to the playoffs. Van Arsdale's three All-Star seasons came for teams that all finished below 0.500. In fact, he has never played for a team that finished the season above 0.500—his 1969 Cincinnati Royals is the best of his career, with a 41-41 record. Another fun fact is that Van Arsdale spent the second half of the 1973 season on the 9-73 Philadelphia 76ers, a team that held the record of worst regular season winning percentage for about 40 years. Tom's twin brother Dick fared much better, spending time with teams that actually did some winning.
+
+
+#### Active Players
+
+```{r}
+
+# active all-stars/all-nba
+active.all <- po.great %>% 
+  filter(end == 2019) %>% 
+  select(id, Player, start, end, seasons, G, WS, All.NBA.tot, AS.NBA, missed:Champ) %>% 
+  gather(key = "best.po", value, -(id:AS.NBA)) %>% 
+  mutate(best.po = factor(best.po,
+                          levels = c("missed", "First", "Quarters", "Semis", "Finals", "Champ"),
+                          ordered = TRUE)) %>% 
+  filter(value > 0) %>% 
+  group_by(id, Player, start, end, G, WS, All.NBA.tot, AS.NBA) %>% 
+  filter(best.po == max(best.po)) %>% 
+  ungroup() %>% 
+  filter(best.po != "Champ",
+         All.NBA.tot > 0 | AS.NBA > 0)
+
+active.all %>% 
+  select(Player, G, WS, AllNBA = All.NBA.tot, AllStar = AS.NBA, `Best Result` = best.po) %>% 
+  arrange(desc(`Best Result`), desc(AllStar)) %>% 
+  datatable(rownames = FALSE, options = list(dom = "tip")) %>% 
+  formatRound(columns = c("WS"), digits = 1)
+
+```
+
+We next look at players that were still active as of the end of the 2018-19 NBA season; note that a few of these players have retired since then. Some of these All-Stars may fall into one of the above tables by the time their careers are finished. James Harden, Russell Westbrook, and Dwight Howard are/were MVP level talents that have made the Finals but remain titleless. Chris Paul and Carmelo Anthony still have not made the NBA Finals. Vince Carter will end his career without either a championship or Finals appearance. We will not spend time on the younger players becuase their playoff records are so fluid.
+
+
+#### Playoff Result Leaders
+
+* Jerry West and Elgin Baylor have each lost in the Finals nine times (eight together as teammates), more than any other players in NBA history. West eventually won a title in 1972, a season in which Baylor retired after only nine games. LeBron James is next with six Finals losses.
+
+* Five players are tied with six Conference/Division Finals losses: Wilt Chamberlain, Dolph Schayes, Paul Silas, Bill Bridges, and Dale Davis. The first five own championship rings. Davis has made one Finals.
+
+* Charles Oakley and Archie Clark are tied with nine quarterfinal (Conference/Dvision Semifinals) exits.
+
+* Terry Porter has 11 First Round exits, 2 more than the players next on the list. Of the 11, 7 came  with the Blazers, 2 with the Timberwolves, 1 with the Heat, and 1 with the Spurs. The positive side of this is that Porter has missed the playoffs only once in his career. He has also advanced to every other round of the playoffs except for winning the title.
+
+* Corey Maggette spent a league leading 13 of his 14 NBA years with teams that did not earn playoff berths. His only playoff experience was a successful one with the 2006 Clippers, making it to game seven of the Conference Semifinals. That would be the Clippers' only postseason appearance during a 14 year span.
+
+* Karl Malone, John Stockton, Robert Horry, and Clyde Drexler are the only players with at least 15 year careers that have never missed the playoffs, given the requirement of playing at least a single game in that postseason. Stockton and Malone have a league leading 19 postseason appearances. Tim Duncan should have tied Stockton and Malone, but missed a playoffs in which his Spurs already qualified for because of a late season injury.
+
+```{r}
+
+### summary by best finish
+# format df
+all.best <- po.great %>% 
+  filter(end < 2019) %>% 
+  select(id, Player, start, end, seasons, G, WS, All.NBA.tot, AS.NBA, missed:Champ) %>% 
+  gather(key = "best.po", value, -(id:AS.NBA)) %>% 
+  mutate(best.po = factor(best.po,
+                          levels = c("missed", "First", "Quarters", "Semis", "Finals", "Champ"),
+                          ordered = TRUE)) %>% 
+  filter(value > 0) %>% 
+  group_by(id, Player, start, end, G, WS, All.NBA.tot, AS.NBA) %>% 
+  filter(best.po == max(best.po)) %>% 
+  ungroup()
+
+```
+
+We last look at the number of career regular season games and how it relates to a player's best playoff finish. This can be analyzed using the boxplots below. The results are as expected, with a positive relationship between playoff finish and career length. This is likely because of two reasons; first, better players have longer careers, contributing to teams that have stronger outcomes in the playoffs; second, some players with long careers are more likely to have strong playoff finishes because of luck given the number of seasons and opportunities for different postseason outcomes.
+
+```{r, fig.align = "center"}
+
+# boxplot
+plot.box <- function(var, var.lab) {
+  
+  var <- enquo(var)
+  
+  all.best %>% 
+    mutate(best.po = fct_rev(best.po)) %>% 
+    ggplot(aes(x = !!var, y = 0)) +
+    geom_boxplot() +
+    facet_grid(best.po ~ ., switch = "y") +
+    labs(x = var.lab, y = "") +
+    scale_y_continuous(limits = c(-0.5, 0.5)) +
+    theme_bw() +
+    theme(panel.grid.major.y = element_blank(),
+          panel.grid.minor.y = element_blank(),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
+          strip.text.y.left = element_text(angle = 0))
+  
+}
+
+plot.box(G, "Career Regular Season Games")
+
+```
+
+There are two noticeable outliers among all panels. Andre Miller has played played 1,304 games, but has only gone as far as the quarterfinal round. Others that have played as many games have generally made the Finals or won the title. Tom Van Arsdale is the playoff-less outlier, as discussed earlier.
+
+```{r}
+
+all.best.tb <- all.best %>% 
+  group_by(best.po) %>% 
+  summarise(`# of Players` = n(),
+            `Mean Games` = mean(G),
+            `SD Games` = sd(G),
+            Leader = Player[G == max(G)]) %>% 
+  select(`Best Result` = best.po,
+         everything()) %>% 
+  arrange(desc(`Best Result`))
+
+kable(all.best.tb, digits = 0) %>% 
+  kable_styling(bootstrap_options = c("bordered"),
+                full_width = FALSE)
+
+```

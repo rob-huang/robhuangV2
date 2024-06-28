@@ -1,0 +1,618 @@
+---
+title: NBA Hometowns
+author: Robert Huang
+date: '2020-04-27'
+slug: nba-hometowns
+categories: []
+tags:
+  - nba
+---
+
+```{r setup, include=FALSE}
+
+library(tidyverse)
+library(ggthemes)
+library(DT)
+library(knitr)
+library(kableExtra)
+
+opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+### county and cbsa centers
+cbsa.loc <- read.csv("data//nba hometowns//cbsa.loc.csv",
+                     stringsAsFactors = FALSE,
+                     na = "",
+                     colClasses = c("CSAFP" = "character",
+                                    "CBSAFP" = "character",
+                                    "GEOID" = "character"))
+
+cty.loc <- read.csv("data//nba hometowns//cty.loc.csv",
+                    stringsAsFactors = FALSE,
+                    na = "",
+                    colClasses = c("STATEFP" = "character",
+                                   "COUNTYFP" = "character",
+                                   "GEOID" = "character",
+                                   "CSAFP" = "character",
+                                   "CBSAFP" = "character"))
+
+
+### player career regular season totals with hometowns
+data.play <- read.csv("data//nba hometowns//data.play.csv",
+                      stringsAsFactors = FALSE,
+                      na = "",
+                      colClasses = c("COUNTYGEOID" = "character",
+                                     "CBSA.Code" = "character",
+                                     "Metropolitan.Division.Code" = "character",
+                                     "cbsa.cty.code" = "character"))
+
+
+### cbsa and non-cbsa counties with historical census
+# va cities and counties combined
+comb.census <- read.csv("data//nba hometowns//comb.census.csv",
+                        stringsAsFactors = FALSE,
+                        na = "",
+                        colClasses = c("GEOID" = "character"))
+
+
+### advanced data by season
+# if multiple teams in season, both total row and team breakdowns
+data.adv.team <- read.csv("data//nba hometowns//data.adv.csv",
+                          stringsAsFactors = FALSE, na = "") %>% 
+  filter(league %in% c("nba", "baa"))
+
+
+### franchise histories
+### franchise histories
+teams <- read.csv("data//nba hometowns//franchises.csv",
+                  stringsAsFactors = FALSE, na = "",
+                  colClasses = c("COUNTYGEOID" = "character",
+                                 "CBSA.Code" = "character"))
+
+```
+
+
+## Background
+
+NBA players come from all across the United States, but some areas of the country have greater reputations as centers of basketball activity than others. Which American cities have produced the most NBA players and has this changed throughout the NBA's history? Are basketball hotbeds from the 1960s still producing the same number of players today or has the game shifted geographically? We will try to answer these questions.
+
+First, all players must be assigned to a single hometown. This is not a simple task as there is not a precise definition for hometown. Should it be birthplace, elementary school city, middle school city, or high school city? It would be simple if all of these places were consistent for each player, but players move around, transfer between many educational institutions, or attend boarding schools in cities they have no real connection to. Ideally for us, hometown should be something like the permanent city of residence where the player spends most of his basketball life before leaving for college or the NBA. This database does not exist, but we can estimate it using biographical data that is freely available. For most players, this will be their high school city. If the high school is a boarding school (ex: Oak Hill Academy in Mouth of Wilson, VA; Findlay Prep in Henderson, NV; Hargrave Military Academy in Chatham, VA) or a pit stop along a string of multiple transfers, we try to find the player's main residence before moving. A lot of this information is available in either [Basketball Reference](https://www.basketball-reference.com/) or the player's college athletic program roster/biography/media guide. [Peach Basket Society](http://peachbasketsociety.blogspot.com/) is incredibly useful for the NBA/BAA's earlier days. Even with the breadth of biographical information at hand, there are many cases where a hometown is difficult to define (try settling on a city for Shaquille O'Neal or Bill Laimbeer).
+
+The cities from the various sources are inconsistent in the level of detail. For example, Khalid Reeves graduated from Christ the King in Middle Village, Queens, New York, NY. Basketball Reference lists the city as Middle Village, NY. Smush Parker graduated from Newton High School in Elmhurst, Queens, New York, NY. His high school city is listed as Queens, NY. For consistency, cities are grouped into Core Based Statistical Areas (CBSA) as defined by the United States Office of Management and Budget. Using this definition, multiple counties can be grouped together into metropolitan or micropolitan areas. This results in New York, Newark, Jersey City, and other surrounding places being grouped into the New York metropolitan area while Philadelphia, Camden, Wilmington, and other surrounding areas being grouped into the Philadelphia metropolitan area. Not all cities can be categorized into CBSAs; cities that cannot be assigned will use their counties instead.
+
+
+## Leading Hometowns
+
+```{r}
+
+### cbsa / county counts and totals
+city.cnt <- data.play %>% 
+  full_join(comb.census %>% 
+              select(state, GEOID, NAME, type, simp.name) %>% 
+              distinct(),
+            by = c("cbsa.cty.code" = "GEOID")) %>% 
+  group_by(state, cbsa.cty.code, NAME, type, simp.name) %>% 
+  summarise(G.lead = paste0(Player[G == max(G)], collapse = ", "),
+            WS.lead = paste0(Player[WS == max(WS)], collapse = ", "),
+            n = sum(!is.na(id)),
+            G = sum(G, na.rm = TRUE),
+            MP = sum(MP, na.rm = TRUE),
+            WS = sum(WS, na.rm = TRUE),
+            VORP = sum(VORP, na.rm = TRUE)) %>% 
+  ungroup()
+
+city.cnt$simp.name[city.cnt$cbsa.cty.code %in% "international"] <- "international"
+city.cnt$simp.name[is.na(city.cnt$cbsa.cty.code)] <- "unknown"
+
+
+### international by country
+int.cnt <- data.play %>% 
+  filter(final.country != "US") %>% 
+  group_by(final.country) %>% 
+  summarise(G.lead = paste0(Player[G == max(G)], collapse = ", "),
+            WS.lead = paste0(Player[WS == max(WS)], collapse = ", "),
+            n = sum(!is.na(id)),
+            G = sum(G, na.rm = TRUE),
+            MP = sum(MP, na.rm = TRUE),
+            WS = sum(WS, na.rm = TRUE),
+            VORP = sum(VORP, na.rm = TRUE)) %>% 
+  ungroup()
+
+```
+
+```{r}
+
+### table of hometowns with at least one player
+city.cnt %>%
+  filter(n > 0,
+         !is.na(state)) %>% 
+  arrange(desc(n)) %>% 
+  select(`State(s)` = state,
+         Area = simp.name,
+         Players = n,
+         `Most Games` = G.lead,
+         `Most WS` = WS.lead) %>% 
+  datatable(class = "cell-border nowrap",
+            rownames = FALSE,
+            options = list(dom = "tpl"))
+
+```
+
+In the table above, we look at the metro areas that have produced the most NBA players. All cities/counties with at least one player that also played at least one regular season game are included. The "Most Games" and "Most WS" columns denote the players with the most regular season games and career Win Shares, respectively. The results are not surprising, with the most populous cities producing the most NBA players. The New York City metro area—which is made up of counties from New York, New Jersey, and Pennsylvania—has put nearly 450 players into the NBA. This is 200 more than either Los Angeles or Chicago, which have produced the second and third most pros. New York, Los Angeles, and Chicago are also the three most populous CBSAs as of the 2010 Census. Pittsburgh is the highest ranked city that is currently without an NBA team, last hosting the ABA's Condors in 1972. Only two cities in the top 25—Riverside, California and Columbus, Ohio—have never been home to a major professional basketball franchise (NBA, BAA, or ABA).
+
+```{r}
+
+### season totals for league
+# make sure multi-team players counted only once for that season
+# minutes available starting 1952, vorp 1974
+# one player missing minutes since 1952 (hennela01 in 1956)
+# many players with multiple teams seasons missing WS
+season.tot <- data.adv.team %>% 
+  group_by(year, id) %>%
+  filter(row_number() == 1) %>% 
+  group_by(year, league) %>% 
+  summarise(n.tot = length(unique(id)),
+            g.tot = sum(G, na.rm = TRUE),
+            mp.tot = sum(MP, na.rm = TRUE),
+            ws.tot = sum(WS, na.rm = TRUE),
+            vorp.tot = sum(VORP, na.rm = TRUE)) %>% 
+  ungroup()
+
+season.tot$mp.tot[season.tot$year < 1952] <- NA
+season.tot$vorp.tot[season.tot$year < 1974] <- NA
+
+
+### season totals by city
+season.cty.tot <- data.adv.team %>% 
+  # keep total row if player on multiple teams in same season
+  group_by(year, id2) %>%
+  filter(row_number() == 1) %>% 
+  ungroup() %>% 
+  # add hometowns
+  left_join(data.play %>% 
+              select(id, cbsa.cty.code),
+            by = "id") %>% 
+  # season city totals
+  group_by(year, cbsa.cty.code) %>% 
+  summarise(n = length(unique(id)),
+            g = sum(G, na.rm = TRUE),
+            mp = sum(MP, na.rm = TRUE),
+            ws = sum(WS, na.rm = TRUE),
+            vorp = sum(VORP, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  # add hometowns without any players
+  complete(cbsa.cty.code = c(city.cnt$cbsa.cty.code, "international", NA),
+           nesting(year),
+           fill = list(n = 0,
+                       g = 0,
+                       mp = 0,
+                       ws = 0,
+                       vorp = 0)) %>% 
+  # add city names
+  left_join(comb.census %>% 
+              select(GEOID, NAME, type, simp.name),
+            by = c("cbsa.cty.code" = "GEOID"))
+
+
+### percentages by season and city
+season.cty.tot <- season.cty.tot %>% 
+  left_join(season.tot,
+            by = "year") %>% 
+  mutate(n.pct = n / n.tot,
+         g.pct = g / g.tot,
+         mp.pct = mp / mp.tot,
+         ws.pct = ws / ws.tot,
+         vorp.pct = vorp / vorp.tot)
+
+```
+
+```{r, fig.height = 5, fig.width = 8.5, fig.align = "center"}
+
+### plot percentage of league by season and city
+# show top 15 cities
+# minutes and games lead to similar graphs - WS and VORP differrent
+season.cty.tot %>% 
+  filter(cbsa.cty.code %in% (city.cnt %>% 
+                               filter(!is.na(type)) %>% 
+                               top_n(15, n) %>% 
+                               pull(cbsa.cty.code)))%>% 
+  ggplot(aes(x = year, y = n.pct, group = simp.name)) +
+  geom_smooth(se = FALSE, alpha = 0.1, size = 0.75, span = 0.5) +
+  geom_line() +
+  facet_wrap(~ simp.name, nrow = 3) +
+  scale_y_continuous(labels = scales::percent_format(1)) +
+  labs(x = "Season", y = "% of Players in League",
+       title = "Percent of players in the NBA from each city.") +
+  theme_bw() +
+  theme(panel.grid.minor = element_blank())
+
+```
+
+Next we will look at how the impact of some of the major cities on the NBA has changed throughout the league's history. This is done by breaking down the percent of all players in the league that call each city home for every season (i.e., for each season, divide the number of players in the league from that city by the total number of players in the NBA that appeared in at least one game). The results for the top 15 cities are plotted, along with LOESS smoothers in blue to help cut out some of the noise.
+
+Immediately noticeable from the graph is the decline in influence of New York City on the NBA. The metro started off accounting for about 20% of all league players for most of the 1950s, a greater percentage than any other city in any era. That influence has declined every year since, dropping to about 10% to 15% in the 1960s and 1970s to just over 5% in the 2010s. Despite that continuous decline, they still led the league in total players nearly every year until this last decade when Los Angeles took the lead. Los Angeles has slowly risen in percent of league players and has had the most players in the NBA every season since 2009 (except for 2013 when New York retook the lead for that single season). Other risers include Atlanta and Dallas, although both cities also had large population growth during this time. Decliners include St. Louis and Pittsburgh which each had a higher proportion of players in 1950s and 1960s but have had weaker numbers compared to other major cities every decade since.
+
+```{r, fig.height = 4, fig.width = 8.5, fig.align = "center"}
+
+### plot percentage of league by season - international
+season.cty.tot %>% 
+  filter(cbsa.cty.code == "international") %>% 
+  ggplot(aes(x = year, y = n.pct)) +
+  geom_line(size = 1) +
+  scale_y_continuous(labels = scales::percent_format(1)) +
+  labs(x = "Season", y = "% of Players in League",
+       title = "Percent of players in the NBA with an international hometown.") +
+  theme_bw() +
+  theme(panel.grid.minor = element_blank())
+
+```
+
+The general decrease in percentage of players by city is the result of the spread of basketball internationally. A few large U.S. metros no longer have a monopoly in producing talent like they did in the 1950s. The number of NBA players with a non-U.S. hometown has increased nearly every season since the 1980s. There were only three players international players in the BAA's inaugural season in 1947: Norm Baker of Victoria, British Columbia, Canada and both Hank Biasatti and Gino Sovran of Windsor, Ontario, Canada. All three had careers that lasted just that one season, and there would be no players with confirmed international hometowns in the NBA from 1948 to 1978. The international surge started with the 1979 season, seeing the debuts of Lars Hansen out of Coquitlam, British Columbia and Mychal Thompson out of The Bahamas. As of the 2019 season, international players made up about 20% of the players.
+
+
+## Per Capita Rates
+
+```{r}
+
+### debuts per capita
+# use debut season
+# compare to closest census year; round 5 up; for >= 2015, use 2010
+data.play <- data.play %>% 
+  mutate(census.year = floor(From / 10 + 0.5) * 10,
+         census.year = ifelse(census.year >= 2015, 2010, census.year))
+
+
+### summary by location and census
+cty.census.cnt <- comb.census %>% 
+  gather(key = "year", value = "pop", -(state:type), -simp.name) %>% 
+  mutate(year = as.integer(parse_number(year))) %>% 
+  left_join(data.play %>% 
+              filter(!is.na(cbsa.cty.code)) %>% 
+              group_by(cbsa.cty.code, census.year) %>% 
+              summarise(n = length(unique(id)),
+                        g = sum(G, na.rm = TRUE),
+                        mp = sum(MP, na.rm = TRUE),
+                        ws = sum(WS, na.rm = TRUE),
+                        vorp = sum(VORP, na.rm = TRUE),
+                        earliest = min(From, na.rm = TRUE),
+                        latest = max(From, na.rm = TRUE)) %>% 
+              ungroup(),
+            by = c("GEOID" = "cbsa.cty.code",
+                   "year" = "census.year")) %>% 
+  filter(year >= 1950) %>% 
+  mutate_at(vars(n:vorp),
+            ~ifelse(is.na(.), 0, .)) %>% 
+  arrange(GEOID, year)
+
+
+### mean debuts per 100,000 per census
+cty.pcap <- cty.census.cnt %>% 
+  mutate(percap = n / pop * 100000) %>% 
+  group_by(GEOID, type, simp.name) %>% 
+  summarise(m.pop = mean(pop),
+            m.percap = mean(percap),
+            tot = sum(n),
+            earliest = min(earliest, na.rm = TRUE),
+            latest = max(latest, na.rm = TRUE)) %>% 
+  ungroup()
+
+```
+
+Earlier we saw that the areas that produced the most players are also the areas with the largest populations. We can control for this by scaling the counts from each city by population, giving per capita rates. The simplest way of doing this is by dividing the total number of players from each city by their respective populations and then multiplying by 100,000 to give the number of NBA players per 100,000 people. This is only a rough estimate because populations are not constant over time. Cities grow and shrink, doing so at different rates. Better estimates can be obtained if we take advantage of the fact that there is a Census every ten years. We obtain Census numbers for U.S. counties from 1950 to 2010. There are some issues with counties changing borders, but these effects will be ignored for simplicity. Players will be assigned to the closest Census of their debut season: the 1946-47 to 1954-55 seasons will use the 1950 Census, the 1955-56 to 1964-65 seasons will use the 1960 Census, and so on. The 2014-15 to 2018-19 seasons will use the 2010 Census because the 2020 Census does not yet exist.
+
+For each census, the number of players that made their NBA debut are divided by the population and then multiplied by 100,000. For each area, the mean of these numbers for all seven Censuses is taken, resulting in the average number of NBA players debuting per 100,000 people every 10 years. We start off by looking at the cities with the highest average debuts per 100,000. Note that cities are filtered to those that have produced at least four players, removing inflated rates from cities that have tiny populations but have produced few players. The "Earliest" column shows the first season in which the city had a player debut in the NBA; the "Latest" column shows the most recent season.
+
+```{r}
+
+# highest rates, n >= 4
+cty.pcap %>%
+  filter(tot >= 4) %>% 
+  arrange(desc(m.percap)) %>% 
+  select(Area = simp.name,
+         `Avg Population` = m.pop,
+         `Avg Debuts Per Census*` = m.percap,
+         `Total` = tot,
+         Earliest = earliest,
+         Latest = latest) %>% 
+  datatable(
+    class = "cell-border nowrap",
+    rownames = FALSE,
+    options = list(dom = "tpl"),
+    caption = htmltools::tags$caption(
+      style = 'caption-side: bottom; text-align: center;',
+      '* Per 100,000')
+  ) %>% 
+  formatRound(columns = "Avg Population", digits = 0) %>%
+  formatRound(columns = "Avg Debuts Per Census*", digits = 2)
+
+```
+
+Washington, Indiana finishes atop the list, putting 6 players into the NBA with an average population of only 28,120 from 1950 to 2010. This results in an average of nearly 3 players per 100,000 residents every 10 years. This result is slightly less impressive when we look into the players from 
+the city:
+
+```{r}
+
+# Washington, IN players
+data.play %>% 
+  filter(cbsa.cty.code == '47780') %>% 
+  select(Player, From, To,
+         City = final.city,
+         State = final.state) %>% 
+  arrange(From) %>% 
+  kable(caption = "Players from Washington, Indiana") %>% 
+  kable_styling(full_width = FALSE)
+
+```
+
+The Zeller brothers—Luke, Tyler, and Cody—make up half of all the NBA pros from Washington. Two others, Leo Klier and Jim Riffey, were BAAers with short careers. All six went to Washington High School, but the Zeller brothers each ended up at different colleges. The same applies to the next area on the list: Desha County, Arkansas.
+
+```{r}
+
+# Desha County, AR players
+data.play %>% 
+  filter(cbsa.cty.code == '05041') %>% 
+  select(Player, From, To,
+         City = final.city,
+         State = final.state) %>% 
+  arrange(From) %>% 
+  kable(caption = "Players from Desha County, Arkansas") %>% 
+  kable_styling(full_width = FALSE)
+
+```
+
+Brothers Wil, Caldwell, Major, and Charles Jones were all born in McGehee, graduated high school at Desha Central, played college basketball at Albany State in Georgia, and finally drafted into the NBA. The siblings make up the NBA's only pros out of Desha County. The list gets more interesting with Kinston, North Carolina.
+
+```{r}
+
+# Kinston, NC players
+data.play %>% 
+  filter(cbsa.cty.code == '28820') %>% 
+  select(Player, From, To,
+         City = final.city,
+         State = final.state) %>% 
+  arrange(From) %>% 
+  kable(caption = "Players from Kinston, North Carolina") %>% 
+  kable_styling(full_width = FALSE)
+
+```
+
+[Kinston](http://www.espn.com/espn/feature/story/_/id/22467698/how-kinston-north-carolina-became-greatest-producer-nba-talent-america), with a population of close to 60,000, has produced six NBA players since 1978. This group does include one pair of brothers in Tony Dawson and Jerry Stackhouse. Dawson played two seasons in the NBA, appearing in four games in 1991 and two games in 1995. The rest have had mostly substantial careers. Cedric Maxwell won two championships with the Celtics, including the Finals MVP award in 1981. Charles Shackleford logged 303 games over 6 seasons for 4 different teams. Jerry Stackhouse was a 2 time All-Star over a 18 year career. Reggie Bullock and Brandon Ingram are still active NBA players as of the 2020 NBA season. One more Kinston product, Herbert Hill, was drafted but never played a game. All players attended Kinston High School (Stackhouse later transfered to basketall factory Oak Hill Academy). Mitchell Wiggins, the father of the 2014 NBA draft's number one pick Andrew Wiggins, is from Grifton, North Carolina and played six seasons in the league all while battling substance abuse issues. Grifton can be grouped into either the Greenville Metropolitan area or the Kinston Micropolitan area depending on the exact coordinates in the city. Our data groups Grifton into Greenville, but the city could very well have been included with Kinston, highlighting a weakness with our dataset.
+
+The list of areas with the highest per capita rates is dominated by cities and counties with small populations. We look at areas with average populations of at least 250,000 since 1950:
+
+```{r}
+
+# highest rates, average pop >= 250000
+cty.pcap %>%
+  filter(m.pop >= 250000) %>% 
+  arrange(desc(m.percap)) %>% 
+  select(City = simp.name,
+         `Avg Population` = m.pop,
+         `Avg Debuts Per Census*` = m.percap,
+         `Total` = tot,
+         Earliest = earliest,
+         Latest = latest) %>% 
+  datatable(
+    class = "cell-border nowrap",
+    rownames = FALSE,
+    options = list(dom = "tpl"),
+    caption = htmltools::tags$caption(
+      style = 'caption-side: bottom; text-align: center;',
+      '* Per 100,000')
+  ) %>% 
+  formatRound(columns = "Avg Population", digits = 0) %>%
+  formatRound(columns = "Avg Debuts Per Census*", digits = 2)
+
+```
+
+Jackson, Mississippi has the highest rate among these larger areas, producing 27 NBA players with an average population of about 450,000. The most well-known of these 27 include Lindsey Hunter, Monta Ellis, and Mo Williams. Indianapolis, Indiana is the leading city among populations of at least a million, putting Hall of Famers Oscar Robertson, George McGinnis, and Louie Dampier (though more for his ABA contributions) into the league. One note about this top ten of larger cities is the prevalence of southern and midwest cities.
+
+Some other findings:
+
+* Haskell County, Kansas is the least-populous area to have ever produced an NBA talent. The county put Otto Schnellbacher into the NBA in 1949 despite an average population of `r format(round(cty.pcap$m.pop[cty.pcap$GEOID == "20081"], 0), big.mark = ",")` (and of only `r format(cty.census.cnt$pop[cty.census.cnt$GEOID == "20081" & cty.census.cnt$year == 1950], big.mark = ",")` back in 1950). Burke County, North Dakota, average population `r format(round(cty.pcap$m.pop[cty.pcap$GEOID == "38013"], 0), big.mark = ",")`, provides a more recent example with Les Jepsen in 1991.
+
+* Honolulu, Hawaii is the largest metro to have never produced an NBA talent. Even with an average population of over 700,000 since 1950 (and almost a million in 2010), no NBA player has called Honolulu home. The state of Hawaii itself has only produced a single pro—two-time All-Star Red Rocha—whose career spanned 1948 to 1957. Cedric Ceballos, the only other player to have been born in Hawaii, grew up in Los Angeles.
+
+* Maine and Vermont are the only states to not be the homes of any NBA players. Jeff Turner and Duncan Robinson were both born in Maine, but grew up in Florida and New Hampshire, respectively. A number of NBA players attended Pittsfield's Maine Central Institute, but it a boarding school that attracts athletes. Bruce Brown attended Saxtons River's Vermont Academy, but he grew up around the Boston area.
+
+
+## Geographical Distribution
+
+```{r}
+
+### total players from each city (cbsa/county)
+city.cnt.loc <- city.cnt %>% 
+  left_join(cbsa.loc %>% 
+              select(GEOID, lon, lat) %>% 
+              bind_rows(cty.loc %>% 
+                          select(GEOID, lon, lat)),
+            by = c("cbsa.cty.code" = "GEOID"))
+
+```
+
+```{r, fig.height = 5, fig.width = 8.5, fig.align = "center"}
+# points for all cbsa/counties with at least one player
+ggplot() +
+  geom_polygon(data = map_data("state"),
+               aes(x = long, y = lat, group = group),
+               color = "gray65", fill = "gray90", size = 0.1) +
+  geom_point(data = city.cnt.loc %>% 
+               filter(n > 0,
+                      !state %in% c("AK", "HI")),
+             aes(x = lon, y = lat, size = n, fill = n),
+             shape = 21, alpha = 0.5) +
+  geom_text(data = city.cnt.loc %>% 
+              filter(n > 100,
+                     !state %in% c("AK", "HI")),
+            aes(x = lon, y = lat, label = simp.name),
+            hjust = 0, nudge_x = 1, size = 2.5) +
+  scale_size_continuous(guide = FALSE) +
+  scale_fill_gradient(name = "# of Players", low = "white", high = "red") +
+  coord_map(projection = "albers", lat0 = 39, lat1 = 45) +
+  # coord_map(projection = "mercator") + 
+  theme_map() +
+  labs(title = "Number of NBA players from each city.")
+
+```
+
+```{r}
+
+### pct of players from city at each decade - group players by debut season
+city.dec.debut <- data.play %>% 
+  full_join(comb.census %>% 
+              select(state, GEOID, NAME, type, simp.name) %>% 
+              distinct(),
+            by = c("cbsa.cty.code" = "GEOID")) %>% 
+  mutate(From.dec = floor(From / 10) * 10) %>% 
+  group_by(From.dec, state, cbsa.cty.code, NAME, type, simp.name) %>% 
+  summarise(G.lead = paste0(Player[G == max(G)], collapse = ", "),
+            WS.lead = paste0(Player[WS == max(WS)], collapse = ", "),
+            n = sum(!is.na(id)),
+            G = sum(G, na.rm = TRUE),
+            MP = sum(MP, na.rm = TRUE),
+            WS = sum(WS, na.rm = TRUE),
+            VORP = sum(VORP, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  group_by(From.dec) %>% 
+  mutate(n.pct = n / sum(n)) %>% 
+  left_join(cbsa.loc %>% 
+              select(GEOID, lon, lat) %>% 
+              bind_rows(cty.loc %>% 
+                          select(GEOID, lon, lat)),
+            by = c("cbsa.cty.code" = "GEOID"))
+
+```
+
+```{r, fig.height = 5, fig.width = 8.5, fig.align = "center"}
+ggplot() +
+  geom_polygon(data = map_data("state"),
+               aes(x = long, y = lat, group = group),
+               color = "gray65", fill = "gray90", size = 0.1) +
+  geom_point(data = city.dec.debut %>% 
+               filter(n > 0,
+                      !state %in% c("AK", "HI")),
+             aes(x = lon, y = lat, size = n.pct, fill = n.pct),
+             shape = 21, alpha = 0.5) +
+  facet_wrap(~ From.dec) +
+  scale_size_continuous(guide = FALSE) +
+  scale_fill_gradient(low = "white", high = "blue", guide = FALSE) +
+  coord_map(projection = "albers", lat0 = 39, lat1 = 45) +
+  # coord_map(projection = "mercator") + 
+  theme_map() +
+  theme(strip.text.x = element_text(size = 10)) +
+  labs(title = "Number of NBA debuts from each city by decade.")
+
+```
+
+All areas that have produced at least one NBA player are plotted in the maps above. The first plot shows the entire history of the league. The second plot shows results by the decade that players debuted, giving a sense of the changing geographic distribution of hometowns. Notice the concentration of talent in the Mid-Atlantic (mostly the New York area) and eastern part of the Midwest in the 1940s and 1950s. Talent started arriving in the NBA from the South in large numbers beginning with the 1970s. California has become a bigger contributor over time. The less dense Moutain, Southwest, and western Midwest states have continued to stay relatively quiet throughout the NBA's history.
+
+
+## Hometown Heroes
+
+```{r}
+
+### map teams to hometown players
+# only include seasons where player hometown matches team city
+team.home <- teams %>% 
+  left_join(data.adv.team %>% 
+              filter(Tm != "TOT") %>% 
+              group_by(id, Tm) %>% 
+              summarise_at(vars(c("G", "MP", "WS", "VORP")),
+                           sum, na.rm = TRUE) %>% 
+              ungroup() %>% 
+              left_join(data.play %>% 
+                          select(id, Player,
+                                 final.city, final.state, final.country,
+                                 cbsa.cty.code),
+                        by = "id"),
+            by = c("Abbreviation" = "Tm")) %>% 
+  filter(CBSA.Code == cbsa.cty.code)
+
+
+### group franchises if same city
+team.home.comb <- team.home %>% 
+  group_by(Franchise, CBSA.Code) %>% 
+  mutate(abb.gp = Abbreviation[row_number() == 1],
+         team.gp = Team[row_number() == 1],
+         to.gp = To[row_number() == 1]) %>% 
+  group_by(Status, Franchise, to.gp, abb.gp, team.gp, id, Player, final.city, final.state, cbsa.cty.code) %>% 
+  summarise_at(vars(c("G", "MP", "WS", "VORP")),
+               sum, na.rm = TRUE) %>% 
+  ungroup()
+
+# replace groupings with latest iterations of franchise if same city
+# mostly fix for Charlotte Hornets
+  # most recent Charlotte player from franchise played for Bobcats despite later re-branding
+team.home.comb <- team.home.comb %>% 
+  left_join(teams %>% 
+              group_by(Franchise, CBSA.Code) %>% 
+              summarise(Team = Team[To == max(To)],
+                        Abbreviation = Abbreviation[To == max(To)],
+                        To = max(To)) %>% 
+              ungroup(),
+            by = c("Franchise", "cbsa.cty.code" = "CBSA.Code")) %>% 
+  # # check which rows need replacements
+  # filter(abb.gp != Abbreviation | team.gp != Team | to.gp != To) %>% 
+  mutate(to.gp = To,
+         abb.gp = Abbreviation,
+         team.gp = Team) %>% 
+  select(-Team, -To, -Abbreviation)
+
+
+### canadian teams - players
+teams.can <- teams %>% 
+  left_join(data.adv.team %>% 
+              filter(Tm != "TOT") %>% 
+              group_by(id, Tm) %>% 
+              summarise_at(vars(c("G", "MP", "WS", "VORP")),
+                           sum, na.rm = TRUE) %>% 
+              ungroup() %>% 
+              left_join(data.play %>% 
+                          select(id, Player,
+                                 final.city, final.state, final.country,
+                                 cbsa.cty.code),
+                        by = "id"),
+            by = c("Abbreviation" = "Tm")) %>% 
+  filter(Team %in% c("Toronto Raptors",
+                     "Vancouver Grizzlies"),
+         final.country %in% "Canada")
+
+
+### team counts and G/WS leaders
+hometown.leaders <- team.home.comb %>% 
+  group_by(Status, Franchise, to.gp, abb.gp, team.gp, cbsa.cty.code) %>% 
+  summarise(n = n(),
+            G.lead = Player[G == max(G)],
+            G.lead.val = max(G[G == max(G)]),
+            WS.lead = paste0(Player[WS == max(WS)], collapse = ", "),
+            WS.lead.val = max(WS[WS == max(WS)])) %>% 
+  ungroup()
+
+
+### formatted table for printing
+hometown.form <- hometown.leaders %>% 
+  mutate(cur = to.gp == max(to.gp)) %>% 
+  arrange(desc(cur), Franchise) %>% 
+  select(`Last Season` = to.gp,
+         Franchise,
+         Team = team.gp,
+         `# of Players` = n, 
+         `Most Games` = G.lead,
+         `Most WS` = WS.lead)
+
+```
+
+```{r}
+
+hometown.form %>% 
+  datatable(
+    class = "cell-border nowrap",
+    rownames = FALSE,
+    options = list(dom = "tpl"))
+
+```
+
+We can also look at all players that had the opportunity to play for their hometown teams. There were 534 instances of this in the NBA's history given our dataset. Note that this can apply to players multiple times; a Los Angeles native can have played for both the Clippers and Lakers. The definitions of home using CBSAs are still used, so Cleveland does not qualify as LeBron James' hometown because Cleveland and Akron are defined as different metropolitan areas. The results for all U.S.-based teams are presented in the table above, along with some defunct franchises. Every active team has had at least one player who grew up in the city end up playing for them. Unsurprsingly, the two New York teams, the New York Knicks and Brooklyn Nets, have had the most hometown players. The Knicks have 86 and the Nets have 46.
+
+Michael Cooper appeared in 873 games for his hometown Los Angeles Lakers, more than any other player for their hometown team. Miami's Udonis Haslem played 854 for the Heat and Inglewood's Byron Scott played 846 for the Lakers. Hall of Famer Paul Arizin has had one of the most impressive careers for a hometown team, spending his entire NBA life with the Philadelphia Warriors and leading them to an NBA title in 1956. Philadelphia's Wilt Chamberlain played for two different franchises in his hometown—the Warriors from 1960 to 1962 and the 76ers from 1965 to 1968—winning the title in 1967.
+
+While not on the table above, there have been four Canadians that have suited up for the Toronto Raptors, three of which are from the Toronto area. Of the three, Cory Joseph has played the most games and has the most Win Shares.
