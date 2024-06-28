@@ -19,52 +19,82 @@ tags:
 <script src="{{< blogdown/postref >}}index_files/dt-core/js/jquery.dataTables.min.js"></script>
 <link href="{{< blogdown/postref >}}index_files/crosstalk/css/crosstalk.min.css" rel="stylesheet" />
 <script src="{{< blogdown/postref >}}index_files/crosstalk/js/crosstalk.min.js"></script>
+<link href="{{< blogdown/postref >}}index_files/htmltools-fill/fill.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/htmlwidgets/htmlwidgets.js"></script>
+<link href="{{< blogdown/postref >}}index_files/datatables-css/datatables-crosstalk.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/datatables-binding/datatables.js"></script>
+<script src="{{< blogdown/postref >}}index_files/jquery/jquery-3.6.0.min.js"></script>
+<link href="{{< blogdown/postref >}}index_files/dt-core/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="{{< blogdown/postref >}}index_files/dt-core/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/dt-core/js/jquery.dataTables.min.js"></script>
+<link href="{{< blogdown/postref >}}index_files/crosstalk/css/crosstalk.min.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/crosstalk/js/crosstalk.min.js"></script>
 <script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
 <link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
 
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
 
-<div id="background" class="section level3">
-<h3>Background</h3>
-<p>The late Jonathan Gold, former Pulitzer Prize winning food critic for the <em>Los Angeles Times</em> and before that, <em>LA Weekly</em>, released an annual list of the city’s best restaurants between 2005 and 2017. These restaurants spanned Los Angeles and Orange County and included all types of cuisines and price points. Despite the yearly lists being the work of a single critic, they provided a sense of the pulse of the Los Angeles dining scene for each of those years. This is true because of the breadth of restaurants Gold included, as Michelin-type kitchens with $150 tasting menus were as likely to be mentioned as regional Chinese mom-and-pops in suburban strip malls. These restaurants can be mapped to locate the neighboods with the highest density of good restaurants while also spotlighting the city’s foodie deserts.</p>
-<p>From 2005 to 2011, these articles were released as unranked lists in <em>LA Weekly</em> under the title “Jonathan Gold’s 99 Essential Restaurants” (although some years included more than the nominal 99). From 2013 to 2017, they became ranked lists in the <em>Los Angeles Times</em> as “Jonathan Gold’s 101 Best Restaurants.” Twelve years worth of articles were scraped, leading to a total of 366 different restaurants receiving mentions. If restaurants with multiple addresses, whether because they relocated or had more than one location, are all counted separately, this total grows to 399. Of these 399, 230 are still open as of April 9, 2019.</p>
-</div>
-<div id="mapping-the-county" class="section level3">
-<h3>Mapping the County</h3>
-<p>We start by plotting every restaurant that has been mentioned by Gold using a map from Google Maps. Note that some businesses have the same addresses either because they are located in the same plaza or took over the building of a previously closed restaurant. Food trucks without fixed locations not plotted:</p>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Most of Gold’s restaurants are located near the center of the map, corresponding to Central and West Los Angeles. Other cities in the county outside of Los Angeles are also represented, with the San Fernando Valley, western San Gabriel Valley, Glendale, and Pasadena also getting their restaurants highlighted. Cities in the South Bay and Orange County only have a few scattered entries on the annual lists, although this could be less an indication of the quality of food in those areas and more a reflection of Gold’s focus on Los Angeles proper, especially in regards to Orange County.</p>
+### Background
+
+The late Jonathan Gold, former Pulitzer Prize winning food critic for the *Los Angeles Times* and before that, *LA Weekly*, released an annual list of the city’s best restaurants between 2005 and 2017. These restaurants spanned Los Angeles and Orange County and included all types of cuisines and price points. Despite the yearly lists being the work of a single critic, they provided a sense of the pulse of the Los Angeles dining scene for each of those years. This is true because of the breadth of restaurants Gold included, as Michelin-type kitchens with \$150 tasting menus were as likely to be mentioned as regional Chinese mom-and-pops in suburban strip malls. These restaurants can be mapped to locate the neighboods with the highest density of good restaurants while also spotlighting the city’s foodie deserts.
+
+From 2005 to 2011, these articles were released as unranked lists in *LA Weekly* under the title “Jonathan Gold’s 99 Essential Restaurants” (although some years included more than the nominal 99). From 2013 to 2017, they became ranked lists in the *Los Angeles Times* as “Jonathan Gold’s 101 Best Restaurants.” Twelve years worth of articles were scraped, leading to a total of 366 different restaurants receiving mentions. If restaurants with multiple addresses, whether because they relocated or had more than one location, are all counted separately, this total grows to 399. Of these 399, 230 are still open as of April 9, 2019.
+
+### Mapping the County
+
+We start by plotting every restaurant that has been mentioned by Gold using a map from Google Maps. Note that some businesses have the same addresses either because they are located in the same plaza or took over the building of a previously closed restaurant. Food trucks without fixed locations not plotted:
+
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" />
+
+Most of Gold’s restaurants are located near the center of the map, corresponding to Central and West Los Angeles. Other cities in the county outside of Los Angeles are also represented, with the San Fernando Valley, western San Gabriel Valley, Glendale, and Pasadena also getting their restaurants highlighted. Cities in the South Bay and Orange County only have a few scattered entries on the annual lists, although this could be less an indication of the quality of food in those areas and more a reflection of Gold’s focus on Los Angeles proper, especially in regards to Orange County.
+
 <div class="datatables html-widget html-fill-item" id="htmlwidget-1" style="width:100%;height:auto;"></div>
 <script type="application/json" data-for="htmlwidget-1">{"x":{"filter":"none","vertical":false,"data":[["Central L.A.","Westside","San Gabriel Valley","San Fernando Valley","Verdugos","Southeast","Northeast L.A.","South L.A.","Eastside","South Bay","Harbor","Angeles Forest","Antelope Valley","Northwest County","Pomona Valley","Santa Monica Mountains"],[114,42,21,14,9,5,4,4,3,6,1,0,0,0,0,0],[79,41,15,7,6,5,4,4,4,1,0,0,0,0,0,0],[193,83,36,21,15,10,8,8,7,7,1,0,0,0,0,0],[0.5906735751295337,0.5060240963855421,0.5833333333333334,0.6666666666666666,0.6,0.5,0.5,0.5,0.4285714285714285,0.8571428571428571,1,null,null,null,null,null]],"container":"<table class=\"cell-border nowrap\">\n  <thead>\n    <tr>\n      <th>Region<\/th>\n      <th>Open<\/th>\n      <th>Closed<\/th>\n      <th>Total<\/th>\n      <th>% Still Open<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"tp","columnDefs":[{"targets":4,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatPercentage(data, 0, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[1,2,3,4]},{"name":"Region","targets":0},{"name":"Open","targets":1},{"name":"Closed","targets":2},{"name":"Total","targets":3},{"name":"% Still Open","targets":4}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":["options.columnDefs.0.render"],"jsHooks":[]}</script>
-<p>The <em>Los Angeles Times</em>’ <a href="http://maps.latimes.com/neighborhoods/">Mapping L.A.</a> project breaks Los Angeles County up into 16 regions, which are in turn further broken down into 272 neighborhoods, providing maps and demographic information for each. The above table summarizes the region counts for all 12 years of data. Central L.A. is the clear leader, containing about half of all of Jonathan Gold’s favorite restaurants. The five regions with no restaurants on the list, while technically parts of Los Angeles County, are on the outskirts of the county and contain independent cities generally not considered as part of Los Angeles when dealing the city. Of regions that actually contain neighborhoods in the city of Los Angeles, the Harbor (which also contains Long Beach) is the most bereft of acclaimed food spots. The Harbor region encompasses only one Gold pick, Harbor Gateway’s Sanuki no Sato, which appeared on the list in 2008 and 2009. Orange County, not listed in the table, has a total of 6 restaurants, 5 of which are still open.</p>
-</div>
-<div id="mapping-the-city" class="section level3">
-<h3>Mapping the City</h3>
-<p>Zooming in on Central Los Angeles and the Westside gives a clearer look at the more food dense regions:</p>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>The above map was created using the <em>Los Angeles Times</em>’ <a href="http://maps.latimes.com/neighborhoods/">Mapping L.A.</a> definitions of neighborhood boundaries. Unsurprisingly, neighborhoods that have been written up about for their strong food scenes (Downtown, Koreatown, Beverly Grove/Fairax, and others) stand out as hot spots. Many neighborhoods without any restaurants lean residential or industrial.</p>
+
+The *Los Angeles Times*’ [Mapping L.A.](http://maps.latimes.com/neighborhoods/) project breaks Los Angeles County up into 16 regions, which are in turn further broken down into 272 neighborhoods, providing maps and demographic information for each. The above table summarizes the region counts for all 12 years of data. Central L.A. is the clear leader, containing about half of all of Jonathan Gold’s favorite restaurants. The five regions with no restaurants on the list, while technically parts of Los Angeles County, are on the outskirts of the county and contain independent cities generally not considered as part of Los Angeles when dealing the city. Of regions that actually contain neighborhoods in the city of Los Angeles, the Harbor (which also contains Long Beach) is the most bereft of acclaimed food spots. The Harbor region encompasses only one Gold pick, Harbor Gateway’s Sanuki no Sato, which appeared on the list in 2008 and 2009. Orange County, not listed in the table, has a total of 6 restaurants, 5 of which are still open.
+
+### Mapping the City
+
+Zooming in on Central Los Angeles and the Westside gives a clearer look at the more food dense regions:
+
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" />
+
+The above map was created using the *Los Angeles Times*’ [Mapping L.A.](http://maps.latimes.com/neighborhoods/) definitions of neighborhood boundaries. Unsurprisingly, neighborhoods that have been written up about for their strong food scenes (Downtown, Koreatown, Beverly Grove/Fairax, and others) stand out as hot spots. Many neighborhoods without any restaurants lean residential or industrial.
+
 <div class="datatables html-widget html-fill-item" id="htmlwidget-2" style="width:100%;height:auto;"></div>
 <script type="application/json" data-for="htmlwidget-2">{"x":{"filter":"none","vertical":false,"data":[["Downtown","Beverly Grove","Fairfax","Hollywood","Santa Monica","Koreatown","Beverly Hills","Culver City","San Gabriel","West Hollywood","East Hollywood","Studio City","Venice","Chinatown","Pasadena","Sawtelle","Hancock Park","Silver Lake","Westlake","Glendale","Arcadia","Boyle Heights","Eagle Rock","Monterey Park","Alhambra","Brentwood","Los Feliz","Artesia","Historic South-Central","Palms","Pico-Robertson","Rosemead","South Pasadena","Westwood","Bell","Century City","East Los Angeles","Encino","Harvard Heights","Highland Park","Hollywood Hills West","Inglewood","Manhattan Beach","Mid-City","Norwalk","Pico-Union","Reseda","Sun Valley","Van Nuys","West Adams","West Los Angeles","Whittier","Altadena","Atwater Village","Avocado Heights","Baldwin Hills/Crenshaw","Burbank","Carthay","Chatsworth","Cheviot Hills","Commerce","Compton","Echo Park","Elysian Valley","Harbor Gateway","Hawthorne","Larchmont","Lawndale","Leimert Park","Mar Vista","Mid-Wilshire","Pacific Palisades","Rancho Park","Sherman Oaks","South El Monte","Torrance","Valley Glen","Watts","West Covina","West Whittier-Los Nietos"],["Central L.A.","Central L.A.","Central L.A.","Central L.A.","Westside","Central L.A.","Westside","Westside","San Gabriel Valley","Central L.A.","Central L.A.","San Fernando Valley","Westside","Central L.A.","Verdugos","Westside","Central L.A.","Central L.A.","Central L.A.","Verdugos","San Gabriel Valley","Eastside","Northeast L.A.","San Gabriel Valley","San Gabriel Valley","Westside","Central L.A.","Southeast","South L.A.","Westside","Westside","San Gabriel Valley","San Gabriel Valley","Westside","Southeast","Westside","Eastside","San Fernando Valley","Central L.A.","Northeast L.A.","Central L.A.","South Bay","South Bay","Central L.A.","Southeast","Central L.A.","San Fernando Valley","San Fernando Valley","San Fernando Valley","South L.A.","Westside","San Gabriel Valley","Verdugos","Northeast L.A.","San Gabriel Valley","South L.A.","San Fernando Valley","Central L.A.","San Fernando Valley","Westside","Southeast","Southeast","Central L.A.","Central L.A.","Harbor","South Bay","Central L.A.","South Bay","South L.A.","Westside","Central L.A.","Westside","Westside","San Fernando Valley","San Gabriel Valley","South Bay","San Fernando Valley","South L.A.","San Gabriel Valley","Southeast"],[30,12,9,9,9,12,6,5,8,5,6,5,3,5,5,5,5,6,2,3,3,2,3,1,4,3,2,2,2,2,0,3,0,3,1,2,1,1,2,1,1,2,2,2,1,2,2,1,2,1,2,1,1,0,0,1,1,1,1,1,1,0,0,1,1,1,1,1,0,1,1,0,0,0,0,0,1,0,1,0],[15,14,11,11,11,5,7,7,3,5,3,4,6,3,3,3,2,1,5,3,2,3,2,4,0,1,2,1,1,1,3,0,3,0,1,0,1,1,0,1,1,0,0,0,1,0,0,1,0,1,0,1,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,1,0,0,1,1,1,1,1,0,1,0,1],[45,26,20,20,20,17,13,12,11,10,9,9,9,8,8,8,7,7,7,6,5,5,5,5,4,4,4,3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0.6666666666666666,0.4615384615384616,0.45,0.45,0.45,0.7058823529411765,0.4615384615384616,0.4166666666666667,0.7272727272727273,0.5,0.6666666666666666,0.5555555555555556,0.3333333333333333,0.625,0.625,0.625,0.7142857142857143,0.8571428571428571,0.2857142857142857,0.5,0.6,0.4,0.6,0.2,1,0.75,0.5,0.6666666666666666,0.6666666666666666,0.6666666666666666,0,1,0,1,0.5,1,0.5,0.5,1,0.5,0.5,1,1,1,0.5,1,1,0.5,1,0.5,1,0.5,1,0,0,1,1,1,1,1,1,0,0,1,1,1,1,1,0,1,1,0,0,0,0,0,1,0,1,0]],"container":"<table class=\"cell-border nowrap\">\n  <thead>\n    <tr>\n      <th>Neighborhood<\/th>\n      <th>Region<\/th>\n      <th>Open<\/th>\n      <th>Closed<\/th>\n      <th>Total<\/th>\n      <th>% Still Open<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"tp","columnDefs":[{"targets":5,"render":"function(data, type, row, meta) {\n    return type !== 'display' ? data : DTWidget.formatPercentage(data, 0, 3, \",\", \".\", null);\n  }"},{"className":"dt-right","targets":[2,3,4,5]},{"name":"Neighborhood","targets":0},{"name":"Region","targets":1},{"name":"Open","targets":2},{"name":"Closed","targets":3},{"name":"Total","targets":4},{"name":"% Still Open","targets":5}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":["options.columnDefs.0.render"],"jsHooks":[]}</script>
-<p>Similarly as for regions previously, restaurants are counted at the neighborhood level. Downtown has had nearly twice as many restaurants grace Gold’s lists as the second place neighborhood, Beverly Grove—also in Central L.A. With 11 restaurants (nearly all of which are Chinese/Vietnamese), the city of San Gabriel is the highest placing area outside of Central L.A. or the Westside to show up in the top 10.</p>
-</div>
-<div id="density" class="section level3">
-<h3>Density</h3>
-<p>The points on the two maps above can be used to create density estimates, giving simple summaries of the locations of Jonathan Gold’s best of Los Angeles. Unlike the previous plots, the following filter points to only businesses that are still open:</p>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Even with the results filtered to only restaurants still open, the plots confirm the results seen in the earlier maps. Central Los Angeles has the highest density of Jonathan Gold’s best restaurants in all of Los Angeles County, with two noticeable groups of points in orange. Zooming in on Central Los Angeles for a more detailed view of the more brightly colored blots, notice the concentration of points in the areas of West Hollywood/Fairfax/Beverly Grove and Downtown.</p>
-</div>
-<div id="lists-by-year" class="section level3">
-<h3>Lists by Year</h3>
-<p>Plotting the densities for all 12 years of lists separately gives a sense of the changing food scene in Los Angeles. Again, there are two plots, with the first showing all restaurants that made the yearly list and the second focusing in on Central Los Angeles:</p>
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Looking at the first map of all of Los Angeles and Orange County, little has changed. Most of Gold’s picks still focus on the middle of the map, bounded east to west by Santa Monica and Downtown, respectively. The second plot, which zooms in on the densest parts of the map, suggests that there has been a slight westward shift in the locations of the acclaimed restaurants. This is most apparent comparing 2005 to 2017. While Beverly Grove/Fairfax has been the single densest region in almost every year, starting 2009, more and more restaurants from Downtown were included on the lists. By 2016, both Beverly Grove/Fairfax and Downtown were equally flowing with quality restaurants.</p>
-</div>
-<div id="other-observations" class="section level3">
-<h3>Other Observations</h3>
+
+Similarly as for regions previously, restaurants are counted at the neighborhood level. Downtown has had nearly twice as many restaurants grace Gold’s lists as the second place neighborhood, Beverly Grove—also in Central L.A. With 11 restaurants (nearly all of which are Chinese/Vietnamese), the city of San Gabriel is the highest placing area outside of Central L.A. or the Westside to show up in the top 10.
+
+### Density
+
+The points on the two maps above can be used to create density estimates, giving simple summaries of the locations of Jonathan Gold’s best of Los Angeles. Unlike the previous plots, the following filter points to only businesses that are still open:
+
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" />
+
+Even with the results filtered to only restaurants still open, the plots confirm the results seen in the earlier maps. Central Los Angeles has the highest density of Jonathan Gold’s best restaurants in all of Los Angeles County, with two noticeable groups of points in orange. Zooming in on Central Los Angeles for a more detailed view of the more brightly colored blots, notice the concentration of points in the areas of West Hollywood/Fairfax/Beverly Grove and Downtown.
+
+### Lists by Year
+
+Plotting the densities for all 12 years of lists separately gives a sense of the changing food scene in Los Angeles. Again, there are two plots, with the first showing all restaurants that made the yearly list and the second focusing in on Central Los Angeles:
+
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" />
+
+Looking at the first map of all of Los Angeles and Orange County, little has changed. Most of Gold’s picks still focus on the middle of the map, bounded east to west by Santa Monica and Downtown, respectively. The second plot, which zooms in on the densest parts of the map, suggests that there has been a slight westward shift in the locations of the acclaimed restaurants. This is most apparent comparing 2005 to 2017. While Beverly Grove/Fairfax has been the single densest region in almost every year, starting 2009, more and more restaurants from Downtown were included on the lists. By 2016, both Beverly Grove/Fairfax and Downtown were equally flowing with quality restaurants.
+
+### Other Observations
+
 <div class="row">
+
 <div class="col-md-9">
-<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" />
+
 </div>
+
 <div class="col-md-3">
+
 <table class="table table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -167,14 +197,19 @@ Vincenti
 </tr>
 </tbody>
 </table>
+
 </div>
+
 </div>
-<ul>
-<li><p>A total of 11 restaurants made it on all 12 years of Jonathan Gold’s annual lists, as seen in the above map and table. This group of restaurants provides a great representation of the food that Los Angeles has to offer. Providence and Spago are fine dining restaurants where patrons will need to break the bank at. Langer’s is an old school deli that has been open for over 70 years. The very casual Sapp Coffee Shop offers some of the city’s best Thai at less than $10 a dish. Ethiopian is represented by Meals by Genet, Armenian/Lebanese by Marouch, and Mexican by Chichen Itza.</p></li>
-<li><p>On the other hand, there were 113 restaurants that were mentioned on one year’s list. There could be reasons not related to quality for businesses falling off the best-of list. Restaurants may have closed before having the chance to make it on next year’s list. Given Gold’s passing,tThe new entries from the 2017 article will never get another chance of appearing on another annual.</p></li>
-<li><p>The building at 8009 Beverly Blvd in Los Angeles appears cursed, experiencing more turnover than any other address mapped in this piece. Mimosa originally occupied the space and made the <em>LA Weekly</em> Essentials list from 2005 to 2007. It closed and made way for Bistro LQ, which made the list in both 2009 and 2010. Bistro LQ eventually closed and became Cooks County, which made the <em>Los Angeles Times</em> lists in 2013 and 2014. Cooks County ended up morphing into Market Provisions in 2015. Three quality restaurants all utilizing the same space, all closed. Market Provisions is still open as of 2019, but never gained a place in any of Jonathan Gold’s mentions.</p></li>
-<li><p>The Chatsworth branch of Woodlands Indian Cuisine is both the northernmost and westernmost restaurant to have made the list. Costa Mesa’s Marché Moderne, now relocated to Newport Beach, is the southernmost of the group of 399 restaurants. The new address is actually farther south, but the move happened after the last edition of the article published. Playground, in Santa Ana, is the easternmost pick.</p></li>
-</ul>
+
+- A total of 11 restaurants made it on all 12 years of Jonathan Gold’s annual lists, as seen in the above map and table. This group of restaurants provides a great representation of the food that Los Angeles has to offer. Providence and Spago are fine dining restaurants where patrons will need to break the bank at. Langer’s is an old school deli that has been open for over 70 years. The very casual Sapp Coffee Shop offers some of the city’s best Thai at less than \$10 a dish. Ethiopian is represented by Meals by Genet, Armenian/Lebanese by Marouch, and Mexican by Chichen Itza.
+
+- On the other hand, there were 113 restaurants that were mentioned on one year’s list. There could be reasons not related to quality for businesses falling off the best-of list. Restaurants may have closed before having the chance to make it on next year’s list. Given Gold’s passing,tThe new entries from the 2017 article will never get another chance of appearing on another annual.
+
+- The building at 8009 Beverly Blvd in Los Angeles appears cursed, experiencing more turnover than any other address mapped in this piece. Mimosa originally occupied the space and made the *LA Weekly* Essentials list from 2005 to 2007. It closed and made way for Bistro LQ, which made the list in both 2009 and 2010. Bistro LQ eventually closed and became Cooks County, which made the *Los Angeles Times* lists in 2013 and 2014. Cooks County ended up morphing into Market Provisions in 2015. Three quality restaurants all utilizing the same space, all closed. Market Provisions is still open as of 2019, but never gained a place in any of Jonathan Gold’s mentions.
+
+- The Chatsworth branch of Woodlands Indian Cuisine is both the northernmost and westernmost restaurant to have made the list. Costa Mesa’s Marché Moderne, now relocated to Newport Beach, is the southernmost of the group of 399 restaurants. The new address is actually farther south, but the move happened after the last edition of the article published. Playground, in Santa Ana, is the easternmost pick.
+
 <table class="table table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -228,7 +263,7 @@ Fab Hot Dogs - 6747 Tampa Ave, Reseda
 Taco Maria - 3313 Hyland Ave, Costa Mesa
 </td>
 <td style="text-align:left;">
-Garlic &amp; Chives - 9892 Westminster Blvd, Garden Grove
+Garlic & Chives - 9892 Westminster Blvd, Garden Grove
 </td>
 <td style="text-align:right;">
 4.7
@@ -261,7 +296,7 @@ Rajdhani - 18525 Pioneer Blvd, Artesia
 Phillips Barbecue - 1517 Centinela Ave, Los Angeles
 </td>
 <td style="text-align:left;">
-Post &amp; Beam - 3767 Santa Rosalia Dr, Los Angeles
+Post & Beam - 3767 Santa Rosalia Dr, Los Angeles
 </td>
 <td style="text-align:right;">
 2.8
@@ -302,7 +337,5 @@ Al-Watan - 13611 Inglewood Ave, Hawthorne
 </tr>
 </tbody>
 </table>
-<ul>
-<li>Considering only businesses that are still open as of April 2019, the West Covina location of Krua Thai is the most isolated Gold favorite, with the next closest restaurant on the list—JTYH in Rosemead—about 7.5 miles away (note: This is the shortest distance between the two points, not the driving/walking distance).</li>
-</ul>
-</div>
+
+- Considering only businesses that are still open as of April 2019, the West Covina location of Krua Thai is the most isolated Gold favorite, with the next closest restaurant on the list—JTYH in Rosemead—about 7.5 miles away (note: This is the shortest distance between the two points, not the driving/walking distance).

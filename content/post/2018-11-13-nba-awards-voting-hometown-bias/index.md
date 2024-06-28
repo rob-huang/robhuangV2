@@ -10,6 +10,12 @@ tags:
 
 <script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
 <link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
 <link href="{{< blogdown/postref >}}index_files/htmltools-fill/fill.css" rel="stylesheet" />
 <script src="{{< blogdown/postref >}}index_files/htmlwidgets/htmlwidgets.js"></script>
 <script src="{{< blogdown/postref >}}index_files/plotly-binding/plotly.js"></script>
@@ -19,12 +25,74 @@ tags:
 <script src="{{< blogdown/postref >}}index_files/crosstalk/js/crosstalk.min.js"></script>
 <link href="{{< blogdown/postref >}}index_files/plotly-htmlwidgets-css/plotly-htmlwidgets.css" rel="stylesheet" />
 <script src="{{< blogdown/postref >}}index_files/plotly-main/plotly-latest.min.js"></script>
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/kePrint/kePrint.js"></script>
 
+<link href="{{< blogdown/postref >}}index_files/lightable/lightable.css" rel="stylesheet" />
 
-<div id="background" class="section level2">
-<h2>Background</h2>
-<p>The end of season awards for the NBA are voted upon by a panel of media members that include national writers, national broadcasters/announcers, studio analysts, and team beat writers. Up until the 2016-17 season, this group also included team employed broadcasters. NBA fans who have spent enough time watching games on League Pass may have noticed why this was an issue, with hometown biases among many local announcers evident during the call of games. There was nothing to stop this homerism from seeping into awards voting. This was especially an issue when the amount of money available for player contracts sometimes depended on how the player performed in the awards.</p>
-<p>The NBA <a href="https://basketball.realgm.com/wiretap/245507/NBA-Removes-Team-Employed-Media-From-Award-Voting">stopped</a> this practice starting with the awards for the 2016-17 season, no longer giving ballots to team-employed media members. About 70-80 local radio and TV announcers who voted after the 2013-14, 2014-15, and 2015-16 seasons were not able to participate in the vote anymore. Other non-team employed, but still team associated media, continued to receive ballots. This includes beat writers and local analysts. While not team employees, they could be susceptible to the same biases as the local announcers given the amount of time they spend around a specific team.</p>
+## Background
+
+The end of season awards for the NBA are voted upon by a panel of media members that include national writers, national broadcasters/announcers, studio analysts, and team beat writers. Up until the 2016-17 season, this group also included team employed broadcasters. NBA fans who have spent enough time watching games on League Pass may have noticed why this was an issue, with hometown biases among many local announcers evident during the call of games. There was nothing to stop this homerism from seeping into awards voting. This was especially an issue when the amount of money available for player contracts sometimes depended on how the player performed in the awards.
+
+The NBA [stopped](https://basketball.realgm.com/wiretap/245507/NBA-Removes-Team-Employed-Media-From-Award-Voting) this practice starting with the awards for the 2016-17 season, no longer giving ballots to team-employed media members. About 70-80 local radio and TV announcers who voted after the 2013-14, 2014-15, and 2015-16 seasons were not able to participate in the vote anymore. Other non-team employed, but still team associated media, continued to receive ballots. This includes beat writers and local analysts. While not team employees, they could be susceptible to the same biases as the local announcers given the amount of time they spend around a specific team.
+
 <table class="table table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -115,22 +183,27 @@ Percent
 </tr>
 </tbody>
 </table>
-<p>With the change in voting, the percentage of voters who had team-affiliations declined from about 80% in the three-year period from 2013/14 to 2015/16 to about 40% these last two seasons. Note that the panel of voters is not the same every year and that not every member voted in every category. Every ballot since the 2013-14 awards has been <a href="http://official.nba.com/2014-nba-year-annual-award-voting-results/">made</a> <a href="http://official.nba.com/2015-nba-year-annual-award-voting-results/">public</a> <a href="http://official.nba.com/2015-16-nba-annual-award-voting-results/">by</a>
-<a href="http://official.nba.com/2016-17-nba-annual-award-voting-results/">the</a>
-<a href="http://pr.nba.com/voting-results-2017-18-nba-regular-season-awards/">NBA</a>. This makes it possible to analyze the overall results from the last five seasons in detail for hometown bias. We will attempt to quantify this bias among team-affiliated media members to identify the voters most or least abusing their awards ballots and whether any of the remaining team-affiliated voters (almost all beat writers) show any team biases.</p>
-</div>
-<div id="quantifying-hometown-bias" class="section level2">
-<h2>Quantifying Hometown Bias</h2>
-<p>Before any calculations for hometown bias, we must link voters to a hometown team (or teams if multiple affiliations), if applicable. This is simple for local announcers and beat writers. The voters without any team affiliation are generally national TV broadcasters/analysts (Rachel Nichols, Ernie Johnson, Chris Webber, etc.) or writers for national outlets without a focus on a specific team (Zach Lowe, Sean Deveney, Lang Whitaker, etc.). International media started voting in in 2016-17 and also do not have team affiliations. The area where this gets tricky is with a few national writers who have a link to a specific team. Brian Windhorst and Jackie MacMullan are national writers for ESPN, but both have generally had a focus on a specific team. For Windhorst, this is any team that LeBron James is on. For MacMullan, this is Boston Celtics. There are few situations like this and any determinations of team affiliation are judgement calls. Once every non-national voter is linked with a team, we can try to measure homerism.</p>
-<div id="step-1-compare-where-each-team-affiliated-voter-places-players-from-his-or-her-team-on-their-ballot-against-those-same-players-average-positions-on-ballots-from-voters-not-associated-with-those-players-respective-teams-place-differential." class="section level4">
-<h4>Step 1: Compare where each team-affiliated voter places players from his or her team on their ballot against those same players’ average positions on ballots from voters not associated with those players’ respective teams (place differential).</h4>
-<p>For any specific ballot, if a voter places a hometown player higher than average, this is evidence for hometown bias for that vote. Conversely, if a voter places a hometown player lower than average, this is evidence against bias.</p>
-<p>Note that if a player is left completely off a ballot, that player is given a placement of last place plus one. For MVP, this will be sixth place because there are five slots for that award type. For Defensive Player, Coach, Sixth Man, Most Improved, and Rookie of the Year, this will be fourth place because those awards each have three slots. For the All-NBA, All-Defense, and All-Rookie teams, all of the first team are treated as first place, all of the second team are treated as second place, and so on. Under this method, we make the assumption that any player not voted for is only one place away from the lowest slot on each ballot. This is absolutely not true, but there is no way of quantifying how voters rate players they do not vote for.</p>
-</div>
-<div id="step-2-for-each-voter-sum-the-place-differentials-from-step-1-for-all-hometown-players-for-a-specific-year-award-combination." class="section level4">
-<h4>Step 2: For each voter, sum the place differentials from step 1 for all hometown players for a specific year-award combination.</h4>
-<p>This results in an overall bias score for a voter’s ballot for a single award. Similarly to step one, a net positive differential signals possible hometown bias and a net negative differential signals possible anti-hometown bias.</p>
-<p>As an example of these first two steps, we can look at Los Angeles Clipper play-by-play announcer Ralph Lawler’s 2015-16 ballot for All-NBA:</p>
+
+With the change in voting, the percentage of voters who had team-affiliations declined from about 80% in the three-year period from 2013/14 to 2015/16 to about 40% these last two seasons. Note that the panel of voters is not the same every year and that not every member voted in every category. Every ballot since the 2013-14 awards has been [made](http://official.nba.com/2014-nba-year-annual-award-voting-results/) [public](http://official.nba.com/2015-nba-year-annual-award-voting-results/) [by](http://official.nba.com/2015-16-nba-annual-award-voting-results/)
+[the](http://official.nba.com/2016-17-nba-annual-award-voting-results/)
+[NBA](http://pr.nba.com/voting-results-2017-18-nba-regular-season-awards/). This makes it possible to analyze the overall results from the last five seasons in detail for hometown bias. We will attempt to quantify this bias among team-affiliated media members to identify the voters most or least abusing their awards ballots and whether any of the remaining team-affiliated voters (almost all beat writers) show any team biases.
+
+## Quantifying Hometown Bias
+
+Before any calculations for hometown bias, we must link voters to a hometown team (or teams if multiple affiliations), if applicable. This is simple for local announcers and beat writers. The voters without any team affiliation are generally national TV broadcasters/analysts (Rachel Nichols, Ernie Johnson, Chris Webber, etc.) or writers for national outlets without a focus on a specific team (Zach Lowe, Sean Deveney, Lang Whitaker, etc.). International media started voting in in 2016-17 and also do not have team affiliations. The area where this gets tricky is with a few national writers who have a link to a specific team. Brian Windhorst and Jackie MacMullan are national writers for ESPN, but both have generally had a focus on a specific team. For Windhorst, this is any team that LeBron James is on. For MacMullan, this is Boston Celtics. There are few situations like this and any determinations of team affiliation are judgement calls. Once every non-national voter is linked with a team, we can try to measure homerism.
+
+#### Step 1: Compare where each team-affiliated voter places players from his or her team on their ballot against those same players’ average positions on ballots from voters not associated with those players’ respective teams (place differential).
+
+For any specific ballot, if a voter places a hometown player higher than average, this is evidence for hometown bias for that vote. Conversely, if a voter places a hometown player lower than average, this is evidence against bias.
+
+Note that if a player is left completely off a ballot, that player is given a placement of last place plus one. For MVP, this will be sixth place because there are five slots for that award type. For Defensive Player, Coach, Sixth Man, Most Improved, and Rookie of the Year, this will be fourth place because those awards each have three slots. For the All-NBA, All-Defense, and All-Rookie teams, all of the first team are treated as first place, all of the second team are treated as second place, and so on. Under this method, we make the assumption that any player not voted for is only one place away from the lowest slot on each ballot. This is absolutely not true, but there is no way of quantifying how voters rate players they do not vote for.
+
+#### Step 2: For each voter, sum the place differentials from step 1 for all hometown players for a specific year-award combination.
+
+This results in an overall bias score for a voter’s ballot for a single award. Similarly to step one, a net positive differential signals possible hometown bias and a net negative differential signals possible anti-hometown bias.
+
+As an example of these first two steps, we can look at Los Angeles Clipper play-by-play announcer Ralph Lawler’s 2015-16 ballot for All-NBA:
+
 <table class="table table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -313,7 +386,9 @@ BOS
 </tr>
 </tbody>
 </table>
-<p>The ballot has five first place votes (first team), five second place votes (second team), and five third place votes (third team). Of the 15 slots on the ballot, Lawler gave votes to two Clippers: DeAndre Jordan as first team center and Chris Paul as second team guard. We will compare Lawler’s votes with how Clippers performed on All-NBA ballots from all voters not affiliated with the Clippers:</p>
+
+The ballot has five first place votes (first team), five second place votes (second team), and five third place votes (third team). Of the 15 slots on the ballot, Lawler gave votes to two Clippers: DeAndre Jordan as first team center and Chris Paul as second team guard. We will compare Lawler’s votes with how Clippers performed on All-NBA ballots from all voters not affiliated with the Clippers:
+
 <table class="table table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -436,31 +511,40 @@ Blake Griffin
 </tr>
 </tbody>
 </table>
-<p>There are 129 total ballots for 2013/14 All-NBA. Of those 129, 3 are from voters associated with the Clippers, leaving 126 non-Clipper ballots. With those 126 voters, 3 players from the Clippers received at least one vote. Chris Paul received 116 mentions (8 first team, 98 second team, 10 third team, and was left off of 10 ballots—“fourth place”), resulting in a mean placement of 2.17 from the non-Clipper voters. Lawler placed Paul second on his ballot, 0.17 places higher than average. Similarly for DeAndre Jordan, Lawler has him 1.45 places higher than average. Blake Griffin received one third place vote from other voters. By leaving Griffin off his ballot, Lawler has Griffin about 0.01 places lower than average. If we sum these place differentials together, we get 1.62, the net difference in places that Lawler has Clippers compared to other non-Clipper voters.</p>
-</div>
-<div id="step-3-for-each-year-award-standardize-the-summed-place-differentials." class="section level4">
-<h4>Step 3: For each year-award, standardize the summed place differentials.</h4>
-<p>We can use the differentials from step 2 as the ultimate measure of homerism, but this ignores the fact that the distributions for each year and award are not the same. Boxplots of total place differentials for all voters within each award are created:</p>
-<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-4"></span>
+
+There are 129 total ballots for 2013/14 All-NBA. Of those 129, 3 are from voters associated with the Clippers, leaving 126 non-Clipper ballots. With those 126 voters, 3 players from the Clippers received at least one vote. Chris Paul received 116 mentions (8 first team, 98 second team, 10 third team, and was left off of 10 ballots—“fourth place”), resulting in a mean placement of 2.17 from the non-Clipper voters. Lawler placed Paul second on his ballot, 0.17 places higher than average. Similarly for DeAndre Jordan, Lawler has him 1.45 places higher than average. Blake Griffin received one third place vote from other voters. By leaving Griffin off his ballot, Lawler has Griffin about 0.01 places lower than average. If we sum these place differentials together, we get 1.62, the net difference in places that Lawler has Clippers compared to other non-Clipper voters.
+
+#### Step 3: For each year-award, standardize the summed place differentials.
+
+We can use the differentials from step 2 as the ultimate measure of homerism, but this ignores the fact that the distributions for each year and award are not the same. Boxplots of total place differentials for all voters within each award are created:
+
+<div class="figure" style="text-align: center">
+
 <img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" alt="Grids are sorted by overall mean for each award (all years combined) from smallest to largest. Red points mark the means for each award. Note that all variables are skewed right, showing that voters with team affiliations generally place their own players higher on ballots compared to average." width="672" />
 <p class="caption">
-Figure 1: Grids are sorted by overall mean for each award (all years combined) from smallest to largest. Red points mark the means for each award. Note that all variables are skewed right, showing that voters with team affiliations generally place their own players higher on ballots compared to average.
+<span id="fig:unnamed-chunk-4"></span>Figure 1: Grids are sorted by overall mean for each award (all years combined) from smallest to largest. Red points mark the means for each award. Note that all variables are skewed right, showing that voters with team affiliations generally place their own players higher on ballots compared to average.
 </p>
+
 </div>
-<p>It is obvious that the means and standard deviations for each award are not the same, but there are some explanations for this. The three awards with the most slots on the ballost—All-NBA (15), All-Defense (10), and All-Rookie (10)—have the largest variances. The rest of the awards apart from MVP have only three slots and have most of their values near zero.</p>
-<p>Rookie of the Year and All Rookie Team are the least susceptible to hometown bias relative to the other awards given their average values. For the two rookie awards, this can be explained by the fact that only a small pool of players are eligibile for the awards. A voter might not have to ability to make a homer vote for Rookie of the Year/All-Rookie Team even if they wanted to because their team did not have any rookies. Similarly to qualify for Sixth Man of the Year, players must have come off the bench for a certain proportion of games. For Coach of the Year, there are generally only about 30 candidates who qualify for the award and only three slots on the ballot. All-Defense and All-NBA, on the other hand, are crapshoots given that these awards have no requirements and have a large number of slots available. Add in the fact that even people who follow the NBA closely have trouble measuring good defense will present a great opportunity for homerism with All-Defense.</p>
-<p>Even within each award, the means and standard deviations are not always consistent. Look at the Most Improved Player for 2013/14 compared to other years. There is much more variation in place differentials than other years. In this case, measure values of the same magnitude for different years should not have the same impact. For example, if an award has three slots and there are three established candidates in year one but only two worthy candidates in year two, a hometown vote in the year one should be more egregious than a hometown vote in the year two.</p>
-<p>Standardizing the place differentials within each award and year combination should help with these issues. With z-scores, values from different awards and years can be compared. This is especially important because not every voter votes for every award.</p>
-</div>
-<div id="step-4-for-each-voter-take-the-mean-of-all-their-scores-from-each-award." class="section level4">
-<h4>Step 4: For each voter, take the mean of all their scores from each award.</h4>
-<p>We can summarize the results from step 3 to generate a final hometown bias (homer score) for every team-affiliated voter. We will do this using the mean of all of a voter’s scores for every award they vote in. Voters with the highest homer scores have the most hometown bias relative to all other team-affiliated voters. Voters with the lowest homer scores have the least (and possibly an anti-) hometown bias. Scores near zero imply average hometown bias relative to all team-affiliated voters. National media members without team affiliations do not have homer scores, but are used as part of the calculation for baseline player ballot positions in step 1.</p>
-</div>
-</div>
-<div id="hometown-bias-results" class="section level2">
-<h2>Hometown Bias Results</h2>
-<p>The homer scores for all 188 team-affiliated voters (out of 249 total voters) from 2013/14 to 2017/18 are presented in the table below, along with the number of awards they had ballots for (N). Scores are also broken down into two periods—when team broadcasters still voted (Pre: 2013/14, 2014/15, 2015/16) and when they did not (Post: 2016/17, 2017/18). Some voters have multiple team affilations, generally as the result of job changes over different seasons. Only the team affiliated with the voter for that season is used for the award scores for that same season.</p>
+
+It is obvious that the means and standard deviations for each award are not the same, but there are some explanations for this. The three awards with the most slots on the ballost—All-NBA (15), All-Defense (10), and All-Rookie (10)—have the largest variances. The rest of the awards apart from MVP have only three slots and have most of their values near zero.
+
+Rookie of the Year and All Rookie Team are the least susceptible to hometown bias relative to the other awards given their average values. For the two rookie awards, this can be explained by the fact that only a small pool of players are eligibile for the awards. A voter might not have to ability to make a homer vote for Rookie of the Year/All-Rookie Team even if they wanted to because their team did not have any rookies. Similarly to qualify for Sixth Man of the Year, players must have come off the bench for a certain proportion of games. For Coach of the Year, there are generally only about 30 candidates who qualify for the award and only three slots on the ballot. All-Defense and All-NBA, on the other hand, are crapshoots given that these awards have no requirements and have a large number of slots available. Add in the fact that even people who follow the NBA closely have trouble measuring good defense will present a great opportunity for homerism with All-Defense.
+
+Even within each award, the means and standard deviations are not always consistent. Look at the Most Improved Player for 2013/14 compared to other years. There is much more variation in place differentials than other years. In this case, measure values of the same magnitude for different years should not have the same impact. For example, if an award has three slots and there are three established candidates in year one but only two worthy candidates in year two, a hometown vote in the year one should be more egregious than a hometown vote in the year two.
+
+Standardizing the place differentials within each award and year combination should help with these issues. With z-scores, values from different awards and years can be compared. This is especially important because not every voter votes for every award.
+
+#### Step 4: For each voter, take the mean of all their scores from each award.
+
+We can summarize the results from step 3 to generate a final hometown bias (homer score) for every team-affiliated voter. We will do this using the mean of all of a voter’s scores for every award they vote in. Voters with the highest homer scores have the most hometown bias relative to all other team-affiliated voters. Voters with the lowest homer scores have the least (and possibly an anti-) hometown bias. Scores near zero imply average hometown bias relative to all team-affiliated voters. National media members without team affiliations do not have homer scores, but are used as part of the calculation for baseline player ballot positions in step 1.
+
+## Hometown Bias Results
+
+The homer scores for all 188 team-affiliated voters (out of 249 total voters) from 2013/14 to 2017/18 are presented in the table below, along with the number of awards they had ballots for (N). Scores are also broken down into two periods—when team broadcasters still voted (Pre: 2013/14, 2014/15, 2015/16) and when they did not (Post: 2016/17, 2017/18). Some voters have multiple team affilations, generally as the result of job changes over different seasons. Only the team affiliated with the voter for that season is used for the award scores for that same season.
+
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; ">
+
 <table class="table table-bordered" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -6360,29 +6444,40 @@ writer
 </tr>
 </tbody>
 </table>
+
 </div>
-<p>Some observations from the results:</p>
-<ul>
-<li><p>About half of team-affiliated media are broadcasters and the other half are beat writers (with a few sideline reporters and TV analysts making up the remainder). Announcers, who stopped receiving ballots starting 2016/17, had an average score of 0.1, versus writers, who had an average of -0.06. This stronger bias among announcers can be seen at the top of list, as 14 of the top 20 voters with the highest homer scores are announcers.</p></li>
-<li><p>It is most fitting that the two voters finishing with the highest hometown bias scores, Boston’s Tommy Heinsohn and Houston’s Bill Worrell, are notorious for being among the biggest homers of all local broadcasters. We will take a closer look at their offending ballots later on.</p></li>
-<li><p>Nearly all the broadcasters in the top 10 have been calling games for their respective teams for over 20 years (the exceptions being Eric Collins and Brian Davis).</p></li>
-<li><p>As a Los Angeles native who has watched many Clipper games, I was surprised to see Ralph Lawler finish so high, given that he was never as extreme in his homerism as some of his peers.</p></li>
-<li><p>Voters with multiple team affiliations or that also have a national role generally finished with lower hometown bias scores than single team media. Jackie MacMullan has the highest score in this group of 10 and has a rank of 81.</p></li>
-<li><p>There is little difference in score between TV play-by-play announcers and TV color commentators.</p></li>
-<li><p>We can summarize the results by team to see which franchises have the most biased groups of voters. Voters associated with multiple teams are excluded. The mean score for all voters is indicated by the thick gray horizontal line near 0:</p></li>
-</ul>
+
+Some observations from the results:
+
+- About half of team-affiliated media are broadcasters and the other half are beat writers (with a few sideline reporters and TV analysts making up the remainder). Announcers, who stopped receiving ballots starting 2016/17, had an average score of 0.1, versus writers, who had an average of -0.06. This stronger bias among announcers can be seen at the top of list, as 14 of the top 20 voters with the highest homer scores are announcers.
+
+- It is most fitting that the two voters finishing with the highest hometown bias scores, Boston’s Tommy Heinsohn and Houston’s Bill Worrell, are notorious for being among the biggest homers of all local broadcasters. We will take a closer look at their offending ballots later on.
+
+- Nearly all the broadcasters in the top 10 have been calling games for their respective teams for over 20 years (the exceptions being Eric Collins and Brian Davis).
+
+- As a Los Angeles native who has watched many Clipper games, I was surprised to see Ralph Lawler finish so high, given that he was never as extreme in his homerism as some of his peers.
+
+- Voters with multiple team affiliations or that also have a national role generally finished with lower hometown bias scores than single team media. Jackie MacMullan has the highest score in this group of 10 and has a rank of 81.
+
+- There is little difference in score between TV play-by-play announcers and TV color commentators.
+
+- We can summarize the results by team to see which franchises have the most biased groups of voters. Voters associated with multiple teams are excluded. The mean score for all voters is indicated by the thick gray horizontal line near 0:
+
 <div class="plotly html-widget html-fill-item" id="htmlwidget-1" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-1">{"x":{"data":[{"x":[0.44999999999999996,12.550000000000001],"y":[0.019059935806435571,0.019059935806435571],"text":"","type":"scatter","mode":"lines","line":{"width":7.559055118110237,"color":"rgba(179,179,179,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[6,4,6],"y":[-0.13906461227907907,0.3243078394244886,-0.13028157500100929],"text":["NOP","UTA","WAS"],"hovertext":["Will Guillory: 0.08<br />John Reid: -0.06<br />David Wesley: -0.15<br />Sean Kelley: -0.2<br />Joel Meyers: -0.25<br />Justin Verrier: -0.26","Tony Jones: 0.71<br />Jody Genessy: 0.44<br />Ron Boone: 0.12<br />Aaron Falk: 0.02","J Michael Falgoust: 0.33<br />Dave Johnson: -0.11<br />Phil Chenier: -0.11<br />Glenn Consor: -0.24<br />Steve Buckhantz: -0.28<br />Chase Hughes: -0.37"],"textfont":{"size":[16.520312361510083,13.648497030559248,16.520312361510083],"color":"rgba(0,43,92,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#002B5C","legendgroup":"#002B5C","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4],"y":[-0.068007172257295551],"text":"MIL","hovertext":"Matt Velazquez: 0.3<br />Charles Gardner: -0.16<br />Ted Davis: -0.2<br />Jim Paschke: -0.21","textfont":{"size":13.648497030559248,"color":"rgba(0,71,27,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#00471B","legendgroup":"#00471B","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4],"y":[-0.32153502289780106],"text":"MIN","hovertext":"Jon Krawczynski: -0.25<br />Jim Petersen: -0.25<br />Alan Horton: -0.32<br />Jerry Zgoda: -0.46","textfont":{"size":13.648497030559248,"color":"rgba(0,80,131,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#005083","legendgroup":"#005083","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[11],"y":[-0.27636662733404221],"text":"NYK","hovertext":"Spero Dedes: 0.22<br />Walt Frazier: 0.06<br />Mike Breen: -0.22<br />Marc Berman: -0.31<br />Brian Mahoney: -0.35<br />Mike Crispino: -0.35<br />Al Iannazzone: -0.37<br />Steve Popper: -0.37<br />Frank Isola: -0.42<br />Peter Botte: -0.44<br />Brendan Brown: -0.48","textfont":{"size":21.797718221963954,"color":"rgba(0,107,182,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#006BB6","legendgroup":"#006BB6","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[7],"y":[0.25122831599044587],"text":"OKC","hovertext":"Brian Davis: 0.81<br />Matt Pinto: 0.69<br />Michael Cage: 0.42<br />Royce Young: 0.25<br />Erik Horne: 0.09<br />Brett Dawson: 0.02<br />Darnell Mayberry: -0.53","textfont":{"size":17.736358032302295,"color":"rgba(0,125,195,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#007DC3","legendgroup":"#007DC3","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4,5],"y":[-0.050532565093439799,-0.19034700311233349],"text":["DAL","ORL"],"hovertext":["Eddie Sefko: 0.33<br />Dwain Price: -0.06<br />Mark Followill: -0.2<br />Chuck Cooperstein: -0.28","Jeff Turner: 0.01<br />Dennis Neumann: -0.08<br />Dante Marchitelli: -0.14<br />John Denton: -0.26<br />David Steele: -0.48"],"textfont":{"size":[13.648497030559248,15.175231921049336],"color":"rgba(0,125,197,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#007DC5","legendgroup":"#007DC5","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[10],"y":[0.26053658505284844],"text":"BOS","hovertext":"Tom Heinsohn: 1.54<br />Cedric Maxwell: 0.41<br />Mike Gorman: 0.28<br />Adam Himmelsbach: 0.26<br />Brian Scalabrine: 0.15<br />Gary Washburn: 0.13<br />Sherrod Blakely: 0.12<br />Jackie MacMullan: 0.02<br />Baxter Holmes: -0.05<br />Sean Grande: -0.25","textfont":{"size":20.873084102046445,"color":"rgba(0,131,72,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#008348","legendgroup":"#008348","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[10],"y":[-0.26217872045129592],"text":"BRK","hovertext":"Greg Logan: 0.17<br />Rod Boone: 0.08<br />Brian Lewis: -0.2<br />Tim Bontemps: -0.25<br />Ian Eagle: -0.28<br />Mike Fratello: -0.41<br />Chris Carrino: -0.41<br />Tim Capstraw: -0.41<br />Andy Vasquez: -0.43<br />Jim Spanarkel: -0.48","textfont":{"size":20.873084102046445,"color":"rgba(6,25,34,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#061922","legendgroup":"#061922","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[3],"y":[0.12372033446389216],"text":"MEM","hovertext":"Ron Tillery: 0.44<br />Eric Hasseltine: 0.14<br />Pete Pranica: -0.21","textfont":{"size":11.837507389818349,"color":"rgba(15,88,108,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#0F586C","legendgroup":"#0F586C","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[7],"y":[0.19773048057720588],"text":"CHO","hovertext":"Eric Collins: 0.85<br />Dell Curry: 0.41<br />Scott Lauer: 0.27<br />Steve Martin: 0.14<br />Stephanie Ready: 0.06<br />Rick Bonnell: -0.02<br />Richard Walker: -0.33","textfont":{"size":17.736358032302295,"color":"rgba(29,17,96,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#1D1160","legendgroup":"#1D1160","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[5],"y":[0.08731481153920502],"text":"DEN","hovertext":"Jason Kosmicki: 0.46<br />Chris Marlowe: 0.11<br />Gina Mizell: 0.1<br />Scott Hastings: -0.08<br />Chris Dempsey: -0.15","textfont":{"size":15.175231921049336,"color":"rgba(77,144,205,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#4D90CD","legendgroup":"#4D90CD","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4],"y":[-0.24545622823350921],"text":"SAC","hovertext":"Gary Gerould: -0.19<br />Jason Jones: -0.23<br />Ailene Voisin: -0.27<br />Grant Napear: -0.29","textfont":{"size":13.648497030559248,"color":"rgba(114,76,159,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#724C9F","legendgroup":"#724C9F","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[5],"y":[-0.1281903581827446],"text":"CLE","hovertext":"Joe Vardon: 0.1<br />Fred McLeod: -0.12<br />Jason Lloyd: -0.14<br />Mary Schmitt Boyer: -0.17<br />John Michael: -0.31","textfont":{"size":15.175231921049336,"color":"rgba(134,0,56,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#860038","legendgroup":"#860038","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[12],"y":[0.16002635483336414],"text":"MIA","hovertext":"Jason Lieser: 1.21<br />Eric Reid: 1.11<br />Tim Reynolds: 0.49<br />Manny Navarro: 0.44<br />Jose Paneda: 0.15<br />Tony Fiorentino: 0.13<br />Mike Inglis: -0.02<br />Joe Goodman: -0.08<br />Jason Jackson: -0.09<br />Ethan Skolnick: -0.15<br />Ira Winderman: -0.32<br />Michael Wallace: -0.96","textfont":{"size":22.677165354330711,"color":"rgba(152,0,46,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#98002E","legendgroup":"#98002E","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4],"y":[0.14250046042240283],"text":"SAS","hovertext":"Bill Land: 0.33<br />Jeff McDonald: 0.32<br />Mike Monroe: 0.11<br />Bill Schoening: -0.19","textfont":{"size":13.648497030559248,"color":"rgba(186,195,201,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#BAC3C9","legendgroup":"#BAC3C9","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[8,6,10],"y":[0.0045240447213773516,0.20305150842779232,0.054171663867789432],"text":["CHI","HOU","TOR"],"hovertext":["Bill Wennington: 0.24<br />Neil Funk: 0.19<br />Stacey King: 0.13<br />Sam Smith: -0.01<br />Chuck Swirsky: -0.09<br />Nick Friedell: -0.09<br />Joe Cowley: -0.11<br />K.C. Johnson: -0.23","Bill Worrell: 1.47<br />Matt Bullard: 0.15<br />Adrian Chavarria: 0<br />Calvin Watkins: -0.05<br />Jonathan Feigen: -0.13<br />Craig Ackerman: -0.23","Mike Ganter: 0.91<br />Michael Grange: 0.27<br />Paul Jones: 0.1<br />Leo Rautins: 0.06<br />Sherman Hamilton: 0.04<br />Jack Armstrong: 0.02<br />Matt Devlin: -0.18<br />Doug Smith: -0.19<br />Ryan Wolstat: -0.2<br />Eric Smith: -0.29"],"textfont":{"size":[18.854627437180454,16.520312361510083,20.873084102046445],"color":"rgba(206,17,65,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#CE1141","legendgroup":"#CE1141","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[6],"y":[0.2548157314389069],"text":"POR","hovertext":"Mike Rice: 0.62<br />Jabari Young: 0.5<br />Brian Wheeler: 0.23<br />Antonio Harvey: 0.13<br />Jason Quick: 0.08<br />Joe Freeman: -0.03","textfont":{"size":16.520312361510083,"color":"rgba(224,58,62,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#E03A3E","legendgroup":"#E03A3E","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4],"y":[0.13748963181242196],"text":"ATL","hovertext":"Steve Holman: 0.33<br />Bob Rathbun: 0.27<br />Dominique Wilkins: 0.13<br />Andre Aldridge: -0.18","textfont":{"size":13.648497030559248,"color":"rgba(225,58,62,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#E13A3E","legendgroup":"#E13A3E","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[7],"y":[0.047417964963430842],"text":"PHO","hovertext":"Al McCoy: 1.33<br />Tim Kempton: 0.33<br />Eddie Johnson: -0.13<br />Paul Coro: -0.14<br />Scott Bordow: -0.23<br />Steve Albert: -0.38<br />Doug Haller: -0.45","textfont":{"size":17.736358032302295,"color":"rgba(229,96,32,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#E56020","legendgroup":"#E56020","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4,5,8],"y":[-0.26219786542956569,0.55006003530151426,-0.081010963182373885],"text":["DET","LAC","PHI"],"hovertext":["Rod Beard: -0.09<br />David Mayo: -0.25<br />George Blaha: -0.35<br />Vince Ellis: -0.36","Ralph Lawler: 1.09<br />Brian Sieman: 0.77<br />Michael Smith: 0.63<br />Dan Woike: 0.47<br />Elliott Teaford: -0.2","Molly Sullivan: 0.46<br />Keith Pompey: 0.3<br />Marc Zumoff: 0.07<br />Tom McGinnis: 0.05<br />Dei Lynam: -0.26<br />Malik Rose: -0.36<br />Jessica Camerato: -0.44<br />Bob Cooney: -0.47"],"textfont":{"size":[13.648497030559248,15.175231921049336,18.854627437180454],"color":"rgba(237,23,76,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#ED174C","legendgroup":"#ED174C","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[6,1],"y":[0.37808213511912769,-0.32265184870225766],"text":["GSW","LAL"],"hovertext":["Bob Fitzgerald: 0.86<br />Diamond Leung: 0.79<br />Jim Barnett: 0.6<br />Tim Roye: 0.58<br />Rusty Simmons: 0.22<br />Connor Letourneau: -0.78","Mark Medina: -0.32"],"textfont":{"size":[16.520312361510083,3.7795275590551185],"color":"rgba(253,185,39,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#FDB927","legendgroup":"#FDB927","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[5],"y":[-0.15565796243916449],"text":"IND","hovertext":"Chris Denari: 0.15<br />Clifton Brown: 0.03<br />Nate Taylor: -0.1<br />Candace Buckner: -0.35<br />Mark Boyle: -0.52","textfont":{"size":15.175231921049336,"color":"rgba(255,198,51,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#FFC633","legendgroup":"#FFC633","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.228310502283108,"r":7.3059360730593621,"b":40.182648401826498,"l":48.949771689497723},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.44999999999999996,12.550000000000001],"tickmode":"array","ticktext":["2","4","6","8","10","12"],"tickvals":[2,4,6,8,10,12],"categoryorder":"array","categoryarray":["2","4","6","8","10","12"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"Number of Voters","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-0.36628744290244625,0.59369562950170285],"tickmode":"array","ticktext":["-0.2","0.0","0.2","0.4"],"tickvals":[-0.20000000000000001,0,0.20000000000000001,0.39999999999999997],"categoryorder":"array","categoryarray":["-0.2","0.0","0.2","0.4"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"Mean Score","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(51,51,51,1)","width":0.66417600664176002,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"983a73e70be2":{"yintercept":{},"type":"scatter"},"983a45bd5de0":{"x":{},"y":{},"text":{},"label":{},"size":{},"colour":{}}},"cur_data":"983a73e70be2","visdat":{"983a73e70be2":["function (y) ","x"],"983a45bd5de0":["function (y) ","x"]},".hideLegend":true,"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
-<p>The average hometown score of all Boston Celtics voters is the highest of any team with at least 10 voters. The two New York teams each have large voting blocs, but unfortunately for the Knicks and Nets, tend not to vote for their own players. The Clippers’ five voters average the higher homer scores of any team. The Los Angeles Lakers, barely visible in the bottom left corner, have had only one voter these last five years. Bill Oram and Dave McMenamin are Laker beat writers, but were excluded because of multiple team affiliations.</p>
-</div>
-<div id="detailed-ballots" class="section level2">
-<h2>Detailed Ballots</h2>
-<p>We will take a closer look at some of the more interesting voters and ballots. These votes will be presented together with the actual result totals for the awards from all voters.</p>
-<div id="tommy-heinsohn" class="section level3 tabset">
-<h3>Tommy Heinsohn</h3>
-<p>Topping the hometown bias list is Tommy Heinsohn. Heinsohn had a nine year career playing with the Boston Celtics from 1956 to 1965, winning six championships alongside Bill Russell, but is now the TV color commentator for those same Celtics. Heinsohn took part in 12 awards from 2013/14 to 2015/16, about half of which contributed to his high homer score.</p>
-<div id="improved" class="section level4">
-<h4>14/15 Improved</h4>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"data":[{"x":[0.44999999999999996,12.550000000000001],"y":[0.019059935806435571,0.019059935806435571],"text":"","type":"scatter","mode":"lines","line":{"width":7.559055118110237,"color":"rgba(179,179,179,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[6,4,6],"y":[-0.13906461227907907,0.3243078394244886,-0.13028157500100929],"text":["NOP","UTA","WAS"],"hovertext":["Will Guillory: 0.08<br />John Reid: -0.06<br />David Wesley: -0.15<br />Sean Kelley: -0.2<br />Joel Meyers: -0.25<br />Justin Verrier: -0.26","Tony Jones: 0.71<br />Jody Genessy: 0.44<br />Ron Boone: 0.12<br />Aaron Falk: 0.02","J Michael Falgoust: 0.33<br />Dave Johnson: -0.11<br />Phil Chenier: -0.11<br />Glenn Consor: -0.24<br />Steve Buckhantz: -0.28<br />Chase Hughes: -0.37"],"textfont":{"size":[16.520312361510083,13.648497030559248,16.520312361510083],"color":"rgba(0,43,92,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#002B5C","legendgroup":"#002B5C","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4],"y":[-0.068007172257295551],"text":"MIL","hovertext":"Matt Velazquez: 0.3<br />Charles Gardner: -0.16<br />Ted Davis: -0.2<br />Jim Paschke: -0.21","textfont":{"size":13.648497030559248,"color":"rgba(0,71,27,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#00471B","legendgroup":"#00471B","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4],"y":[-0.32153502289780106],"text":"MIN","hovertext":"Jon Krawczynski: -0.25<br />Jim Petersen: -0.25<br />Alan Horton: -0.32<br />Jerry Zgoda: -0.46","textfont":{"size":13.648497030559248,"color":"rgba(0,80,131,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#005083","legendgroup":"#005083","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[11],"y":[-0.27636662733404221],"text":"NYK","hovertext":"Spero Dedes: 0.22<br />Walt Frazier: 0.06<br />Mike Breen: -0.22<br />Marc Berman: -0.31<br />Brian Mahoney: -0.35<br />Mike Crispino: -0.35<br />Al Iannazzone: -0.37<br />Steve Popper: -0.37<br />Frank Isola: -0.42<br />Peter Botte: -0.44<br />Brendan Brown: -0.48","textfont":{"size":21.797718221963954,"color":"rgba(0,107,182,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#006BB6","legendgroup":"#006BB6","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[7],"y":[0.25122831599044587],"text":"OKC","hovertext":"Brian Davis: 0.81<br />Matt Pinto: 0.69<br />Michael Cage: 0.42<br />Royce Young: 0.25<br />Erik Horne: 0.09<br />Brett Dawson: 0.02<br />Darnell Mayberry: -0.53","textfont":{"size":17.736358032302295,"color":"rgba(0,125,195,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#007DC3","legendgroup":"#007DC3","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4,5],"y":[-0.050532565093439799,-0.19034700311233349],"text":["DAL","ORL"],"hovertext":["Eddie Sefko: 0.33<br />Dwain Price: -0.06<br />Mark Followill: -0.2<br />Chuck Cooperstein: -0.28","Jeff Turner: 0.01<br />Dennis Neumann: -0.08<br />Dante Marchitelli: -0.14<br />John Denton: -0.26<br />David Steele: -0.48"],"textfont":{"size":[13.648497030559248,15.175231921049336],"color":"rgba(0,125,197,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#007DC5","legendgroup":"#007DC5","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[10],"y":[0.26053658505284844],"text":"BOS","hovertext":"Tom Heinsohn: 1.54<br />Cedric Maxwell: 0.41<br />Mike Gorman: 0.28<br />Adam Himmelsbach: 0.26<br />Brian Scalabrine: 0.15<br />Gary Washburn: 0.13<br />Sherrod Blakely: 0.12<br />Jackie MacMullan: 0.02<br />Baxter Holmes: -0.05<br />Sean Grande: -0.25","textfont":{"size":20.873084102046445,"color":"rgba(0,131,72,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#008348","legendgroup":"#008348","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[10],"y":[-0.26217872045129592],"text":"BRK","hovertext":"Greg Logan: 0.17<br />Rod Boone: 0.08<br />Brian Lewis: -0.2<br />Tim Bontemps: -0.25<br />Ian Eagle: -0.28<br />Mike Fratello: -0.41<br />Chris Carrino: -0.41<br />Tim Capstraw: -0.41<br />Andy Vasquez: -0.43<br />Jim Spanarkel: -0.48","textfont":{"size":20.873084102046445,"color":"rgba(6,25,34,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#061922","legendgroup":"#061922","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[3],"y":[0.12372033446389216],"text":"MEM","hovertext":"Ron Tillery: 0.44<br />Eric Hasseltine: 0.14<br />Pete Pranica: -0.21","textfont":{"size":11.837507389818349,"color":"rgba(15,88,108,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#0F586C","legendgroup":"#0F586C","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[7],"y":[0.19773048057720588],"text":"CHO","hovertext":"Eric Collins: 0.85<br />Dell Curry: 0.41<br />Scott Lauer: 0.27<br />Steve Martin: 0.14<br />Stephanie Ready: 0.06<br />Rick Bonnell: -0.02<br />Richard Walker: -0.33","textfont":{"size":17.736358032302295,"color":"rgba(29,17,96,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#1D1160","legendgroup":"#1D1160","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[5],"y":[0.08731481153920502],"text":"DEN","hovertext":"Jason Kosmicki: 0.46<br />Chris Marlowe: 0.11<br />Gina Mizell: 0.1<br />Scott Hastings: -0.08<br />Chris Dempsey: -0.15","textfont":{"size":15.175231921049336,"color":"rgba(77,144,205,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#4D90CD","legendgroup":"#4D90CD","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4],"y":[-0.24545622823350921],"text":"SAC","hovertext":"Gary Gerould: -0.19<br />Jason Jones: -0.23<br />Ailene Voisin: -0.27<br />Grant Napear: -0.29","textfont":{"size":13.648497030559248,"color":"rgba(114,76,159,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#724C9F","legendgroup":"#724C9F","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[5],"y":[-0.1281903581827446],"text":"CLE","hovertext":"Joe Vardon: 0.1<br />Fred McLeod: -0.12<br />Jason Lloyd: -0.14<br />Mary Schmitt Boyer: -0.17<br />John Michael: -0.31","textfont":{"size":15.175231921049336,"color":"rgba(134,0,56,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#860038","legendgroup":"#860038","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[12],"y":[0.16002635483336414],"text":"MIA","hovertext":"Jason Lieser: 1.21<br />Eric Reid: 1.11<br />Tim Reynolds: 0.49<br />Manny Navarro: 0.44<br />Jose Paneda: 0.15<br />Tony Fiorentino: 0.13<br />Mike Inglis: -0.02<br />Joe Goodman: -0.08<br />Jason Jackson: -0.09<br />Ethan Skolnick: -0.15<br />Ira Winderman: -0.32<br />Michael Wallace: -0.96","textfont":{"size":22.677165354330711,"color":"rgba(152,0,46,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#98002E","legendgroup":"#98002E","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4],"y":[0.14250046042240283],"text":"SAS","hovertext":"Bill Land: 0.33<br />Jeff McDonald: 0.32<br />Mike Monroe: 0.11<br />Bill Schoening: -0.19","textfont":{"size":13.648497030559248,"color":"rgba(186,195,201,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#BAC3C9","legendgroup":"#BAC3C9","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[8,6,10],"y":[0.0045240447213773516,0.20305150842779232,0.054171663867789432],"text":["CHI","HOU","TOR"],"hovertext":["Bill Wennington: 0.24<br />Neil Funk: 0.19<br />Stacey King: 0.13<br />Sam Smith: -0.01<br />Chuck Swirsky: -0.09<br />Nick Friedell: -0.09<br />Joe Cowley: -0.11<br />K.C. Johnson: -0.23","Bill Worrell: 1.47<br />Matt Bullard: 0.15<br />Adrian Chavarria: 0<br />Calvin Watkins: -0.05<br />Jonathan Feigen: -0.13<br />Craig Ackerman: -0.23","Mike Ganter: 0.91<br />Michael Grange: 0.27<br />Paul Jones: 0.1<br />Leo Rautins: 0.06<br />Sherman Hamilton: 0.04<br />Jack Armstrong: 0.02<br />Matt Devlin: -0.18<br />Doug Smith: -0.19<br />Ryan Wolstat: -0.2<br />Eric Smith: -0.29"],"textfont":{"size":[18.854627437180454,16.520312361510083,20.873084102046445],"color":"rgba(206,17,65,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#CE1141","legendgroup":"#CE1141","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[6],"y":[0.2548157314389069],"text":"POR","hovertext":"Mike Rice: 0.62<br />Jabari Young: 0.5<br />Brian Wheeler: 0.23<br />Antonio Harvey: 0.13<br />Jason Quick: 0.08<br />Joe Freeman: -0.03","textfont":{"size":16.520312361510083,"color":"rgba(224,58,62,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#E03A3E","legendgroup":"#E03A3E","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4],"y":[0.13748963181242196],"text":"ATL","hovertext":"Steve Holman: 0.33<br />Bob Rathbun: 0.27<br />Dominique Wilkins: 0.13<br />Andre Aldridge: -0.18","textfont":{"size":13.648497030559248,"color":"rgba(225,58,62,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#E13A3E","legendgroup":"#E13A3E","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[7],"y":[0.047417964963430842],"text":"PHO","hovertext":"Al McCoy: 1.33<br />Tim Kempton: 0.33<br />Eddie Johnson: -0.13<br />Paul Coro: -0.14<br />Scott Bordow: -0.23<br />Steve Albert: -0.38<br />Doug Haller: -0.45","textfont":{"size":17.736358032302295,"color":"rgba(229,96,32,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#E56020","legendgroup":"#E56020","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4,5,8],"y":[-0.26219786542956569,0.55006003530151426,-0.081010963182373885],"text":["DET","LAC","PHI"],"hovertext":["Rod Beard: -0.09<br />David Mayo: -0.25<br />George Blaha: -0.35<br />Vince Ellis: -0.36","Ralph Lawler: 1.09<br />Brian Sieman: 0.77<br />Michael Smith: 0.63<br />Dan Woike: 0.47<br />Elliott Teaford: -0.2","Molly Sullivan: 0.46<br />Keith Pompey: 0.3<br />Marc Zumoff: 0.07<br />Tom McGinnis: 0.05<br />Dei Lynam: -0.26<br />Malik Rose: -0.36<br />Jessica Camerato: -0.44<br />Bob Cooney: -0.47"],"textfont":{"size":[13.648497030559248,15.175231921049336,18.854627437180454],"color":"rgba(237,23,76,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#ED174C","legendgroup":"#ED174C","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[6,1],"y":[0.37808213511912769,-0.32265184870225766],"text":["GSW","LAL"],"hovertext":["Bob Fitzgerald: 0.86<br />Diamond Leung: 0.79<br />Jim Barnett: 0.6<br />Tim Roye: 0.58<br />Rusty Simmons: 0.22<br />Connor Letourneau: -0.78","Mark Medina: -0.32"],"textfont":{"size":[16.520312361510083,3.7795275590551185],"color":"rgba(253,185,39,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#FDB927","legendgroup":"#FDB927","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[5],"y":[-0.15565796243916449],"text":"IND","hovertext":"Chris Denari: 0.15<br />Clifton Brown: 0.03<br />Nate Taylor: -0.1<br />Candace Buckner: -0.35<br />Mark Boyle: -0.52","textfont":{"size":15.175231921049336,"color":"rgba(255,198,51,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"#FFC633","legendgroup":"#FFC633","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.228310502283108,"r":7.3059360730593621,"b":40.182648401826498,"l":48.949771689497723},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.44999999999999996,12.550000000000001],"tickmode":"array","ticktext":["2","4","6","8","10","12"],"tickvals":[2,4,6,8,10,12],"categoryorder":"array","categoryarray":["2","4","6","8","10","12"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"Number of Voters","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-0.36628744290244625,0.59369562950170285],"tickmode":"array","ticktext":["-0.2","0.0","0.2","0.4"],"tickvals":[-0.20000000000000001,0,0.20000000000000001,0.39999999999999997],"categoryorder":"array","categoryarray":["-0.2","0.0","0.2","0.4"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"Mean Score","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(51,51,51,1)","width":0.66417600664176002,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"b53655a3c444":{"yintercept":{},"type":"scatter"},"b53672aa7848":{"x":{},"y":{},"text":{},"label":{},"size":{},"colour":{}}},"cur_data":"b53655a3c444","visdat":{"b53655a3c444":["function (y) ","x"],"b53672aa7848":["function (y) ","x"]},".hideLegend":true,"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+
+The average hometown score of all Boston Celtics voters is the highest of any team with at least 10 voters. The two New York teams each have large voting blocs, but unfortunately for the Knicks and Nets, tend not to vote for their own players. The Clippers’ five voters average the higher homer scores of any team. The Los Angeles Lakers, barely visible in the bottom left corner, have had only one voter these last five years. Bill Oram and Dave McMenamin are Laker beat writers, but were excluded because of multiple team affiliations.
+
+## Detailed Ballots
+
+We will take a closer look at some of the more interesting voters and ballots. These votes will be presented together with the actual result totals for the awards from all voters.
+
+### Tommy Heinsohn
+
+Topping the hometown bias list is Tommy Heinsohn. Heinsohn had a nine year career playing with the Boston Celtics from 1956 to 1965, winning six championships alongside Bill Russell, but is now the TV color commentator for those same Celtics. Heinsohn took part in 12 awards from 2013/14 to 2015/16, about half of which contributed to his high homer score.
+
+#### 14/15 Improved
+
 <table class="table table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -6819,9 +6914,9 @@ BOS
 </tr>
 </tbody>
 </table>
-</div>
-<div id="coach" class="section level4">
-<h4>14/15 Coach</h4>
+
+#### 14/15 Coach
+
 <table class="table table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -7186,9 +7281,9 @@ SAS
 </tr>
 </tbody>
 </table>
-</div>
-<div id="coach-1" class="section level4">
-<h4>15/16 Coach</h4>
+
+#### 15/16 Coach
+
 <table class="table table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -7589,18 +7684,19 @@ BOS
 </tr>
 </tbody>
 </table>
-</div>
-</div>
-<div id="section" class="section level3">
-<h3></h3>
-<p>Among Heinsohn’s 12 ballots, his picks for 2014/15 Most Improved Player scored the highest for hometown bias. Out of the 129 ballots for 2014/15 Most Improved Player, Heinsohn was the only participant to give Tyler Zeller a vote, placing the Celtic big man at the very top of his ballot. He ignored Jimmy Butler, who was mentioned by over 90% of other voters. He did resist mentioning Jae Crowder, who received a single second place vote (from Celtic radio color man Cedric Maxwell in another homer pick).</p>
-<p>The 2014/15 and 2015/16 ballots for Coach of the Year were Heinsohn’s second and third most homer selections, respectively. The announcer placed Celtics coach Brad Stevens second in 2014/15 (finished just outside the top three overall and received only six first or second place votes) and first in 2015/16 (finished sixth overall with only five first place votes). Heinsohn was only 1 of 5 voters to leave Golden State coach Steve Kerr off their 2014/15 Coach ballot and only 1 of 19 voters to leave Portland coach Terry Stotts off their 2015/16 Coach ballot. The 2014/15 vote had a higher homer score than the 2015/16 vote because of the greater variation in average places among vote-getters in 2015/16.</p>
-</div>
-<div id="bill-worrell" class="section level3 tabset">
-<h3>Bill Worrell</h3>
-<p>Finishing just behind Tommy Heinsohn in hometown bias score is Bill Worrell, the Houston Rockets’ TV play-by-play announcer for over 30 years. Of Worrell’s 13 ballots over a 3 year period, 9 contributed positively to his homer score.</p>
-<div id="mvp" class="section level4">
-<h4>13/14 MVP</h4>
+
+### 
+
+Among Heinsohn’s 12 ballots, his picks for 2014/15 Most Improved Player scored the highest for hometown bias. Out of the 129 ballots for 2014/15 Most Improved Player, Heinsohn was the only participant to give Tyler Zeller a vote, placing the Celtic big man at the very top of his ballot. He ignored Jimmy Butler, who was mentioned by over 90% of other voters. He did resist mentioning Jae Crowder, who received a single second place vote (from Celtic radio color man Cedric Maxwell in another homer pick).
+
+The 2014/15 and 2015/16 ballots for Coach of the Year were Heinsohn’s second and third most homer selections, respectively. The announcer placed Celtics coach Brad Stevens second in 2014/15 (finished just outside the top three overall and received only six first or second place votes) and first in 2015/16 (finished sixth overall with only five first place votes). Heinsohn was only 1 of 5 voters to leave Golden State coach Steve Kerr off their 2014/15 Coach ballot and only 1 of 19 voters to leave Portland coach Terry Stotts off their 2015/16 Coach ballot. The 2014/15 vote had a higher homer score than the 2015/16 vote because of the greater variation in average places among vote-getters in 2015/16.
+
+### Bill Worrell
+
+Finishing just behind Tommy Heinsohn in hometown bias score is Bill Worrell, the Houston Rockets’ TV play-by-play announcer for over 30 years. Of Worrell’s 13 ballots over a 3 year period, 9 contributed positively to his homer score.
+
+#### 13/14 MVP
+
 <table class="table table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -8051,9 +8147,9 @@ HOU
 </tr>
 </tbody>
 </table>
-</div>
-<div id="mvp-1" class="section level4">
-<h4>15/16 MVP</h4>
+
+#### 15/16 MVP
+
 <table class="table table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -8542,14 +8638,15 @@ HOU
 </tr>
 </tbody>
 </table>
-</div>
-</div>
-<div id="section-1" class="section level3 tabset">
-<h3 class="tabset"></h3>
-<p>Worrell’s two most biased award ballots were for 2013/14 MVP and 2015/16 MVP, both cases where he placed Rocket guard James Harden third. There was a solid consensus for the 2013/14 MVP, with Kevin Durant first, LeBron James second, and Blake Griffin or Joakim Noah third and fourth. Worrell broke this consensus, placing Rocket guard James Harden third on his ballot for MVP ahead of Blake Griffin (who was mentioned by 83% of voters and finished 3rd overall, but was left off of Worrell’s ballot completely) and Joakim Noah (appeared on more than twice as many ballots as Harden).</p>
-<p>Comparing Bill Worrell’s 2015/16 MVP ballot to his 2013/14 MVP ballot above highlights a case where the homer score gives a result that is unanticpated. From looking at the two MVP ballots, it is expected that Worrell’s third place vote for Harden in 2015/16 (where the Houston star received only three mentions with Worrell providing the highest placement of any voter) should have generated a higher homer score than the third place vote for Harden in 2013/14 (where there were 37 mentions for the Rocket guard). This is a consequence of using standardized instead of raw scores in calculating values. Score may be scaled up or down because of the mean and variance of all scores for a particualar award.</p>
-<div id="defensive" class="section level4">
-<h4>14/15 Defensive</h4>
+
+### 
+
+Worrell’s two most biased award ballots were for 2013/14 MVP and 2015/16 MVP, both cases where he placed Rocket guard James Harden third. There was a solid consensus for the 2013/14 MVP, with Kevin Durant first, LeBron James second, and Blake Griffin or Joakim Noah third and fourth. Worrell broke this consensus, placing Rocket guard James Harden third on his ballot for MVP ahead of Blake Griffin (who was mentioned by 83% of voters and finished 3rd overall, but was left off of Worrell’s ballot completely) and Joakim Noah (appeared on more than twice as many ballots as Harden).
+
+Comparing Bill Worrell’s 2015/16 MVP ballot to his 2013/14 MVP ballot above highlights a case where the homer score gives a result that is unanticpated. From looking at the two MVP ballots, it is expected that Worrell’s third place vote for Harden in 2015/16 (where the Houston star received only three mentions with Worrell providing the highest placement of any voter) should have generated a higher homer score than the third place vote for Harden in 2013/14 (where there were 37 mentions for the Rocket guard). This is a consequence of using standardized instead of raw scores in calculating values. Score may be scaled up or down because of the mean and variance of all scores for a particualar award.
+
+#### 14/15 Defensive
+
 <table class="table table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -9022,9 +9119,9 @@ HOU
 </tr>
 </tbody>
 </table>
-</div>
-<div id="defensive-1" class="section level4">
-<h4>15/16 Defensive</h4>
+
+#### 15/16 Defensive
+
 <table class="table table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -9425,17 +9522,17 @@ HOU
 </tr>
 </tbody>
 </table>
-</div>
-</div>
-<div id="section-2" class="section level3">
-<h3></h3>
-<p>Some more interesting Worrell results came from two ballots that had lower homertown bias values than the MVP ballots. The Spurs’ Kawhi Leonard won the 2015/16 Defensive Player of the Year Award in almost unanimous fashion, being mentioned on 129 out of 130 ballots. The only media member to not have voted for Leonard was Worrell, with a ballot that included spots for Anthony Davis (only two mentions) and Rocket Trevor Ariza (his sole mention). Worrell claimed this oversight was because of an <a href="https://www.mysanantonio.com/sports/spurs/article/The-mystery-of-Kawhi-Leonard-s-missing-Defensive-7291371.php">error</a> and that he meant to vote Leonard first, but there was a similar situation with the previous year’s Defensive Player of the Year award. Leonard also won the 2014/15 award, appearing on 80% of ballots (103 out of 129). Worrell again left the Spur off his ballot, instead giving Trevor Ariza his only vote (again). If we go back to Worrell’s 2015/16 MVP ballot above, we see a third instance where he completely ignored Leonard. Leonard finished third and was mentioned by 93% of all voters.</p>
-</div>
-<div id="darnell-mayberry" class="section level3 tabset">
-<h3>Darnell Mayberry</h3>
-<p>On the opposite end of the homer spectrum are media members who tend to place their own players lower than average or leave them off their ballots altogether. Of voters that have participated in at least 10 awards, Darnell Mayberry has the lowest homer score (although there is little separation between him and many of his peers at the bottom of the list). Mayberry covered the Oklahoma City Thunder from 2005 to 2015, over which he was involved in a few <a href="https://www.welcometoloudcity.com/2014/1/10/5294586/kd-smokes-perk-calls-out-darnell-mayberry-on-twitter">incidents</a> with players (but so did many other <a href="http://grantland.com/the-triangle/nba-russell-westbrook-kevin-durant-oklahoma-city-thunder-sports-media/">media</a> with the Thunder). We will review a few of his most anti-homer ballots.</p>
-<div id="mvp-2" class="section level4">
-<h4>14/15 MVP</h4>
+
+### 
+
+Some more interesting Worrell results came from two ballots that had lower homertown bias values than the MVP ballots. The Spurs’ Kawhi Leonard won the 2015/16 Defensive Player of the Year Award in almost unanimous fashion, being mentioned on 129 out of 130 ballots. The only media member to not have voted for Leonard was Worrell, with a ballot that included spots for Anthony Davis (only two mentions) and Rocket Trevor Ariza (his sole mention). Worrell claimed this oversight was because of an [error](https://www.mysanantonio.com/sports/spurs/article/The-mystery-of-Kawhi-Leonard-s-missing-Defensive-7291371.php) and that he meant to vote Leonard first, but there was a similar situation with the previous year’s Defensive Player of the Year award. Leonard also won the 2014/15 award, appearing on 80% of ballots (103 out of 129). Worrell again left the Spur off his ballot, instead giving Trevor Ariza his only vote (again). If we go back to Worrell’s 2015/16 MVP ballot above, we see a third instance where he completely ignored Leonard. Leonard finished third and was mentioned by 93% of all voters.
+
+### Darnell Mayberry
+
+On the opposite end of the homer spectrum are media members who tend to place their own players lower than average or leave them off their ballots altogether. Of voters that have participated in at least 10 awards, Darnell Mayberry has the lowest homer score (although there is little separation between him and many of his peers at the bottom of the list). Mayberry covered the Oklahoma City Thunder from 2005 to 2015, over which he was involved in a few [incidents](https://www.welcometoloudcity.com/2014/1/10/5294586/kd-smokes-perk-calls-out-darnell-mayberry-on-twitter) with players (but so did many other [media](http://grantland.com/the-triangle/nba-russell-westbrook-kevin-durant-oklahoma-city-thunder-sports-media/) with the Thunder). We will review a few of his most anti-homer ballots.
+
+#### 14/15 MVP
+
 <table class="table table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -9886,9 +9983,9 @@ NOP
 </tr>
 </tbody>
 </table>
-</div>
-<div id="all-defense" class="section level4">
-<h4>14/15 All Defense</h4>
+
+#### 14/15 All Defense
+
 <table class="table table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -10539,9 +10636,9 @@ OKC
 </tr>
 </tbody>
 </table>
-</div>
-<div id="sixth-man" class="section level4">
-<h4>13/14 Sixth Man</h4>
+
+#### 13/14 Sixth Man
+
 <table class="table table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -10906,18 +11003,19 @@ OKC
 </tr>
 </tbody>
 </table>
-</div>
-</div>
-<div id="section-3" class="section level3">
-<h3></h3>
-<p>Of Mayberry’s 15 ballots, his 2014/15 MVP vote has the lowest hometown bias score. Russell Westbrook appeared on 83% of ballots and finished fourth in MVP voting in a season where he led the Oklahoma City Thunder to a 45-37 record (barely missing the playoffs) after Kevin Durant went down with a season-ending injury. Mayberry left Westbrook completely off of his MVP ballot, preferring Chris Paul and Anthony Davis. While Davis finished fifth in voting and garnered nearly a hundred mentions, Paul was mentioned on only half as many ballots as Westbrook.</p>
-<p>Mayberry again left Westbrook, who was mentioned by 17% of voters, off of his 2014/15 All-Defense ballot. Also for the same award, he ignored Thunder center Serge Ibaka who was mentioned on 6% of ballots. For 2013/14 Sixth Man of the Year, Mayberry left off Thunder guard Reggie Jackson, who appeared on 20% of ballots and finished fifth overall. These are minor snubs, but taken together, do enough to generate an aggregate score that puts Mayberry at the bottom of the homer list.</p>
-</div>
-<div id="most-homer-ballots" class="section level3 tabset">
-<h3>Most Homer Ballots</h3>
-<p>Here are the individual ballots with the three highest hometown bias scores. The voters themselves do not necessarily have the highest aggregate homer scores.</p>
-<div id="ron-boone-uta-1314-rookie" class="section level4">
-<h4>Ron Boone (UTA) 13/14 Rookie</h4>
+
+### 
+
+Of Mayberry’s 15 ballots, his 2014/15 MVP vote has the lowest hometown bias score. Russell Westbrook appeared on 83% of ballots and finished fourth in MVP voting in a season where he led the Oklahoma City Thunder to a 45-37 record (barely missing the playoffs) after Kevin Durant went down with a season-ending injury. Mayberry left Westbrook completely off of his MVP ballot, preferring Chris Paul and Anthony Davis. While Davis finished fifth in voting and garnered nearly a hundred mentions, Paul was mentioned on only half as many ballots as Westbrook.
+
+Mayberry again left Westbrook, who was mentioned by 17% of voters, off of his 2014/15 All-Defense ballot. Also for the same award, he ignored Thunder center Serge Ibaka who was mentioned on 6% of ballots. For 2013/14 Sixth Man of the Year, Mayberry left off Thunder guard Reggie Jackson, who appeared on 20% of ballots and finished fifth overall. These are minor snubs, but taken together, do enough to generate an aggregate score that puts Mayberry at the bottom of the homer list.
+
+### Most Homer Ballots
+
+Here are the individual ballots with the three highest hometown bias scores. The voters themselves do not necessarily have the highest aggregate homer scores.
+
+#### Ron Boone (UTA) 13/14 Rookie
+
 <table class="table table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -11282,9 +11380,9 @@ NYK
 </tr>
 </tbody>
 </table>
-</div>
-<div id="jason-kosmicki-den-1516-improved" class="section level4">
-<h4>Jason Kosmicki (DEN) 15/16 Improved</h4>
+
+#### Jason Kosmicki (DEN) 15/16 Improved
+
 <table class="table table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -11685,9 +11783,9 @@ DEN
 </tr>
 </tbody>
 </table>
-</div>
-<div id="ron-tillery-mem-1617-sixth-man" class="section level4">
-<h4>Ron Tillery (MEM) 16/17 Sixth Man</h4>
+
+#### Ron Tillery (MEM) 16/17 Sixth Man
+
 <table class="table table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -12088,12 +12186,11 @@ MEM
 </tr>
 </tbody>
 </table>
-</div>
-</div>
-<div id="most-anti-homer-ballots" class="section level3 tabset">
-<h3>Most Anti-Homer Ballots</h3>
-<div id="cedric-maxwell-bos-1415-sixth-man" class="section level4">
-<h4>Cedric Maxwell (BOS) 14/15 Sixth Man</h4>
+
+### Most Anti-Homer Ballots
+
+#### Cedric Maxwell (BOS) 14/15 Sixth Man
+
 <table class="table table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -12458,9 +12555,9 @@ CLE
 </tr>
 </tbody>
 </table>
-</div>
-<div id="gary-washburn-bos-1718-coach" class="section level4">
-<h4>Gary Washburn (BOS) 17/18 Coach</h4>
+
+#### Gary Washburn (BOS) 17/18 Coach
+
 <table class="table table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -12825,16 +12922,15 @@ IND
 </tr>
 </tbody>
 </table>
-</div>
-</div>
-<div id="section-4" class="section level3">
-<h3></h3>
-<p>Cedric Maxwell, the Boston Celtic’s radio color commentator and former NBA Finals MVP for the same team, owns the most anti-homer ballot. This is actually outlier result for Maxwell, as many of his other ballots have high homer scores, giving him a rank of 29 overall for hometown bias. The offending ballot is for 2014/15 Sixth Man of the Year, when he left off Celtic guard Isaiah Thomas. A possible explanation for this may be that Thomas joined Boston midway through the season via trade, playing only 21 games for the Celtics.</p>
-<p>The ballot with the second lowest hometown bias score is Darnell Mayberry’s 2014/15 MVP vote, already discussed above. Coming in third is Celtic beat writer Gary Washburn’s 2017/18 Coach of the Year ballot. These are atypical results given the general homerism of the Boston voting bloc. A takeaway from these results is that it takes little to generate a high negative bias score. Because of how the scores are calculated, leaving off a player that finished middle of the pack in the results may lead to a very low score depending on how everyone else votes.</p>
-</div>
-</div>
-<div id="parting-thoughts" class="section level2">
-<h2>Parting Thoughts</h2>
-<p>Given the hometown bias results, the NBA made a justified decision in removing team broadcasters from the panel of award voters. This is not to say that all announcers showed bias in their awards ballots, as there were many announcers that placed at the bottom of the table ranking team-affiliated voters. A good number of these broadcasters are associated with the two New York teams. This is not surprising for anyone who has watched many Knicks and Nets broadcasts, given the even-handedness of their announcing crews. Mark Boyle of the Pacers and George Balaha of the Pistons are a couple of non-New York examples who also score low.</p>
-<p>As previously mentioned, international voters were introduced with the removal of broadcasters for the 2016/17 end-of-season awards. While there is no way for international voters to show hometown bias, a few ballots from these media members made you question how much they actually follow the NBA. But that is an idea for a different post.</p>
-</div>
+
+### 
+
+Cedric Maxwell, the Boston Celtic’s radio color commentator and former NBA Finals MVP for the same team, owns the most anti-homer ballot. This is actually outlier result for Maxwell, as many of his other ballots have high homer scores, giving him a rank of 29 overall for hometown bias. The offending ballot is for 2014/15 Sixth Man of the Year, when he left off Celtic guard Isaiah Thomas. A possible explanation for this may be that Thomas joined Boston midway through the season via trade, playing only 21 games for the Celtics.
+
+The ballot with the second lowest hometown bias score is Darnell Mayberry’s 2014/15 MVP vote, already discussed above. Coming in third is Celtic beat writer Gary Washburn’s 2017/18 Coach of the Year ballot. These are atypical results given the general homerism of the Boston voting bloc. A takeaway from these results is that it takes little to generate a high negative bias score. Because of how the scores are calculated, leaving off a player that finished middle of the pack in the results may lead to a very low score depending on how everyone else votes.
+
+## Parting Thoughts
+
+Given the hometown bias results, the NBA made a justified decision in removing team broadcasters from the panel of award voters. This is not to say that all announcers showed bias in their awards ballots, as there were many announcers that placed at the bottom of the table ranking team-affiliated voters. A good number of these broadcasters are associated with the two New York teams. This is not surprising for anyone who has watched many Knicks and Nets broadcasts, given the even-handedness of their announcing crews. Mark Boyle of the Pacers and George Balaha of the Pistons are a couple of non-New York examples who also score low.
+
+As previously mentioned, international voters were introduced with the removal of broadcasters for the 2016/17 end-of-season awards. While there is no way for international voters to show hometown bias, a few ballots from these media members made you question how much they actually follow the NBA. But that is an idea for a different post.

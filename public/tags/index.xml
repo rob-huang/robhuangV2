@@ -2,59 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Robert Huang</title>
-    <link>http://localhost:6269/tags/</link>
+    <link>http://localhost:3503/tags/</link>
     <description>Recent content in Tags on Robert Huang</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 26 Jun 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:6269/tags/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Sports</title>
-      <link>http://localhost:6269/tags/sports/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:6269/tags/sports/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>F1</title>
-      <link>http://localhost:6269/tags/f1/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:6269/tags/f1/</guid>
-      <description></description>
-    </item>
+    <lastBuildDate>Mon, 10 Dec 2018 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:3503/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Nba</title>
-      <link>http://localhost:6269/tags/nba/</link>
+      <link>http://localhost:3503/tags/nba/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:6269/tags/nba/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Film</title>
-      <link>http://localhost:6269/tags/film/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:6269/tags/film/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Nba Draft</title>
-      <link>http://localhost:6269/tags/nba-draft/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:6269/tags/nba-draft/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Food</title>
-      <link>http://localhost:6269/tags/food/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:6269/tags/food/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Los Angeles</title>
-      <link>http://localhost:6269/tags/los-angeles/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:6269/tags/los-angeles/</guid>
+      <guid>http://localhost:3503/tags/nba/</guid>
       <description></description>
     </item>
   </channel>
