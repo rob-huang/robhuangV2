@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=3503&amp;path=livereload" data-no-instant defer></script>
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=4303&amp;path=livereload" data-no-instant defer></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>The Coaching Carousel | Robert Huang</title>
@@ -19,6 +19,8 @@
       
       <li><a href="/post/">Posts</a></li>
       
+      <li><a href="/tags/">Tags</a></li>
+      
     </ul>
     <hr/>
     </nav>
@@ -30,1708 +32,737 @@
 </div>
 
 <main>
-
 <script src="/post/2024/06/26/the-coaching-carousel/index_files/kePrint/kePrint.js"></script>
 <link href="/post/2024/06/26/the-coaching-carousel/index_files/lightable/lightable.css" rel="stylesheet" />
-
-
-<p>Being a head coach or manager of a sports team must be among the world’s most unstable professions given the number of teams that go through coaching changes in a season. Whether it’s an impatient front office, angry fanbase, or ambitious coach chasing a better situation, a lot of turnover is expected in this line of work. We’ll look at exactly how volatile this job is by analyzing some of America’s most popular sports leagues — the NFL, NBA, MLB, NHL, and WNBA. We’ll include the two biggest college sports — the Division I Football Bowl Subdivision (FBS) and Division I men’s basketball — for non-professional comparisons. We’ll also add the English Premier League (EPL) for a non-North American case. How long do coaches stay at positions with the same team? How different are head coaching tenures/turnover rates between all these leagues, and how have these numbers varied over time?</p>
-<div id="the-data" class="section level3">
-<h3>The Data</h3>
+<script src="/post/2024/06/26/the-coaching-carousel/index_files/kePrint/kePrint.js"></script>
+<link href="/post/2024/06/26/the-coaching-carousel/index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="/post/2024/06/26/the-coaching-carousel/index_files/kePrint/kePrint.js"></script>
+<link href="/post/2024/06/26/the-coaching-carousel/index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="/post/2024/06/26/the-coaching-carousel/index_files/kePrint/kePrint.js"></script>
+<link href="/post/2024/06/26/the-coaching-carousel/index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="/post/2024/06/26/the-coaching-carousel/index_files/kePrint/kePrint.js"></script>
+<link href="/post/2024/06/26/the-coaching-carousel/index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="/post/2024/06/26/the-coaching-carousel/index_files/kePrint/kePrint.js"></script>
+<link href="/post/2024/06/26/the-coaching-carousel/index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="/post/2024/06/26/the-coaching-carousel/index_files/kePrint/kePrint.js"></script>
+<link href="/post/2024/06/26/the-coaching-carousel/index_files/lightable/lightable.css" rel="stylesheet" />
+<p>Being a head coach or manager of a sports team must be among the world&rsquo;s most unstable professions given the number of teams that go through coaching changes in a season. Whether it&rsquo;s an impatient front office, angry fanbase, or ambitious coach chasing a better situation, a lot of turnover is expected in this line of work. We&rsquo;ll look at exactly how volatile this job is by analyzing some of America&rsquo;s most popular sports leagues — the NFL, NBA, MLB, NHL, and WNBA. We&rsquo;ll include the two biggest college sports — the Division I Football Bowl Subdivision (FBS) and Division I men&rsquo;s basketball — for non-professional comparisons. We&rsquo;ll also add the English Premier League (EPL) for a non-North American case. How long do coaches stay at positions with the same team? How different are head coaching tenures/turnover rates between all these leagues, and how have these numbers varied over time?</p>
+<h3 id="the-data">The Data</h3>
 <p>Coaching data up to 2023 for all leagues except the EPL is pulled from the <a href="https://www.sports-reference.com/">Sports Reference</a> family of sites. Division I status for college programs is based on Sports Reference designations. EPL data is built from a variety of other sources. Non Premier League data — for the predecessor Football League First Division and leagues below level one of the pyramid — are included if necessary.</p>
-<p>The main statistic we’ll look at is the length of a continuous coaching stint with the same team at the end of each season. The unit of length is number of seasons calculated as percentage of available games coached. For example, let’s say we have a league with 50 games in a season. If a coach worked one full season but is then fired 10 games into the next season, they’d have a stint length of 1 at the end of the first season and length of 1.2 at the end of the second season. Only regular season games are considered for the professional leagues. For college, postseason games are included. For the EPL, cup and European games are not included.</p>
-<p>When calculating the length of a coaching stint with a team, a tenure is considered unbroken as long as the coach presided over at least one game in that season for that team. If a coach leaves their position in the middle of a season but is rehired the next season by the same team, we consider this a single continuous stint, regardless of whether the coach actually left their position. This is because of the ambiguity of interim coach statuses and job start/end dates in the data. Given the rarity of this situation, this is unlikely to affect the results. If there are multiple coaches for the same team in the same season, the stints are weighted based on the stint size for that season. Using the previous example of a 50 game season and a coach with a stint length of 1.2 after being fired 10 games into the season, let’s assume the replacement coach finishes the remaining 40 games for a stint length of 0.8. For this season, the first coach’s value of 1.2 is weighted 20% and the second coach’s value of 0.8 is weighted 80%. Weighting is also done for co-coaches — teams managed by multiple coaches at the same time (see the NFL and college football up to the 1940s) — to ensure that each team has the same impact on the results, regardless of the number of coaches on staff.</p>
-</div>
-<div id="stint-lengths" class="section level3">
-<h3>Stint Lengths</h3>
+<p>The main statistic we&rsquo;ll look at is the length of a continuous coaching stint with the same team at the end of each season. The unit of length is number of seasons calculated as percentage of available games coached. For example, let&rsquo;s say we have a league with 50 games in a season. If a coach worked one full season but is then fired 10 games into the next season, they&rsquo;d have a stint length of 1 at the end of the first season and length of 1.2 at the end of the second season. Only regular season games are considered for the professional leagues. For college, postseason games are included. For the EPL, cup and European games are not included.</p>
+<p>When calculating the length of a coaching stint with a team, a tenure is considered unbroken as long as the coach presided over at least one game in that season for that team. If a coach leaves their position in the middle of a season but is rehired the next season by the same team, we consider this a single continuous stint, regardless of whether the coach actually left their position. This is because of the ambiguity of interim coach statuses and job start/end dates in the data. Given the rarity of this situation, this is unlikely to affect the results. If there are multiple coaches for the same team in the same season, the stints are weighted based on the stint size for that season. Using the previous example of a 50 game season and a coach with a stint length of 1.2 after being fired 10 games into the season, let&rsquo;s assume the replacement coach finishes the remaining 40 games for a stint length of 0.8. For this season, the first coach&rsquo;s value of 1.2 is weighted 20% and the second coach&rsquo;s value of 0.8 is weighted 80%. Weighting is also done for co-coaches — teams managed by multiple coaches at the same time (see the NFL and college football up to the 1940s) — to ensure that each team has the same impact on the results, regardless of the number of coaches on staff.</p>
+<h3 id="stint-lengths">Stint Lengths</h3>
 <table class="table table-striped table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<caption>
-<span id="tab:stintSum">Table 1: </span>
-<center>
-Overall summary of stint lengths for each league
-</center>
+<caption><span id="tab:stintSum"></span>Table 1: <center>Overall summary of stint lengths for each league</center>
 </caption>
-<thead>
-<tr>
-<th style="text-align:left;">
-League
-</th>
-<th style="text-align:right;">
-Start
-</th>
-<th style="text-align:right;">
-End
-</th>
-<th style="text-align:right;">
-# of Coach Stints
-</th>
-<th style="text-align:right;">
-Mean
-</th>
-<th style="text-align:right;">
-Median
-</th>
-<th style="text-align:right;">
-SD
-</th>
-</tr>
-</thead>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> League </th>
+   <th style="text-align:right;"> Start </th>
+   <th style="text-align:right;"> End </th>
+   <th style="text-align:right;"> # of Coach Stints </th>
+   <th style="text-align:right;"> Mean </th>
+   <th style="text-align:right;"> Median </th>
+   <th style="text-align:right;"> SD </th>
+  </tr>
+ </thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:right;">
-1895
-</td>
-<td style="text-align:right;">
-2023
-</td>
-<td style="text-align:right;">
-5319
-</td>
-<td style="text-align:right;">
-5.0
-</td>
-<td style="text-align:right;">
-4.0
-</td>
-<td style="text-align:right;">
-4.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cfb
-</td>
-<td style="text-align:right;">
-1919
-</td>
-<td style="text-align:right;">
-2023
-</td>
-<td style="text-align:right;">
-2604
-</td>
-<td style="text-align:right;">
-4.7
-</td>
-<td style="text-align:right;">
-4.0
-</td>
-<td style="text-align:right;">
-4.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-nfl
-</td>
-<td style="text-align:right;">
-1922
-</td>
-<td style="text-align:right;">
-2023
-</td>
-<td style="text-align:right;">
-679
-</td>
-<td style="text-align:right;">
-3.3
-</td>
-<td style="text-align:right;">
-2.0
-</td>
-<td style="text-align:right;">
-3.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-mlb
-</td>
-<td style="text-align:right;">
-1901
-</td>
-<td style="text-align:right;">
-2023
-</td>
-<td style="text-align:right;">
-947
-</td>
-<td style="text-align:right;">
-2.8
-</td>
-<td style="text-align:right;">
-2.0
-</td>
-<td style="text-align:right;">
-3.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-nba
-</td>
-<td style="text-align:right;">
-1950
-</td>
-<td style="text-align:right;">
-2023
-</td>
-<td style="text-align:right;">
-621
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-<td style="text-align:right;">
-2.0
-</td>
-<td style="text-align:right;">
-2.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-wnba
-</td>
-<td style="text-align:right;">
-1997
-</td>
-<td style="text-align:right;">
-2023
-</td>
-<td style="text-align:right;">
-139
-</td>
-<td style="text-align:right;">
-2.4
-</td>
-<td style="text-align:right;">
-2.0
-</td>
-<td style="text-align:right;">
-2.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-nhl
-</td>
-<td style="text-align:right;">
-1918
-</td>
-<td style="text-align:right;">
-2023
-</td>
-<td style="text-align:right;">
-716
-</td>
-<td style="text-align:right;">
-2.3
-</td>
-<td style="text-align:right;">
-1.8
-</td>
-<td style="text-align:right;">
-2.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-epl
-</td>
-<td style="text-align:right;">
-1993
-</td>
-<td style="text-align:right;">
-2023
-</td>
-<td style="text-align:right;">
-446
-</td>
-<td style="text-align:right;">
-1.9
-</td>
-<td style="text-align:right;">
-1.0
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-</tr>
+  <tr>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:right;"> 1895 </td>
+   <td style="text-align:right;"> 2023 </td>
+   <td style="text-align:right;"> 5319 </td>
+   <td style="text-align:right;"> 5.0 </td>
+   <td style="text-align:right;"> 4.0 </td>
+   <td style="text-align:right;"> 4.9 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cfb </td>
+   <td style="text-align:right;"> 1919 </td>
+   <td style="text-align:right;"> 2023 </td>
+   <td style="text-align:right;"> 2604 </td>
+   <td style="text-align:right;"> 4.7 </td>
+   <td style="text-align:right;"> 4.0 </td>
+   <td style="text-align:right;"> 4.3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> nfl </td>
+   <td style="text-align:right;"> 1922 </td>
+   <td style="text-align:right;"> 2023 </td>
+   <td style="text-align:right;"> 679 </td>
+   <td style="text-align:right;"> 3.3 </td>
+   <td style="text-align:right;"> 2.0 </td>
+   <td style="text-align:right;"> 3.6 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> mlb </td>
+   <td style="text-align:right;"> 1901 </td>
+   <td style="text-align:right;"> 2023 </td>
+   <td style="text-align:right;"> 947 </td>
+   <td style="text-align:right;"> 2.8 </td>
+   <td style="text-align:right;"> 2.0 </td>
+   <td style="text-align:right;"> 3.4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> nba </td>
+   <td style="text-align:right;"> 1950 </td>
+   <td style="text-align:right;"> 2023 </td>
+   <td style="text-align:right;"> 621 </td>
+   <td style="text-align:right;"> 2.6 </td>
+   <td style="text-align:right;"> 2.0 </td>
+   <td style="text-align:right;"> 2.7 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> wnba </td>
+   <td style="text-align:right;"> 1997 </td>
+   <td style="text-align:right;"> 2023 </td>
+   <td style="text-align:right;"> 139 </td>
+   <td style="text-align:right;"> 2.4 </td>
+   <td style="text-align:right;"> 2.0 </td>
+   <td style="text-align:right;"> 2.3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> nhl </td>
+   <td style="text-align:right;"> 1918 </td>
+   <td style="text-align:right;"> 2023 </td>
+   <td style="text-align:right;"> 716 </td>
+   <td style="text-align:right;"> 2.3 </td>
+   <td style="text-align:right;"> 1.8 </td>
+   <td style="text-align:right;"> 2.4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> epl </td>
+   <td style="text-align:right;"> 1993 </td>
+   <td style="text-align:right;"> 2023 </td>
+   <td style="text-align:right;"> 446 </td>
+   <td style="text-align:right;"> 1.9 </td>
+   <td style="text-align:right;"> 1.0 </td>
+   <td style="text-align:right;"> 2.6 </td>
+  </tr>
 </tbody>
 </table>
-<p><img src="/post/2024/06/26/the-coaching-carousel/index_files/figure-html/stintHist-1.png" width="864" style="display: block; margin: auto;" /></p>
-<p>To begin, we look at the overall summary of coach stint lengths by sport, including stints that are active up to the 2023 season. College basketball (cbbm) and college football (cfb) have the longest tenured head coaches, with mean values of 5 and 4.7 seasons, respectively. No professional sport comes close to this. The high standard deviations for these 2 leagues are because a number of college coaches have especially long reigns, as seen in the histograms of stint lengths. The NFL is the leading professional league, with stint lengths of 3.3 seasons. The MLB and NBA are middle of the pack with coaches holding positions for a little over 2.5 seasons. The WNBA is surprisingly not far behind given that the league was established only in 1997, having had less time for coaches to generate long lengths to drive up its averages. Among the older leagues, the NHL lags slightly, with a median under 2. The EPL is far behind every other league, with a mean under 2 and a median of just 1 season. The league was established in the 1992-93 season, but seasons managed for the same team in the predecessor league are included. Any seasons spent in leagues below the Premier League are also included as long at they’re part of the same stint with the team. New teams entering the EPL will not have an artificial effect in driving the numbers down.</p>
-<p><img src="/post/2024/06/26/the-coaching-carousel/index_files/figure-html/stintIndFac-1.png" width="864" style="display: block; margin: auto;" /></p>
-<p><img src="/post/2024/06/26/the-coaching-carousel/index_files/figure-html/stintComp-1.png" width="864" style="display: block; margin: auto;" /></p>
-<p>We’ll separate out the results by year to see if there are trends in mean stint lengths over time (first plot above). For less-cluttered comparisons between leagues, a second plot combines the leagues and shows 5-year rolling means instead of the actual season values. Since the 1950s, the two college leagues have generally had the longest tenured coaches, with men’s basketball on top most years and football running second. For college basketball, the noticeable declines in average stint lengths in the 1940s and 1970s were because of rapid additions of new schools, and thus new coaches starting at year 1, into Division I. For this analysis, years coached for non-Division I seasons are not counted even if the same coach persisted through the move up to the new league. It’s not surprising that college sports have coaches with longer reigns given the power and responsibilities of the coaches compared to their counterparts in the professional leagues. College head coaches are both coach and general manager, responsible for the recruitment of their rosters. Making a coaching change can lead to roster upheaval, unlike in professional sports where players are under binding contracts and not completely attached to coaches.</p>
-<p>Since the 1970s, the NFL has been the professional league that keeps their coaches for the most amount of time. This may have to do with the NFL having the shortest regular season among all the pro leagues. Its 4 month/17 game season is shorter than the 6 month seasons for the NBA, MLB, and NHL (82, 162, and 82 games, respectively). There’s a much greater chance of sustaining losing streaks that result in job dismissals in a long NBA/MLB/NHL season than in a more compact NFL season.</p>
-<p>Pre-1950s, the MLB was among the leagues with the largest stint lengths. The was almost solely driven by Connie Mack, who coached the Philadelphia Athletics for 50 seasons from 1901 to 1950. We see how big of an effect Mack’s retirement had with MLB’s mean stint value falling from 5.8 in 1950 to 2.2 in 1951. Lou Boudreau’s firing after 9 seasons with the Cleveland Indians in the same year also had an effect. Since then, the MLB has pretty much been in line with the NFL and NBA.</p>
+<img src="/post/2024/06/26/the-coaching-carousel/index_files/figure-html/stintHist-1.png" width="864" style="display: block; margin: auto;" />
+<p>To begin, we look at the overall summary of coach stint lengths by sport, including stints that are active up to the 2023 season. College basketball (cbbm) and college football (cfb) have the longest tenured head coaches, with mean values of 5 and 4.7 seasons, respectively. No professional sport comes close to this. The high standard deviations for these 2 leagues are because a number of college coaches have especially long reigns, as seen in the histograms of stint lengths. The NFL is the leading professional league, with stint lengths of 3.3 seasons. The MLB and NBA are middle of the pack with coaches holding positions for a little over 2.5 seasons. The WNBA is surprisingly not far behind given that the league was established only in 1997, having had less time for coaches to generate long lengths to drive up its averages. Among the older leagues, the NHL lags slightly, with a median under 2. The EPL is far behind every other league, with a mean under 2 and a median of just 1 season. The league was established in the 1992-93 season, but seasons managed for the same team in the predecessor league are included. Any seasons spent in leagues below the Premier League are also included as long at they&rsquo;re part of the same stint with the team. New teams entering the EPL will not have an artificial effect in driving the numbers down.</p>
+<img src="/post/2024/06/26/the-coaching-carousel/index_files/figure-html/stintIndFac-1.png" width="864" style="display: block; margin: auto;" />
+<img src="/post/2024/06/26/the-coaching-carousel/index_files/figure-html/stintComp-1.png" width="864" style="display: block; margin: auto;" />
+<p>We&rsquo;ll separate out the results by year to see if there are trends in mean stint lengths over time (first plot above). For less-cluttered comparisons between leagues, a second plot combines the leagues and shows 5-year rolling means instead of the actual season values. Since the 1950s, the two college leagues have generally had the longest tenured coaches, with men&rsquo;s basketball on top most years and football running second. For college basketball, the noticeable declines in average stint lengths in the 1940s and 1970s were because of rapid additions of new schools, and thus new coaches starting at year 1, into Division I. For this analysis, years coached for non-Division I seasons are not counted even if the same coach persisted through the move up to the new league. It&rsquo;s not surprising that college sports have coaches with longer reigns given the power and responsibilities of the coaches compared to their counterparts in the professional leagues. College head coaches are both coach and general manager, responsible for the recruitment of their rosters. Making a coaching change can lead to roster upheaval, unlike in professional sports where players are under binding contracts and not completely attached to coaches.</p>
+<p>Since the 1970s, the NFL has been the professional league that keeps their coaches for the most amount of time. This may have to do with the NFL having the shortest regular season among all the pro leagues. Its 4 month/17 game season is shorter than the 6 month seasons for the NBA, MLB, and NHL (82, 162, and 82 games, respectively). There&rsquo;s a much greater chance of sustaining losing streaks that result in job dismissals in a long NBA/MLB/NHL season than in a more compact NFL season.</p>
+<p>Pre-1950s, the MLB was among the leagues with the largest stint lengths. The was almost solely driven by Connie Mack, who coached the Philadelphia Athletics for 50 seasons from 1901 to 1950. We see how big of an effect Mack&rsquo;s retirement had with MLB&rsquo;s mean stint value falling from 5.8 in 1950 to 2.2 in 1951. Lou Boudreau&rsquo;s firing after 9 seasons with the Cleveland Indians in the same year also had an effect. Since then, the MLB has pretty much been in line with the NFL and NBA.</p>
 <p>The two youngest leagues — the EPL, established in 1992-93 (1993 season) and WNBA, established 1997 — have results that have moved in different directions. The WNBA has seen the constancy of their coaching ranks growing over time, aided by its short 4 month season and small 12 team league. In fact, the WNBA underwent contraction from 2000 to 2010, going from 16 to 12 teams. While contraction is not good for the business side of the sport, it does remove troubled teams that may be more susceptible to staff instability.</p>
-<p>The EPL has gone in the opposite direction, with managers spending less time in their posts in recent years. The EPL, despite being established in 1992-93, is a continuation of Football League First Division (manager data from that league are also included in the numbers for the EPL), unlike the WNBA which was set up from scratch in 1997. At 9 months, it has the longest regular season of any of the leagues in our data. It’s also the only league in the database to have relegation, a major reason for its managerial turnover (note that lower division seasons are included in the stint lengths for Premier League managers). Unlike American professional sports, teams cannot spend a few seasons being bad in the name of building for the future. Managers don’t have the luxury of growing with a poorly performing team, getting an injection of strong draft talent every year. The continuing threat of relegation throughout a season can instead lead to the axe.</p>
+<p>The EPL has gone in the opposite direction, with managers spending less time in their posts in recent years. The EPL, despite being established in 1992-93, is a continuation of Football League First Division (manager data from that league are also included in the numbers for the EPL), unlike the WNBA which was set up from scratch in 1997. At 9 months, it has the longest regular season of any of the leagues in our data. It&rsquo;s also the only league in the database to have relegation, a major reason for its managerial turnover (note that lower division seasons are included in the stint lengths for Premier League managers). Unlike American professional sports, teams cannot spend a few seasons being bad in the name of building for the future. Managers don&rsquo;t have the luxury of growing with a poorly performing team, getting an injection of strong draft talent every year. The continuing threat of relegation throughout a season can instead lead to the axe.</p>
 <p>The NHL is the domestic league with the shortest term coaches, averaging about 2.8 or 2.9 seasons in the last few years. This is actually an improvement over the 1990s when coaches were averaging under 2 seasons on the job. Only the recent chaos of the EPL has prevented the NHL from bringing up the rear in this stat.</p>
 <table class="table table-striped table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<caption>
-<span id="tab:stintLong">Table 2: </span>
-<center>
-Seasons with the largest average stint lengths
-</center>
+<caption><span id="tab:stintLong"></span>Table 2: <center>Seasons with the largest average stint lengths</center>
 </caption>
-<thead>
-<tr>
-<th style="text-align:left;">
-League
-</th>
-<th style="text-align:right;">
-Season
-</th>
-<th style="text-align:right;">
-Teams
-</th>
-<th style="text-align:right;">
-Teams with data
-</th>
-<th style="text-align:right;">
-Mean
-</th>
-<th style="text-align:right;">
-Median
-</th>
-<th style="text-align:right;">
-SD
-</th>
-</tr>
-</thead>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> League </th>
+   <th style="text-align:right;"> Season </th>
+   <th style="text-align:right;"> Teams </th>
+   <th style="text-align:right;"> Teams with data </th>
+   <th style="text-align:right;"> Mean </th>
+   <th style="text-align:right;"> Median </th>
+   <th style="text-align:right;"> SD </th>
+  </tr>
+ </thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-mlb
-</td>
-<td style="text-align:right;">
-1945
-</td>
-<td style="text-align:right;">
-16
-</td>
-<td style="text-align:right;">
-16
-</td>
-<td style="text-align:right;">
-8.2
-</td>
-<td style="text-align:right;">
-5.2
-</td>
-<td style="text-align:right;">
-10.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:right;">
-1942
-</td>
-<td style="text-align:right;">
-159
-</td>
-<td style="text-align:right;">
-158
-</td>
-<td style="text-align:right;">
-8.0
-</td>
-<td style="text-align:right;">
-6.0
-</td>
-<td style="text-align:right;">
-6.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-nhl
-</td>
-<td style="text-align:right;">
-1947
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-7.8
-</td>
-<td style="text-align:right;">
-7.0
-</td>
-<td style="text-align:right;">
-6.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:right;">
-1941
-</td>
-<td style="text-align:right;">
-158
-</td>
-<td style="text-align:right;">
-158
-</td>
-<td style="text-align:right;">
-7.8
-</td>
-<td style="text-align:right;">
-6.0
-</td>
-<td style="text-align:right;">
-6.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-mlb
-</td>
-<td style="text-align:right;">
-1944
-</td>
-<td style="text-align:right;">
-16
-</td>
-<td style="text-align:right;">
-16
-</td>
-<td style="text-align:right;">
-7.4
-</td>
-<td style="text-align:right;">
-4.2
-</td>
-<td style="text-align:right;">
-10.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:right;">
-1961
-</td>
-<td style="text-align:right;">
-173
-</td>
-<td style="text-align:right;">
-173
-</td>
-<td style="text-align:right;">
-7.4
-</td>
-<td style="text-align:right;">
-6.0
-</td>
-<td style="text-align:right;">
-6.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:right;">
-1940
-</td>
-<td style="text-align:right;">
-158
-</td>
-<td style="text-align:right;">
-158
-</td>
-<td style="text-align:right;">
-7.4
-</td>
-<td style="text-align:right;">
-5.0
-</td>
-<td style="text-align:right;">
-6.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:right;">
-1964
-</td>
-<td style="text-align:right;">
-179
-</td>
-<td style="text-align:right;">
-179
-</td>
-<td style="text-align:right;">
-7.3
-</td>
-<td style="text-align:right;">
-6.0
-</td>
-<td style="text-align:right;">
-6.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:right;">
-1962
-</td>
-<td style="text-align:right;">
-178
-</td>
-<td style="text-align:right;">
-178
-</td>
-<td style="text-align:right;">
-7.3
-</td>
-<td style="text-align:right;">
-6.0
-</td>
-<td style="text-align:right;">
-6.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:right;">
-1965
-</td>
-<td style="text-align:right;">
-180
-</td>
-<td style="text-align:right;">
-180
-</td>
-<td style="text-align:right;">
-7.3
-</td>
-<td style="text-align:right;">
-6.0
-</td>
-<td style="text-align:right;">
-5.9
-</td>
-</tr>
+  <tr>
+   <td style="text-align:left;"> mlb </td>
+   <td style="text-align:right;"> 1945 </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 8.2 </td>
+   <td style="text-align:right;"> 5.2 </td>
+   <td style="text-align:right;"> 10.4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:right;"> 1942 </td>
+   <td style="text-align:right;"> 159 </td>
+   <td style="text-align:right;"> 158 </td>
+   <td style="text-align:right;"> 8.0 </td>
+   <td style="text-align:right;"> 6.0 </td>
+   <td style="text-align:right;"> 6.6 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> nhl </td>
+   <td style="text-align:right;"> 1947 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 7.8 </td>
+   <td style="text-align:right;"> 7.0 </td>
+   <td style="text-align:right;"> 6.4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:right;"> 1941 </td>
+   <td style="text-align:right;"> 158 </td>
+   <td style="text-align:right;"> 158 </td>
+   <td style="text-align:right;"> 7.8 </td>
+   <td style="text-align:right;"> 6.0 </td>
+   <td style="text-align:right;"> 6.3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> mlb </td>
+   <td style="text-align:right;"> 1944 </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 7.4 </td>
+   <td style="text-align:right;"> 4.2 </td>
+   <td style="text-align:right;"> 10.3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:right;"> 1961 </td>
+   <td style="text-align:right;"> 173 </td>
+   <td style="text-align:right;"> 173 </td>
+   <td style="text-align:right;"> 7.4 </td>
+   <td style="text-align:right;"> 6.0 </td>
+   <td style="text-align:right;"> 6.4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:right;"> 1940 </td>
+   <td style="text-align:right;"> 158 </td>
+   <td style="text-align:right;"> 158 </td>
+   <td style="text-align:right;"> 7.4 </td>
+   <td style="text-align:right;"> 5.0 </td>
+   <td style="text-align:right;"> 6.0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:right;"> 1964 </td>
+   <td style="text-align:right;"> 179 </td>
+   <td style="text-align:right;"> 179 </td>
+   <td style="text-align:right;"> 7.3 </td>
+   <td style="text-align:right;"> 6.0 </td>
+   <td style="text-align:right;"> 6.6 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:right;"> 1962 </td>
+   <td style="text-align:right;"> 178 </td>
+   <td style="text-align:right;"> 178 </td>
+   <td style="text-align:right;"> 7.3 </td>
+   <td style="text-align:right;"> 6.0 </td>
+   <td style="text-align:right;"> 6.1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:right;"> 1965 </td>
+   <td style="text-align:right;"> 180 </td>
+   <td style="text-align:right;"> 180 </td>
+   <td style="text-align:right;"> 7.3 </td>
+   <td style="text-align:right;"> 6.0 </td>
+   <td style="text-align:right;"> 5.9 </td>
+  </tr>
 </tbody>
 </table>
 <p>Which specific seasons had the largest average stints? We highlight the 10 seasons with the longest coach/manager reigns and see that every season came from the 1940s or 1960s.</p>
-<p>MLB’s 1945 season has the largest value of any year, with managers on average having spent 8.2 seasons with their teams. In that year, baseball had 4 managers with stint lengths of at least 10 seasons — Connie Mack in his 44th season with the Athletics, Joe McCarthy in his 15th season with the Yankees, Jimmy Dykes in his 11th season with the White Sox, and Joe Cronin in his 11th season with the Red Sox. In fact, half of the league’s 16 teams had managers that had spent at least 5 seasons with their teams. MLB’s 1944 season is also on the list, with most of the same contributors as 1945.</p>
+<p>MLB&rsquo;s 1945 season has the largest value of any year, with managers on average having spent 8.2 seasons with their teams. In that year, baseball had 4 managers with stint lengths of at least 10 seasons — Connie Mack in his 44th season with the Athletics, Joe McCarthy in his 15th season with the Yankees, Jimmy Dykes in his 11th season with the White Sox, and Joe Cronin in his 11th season with the Red Sox. In fact, half of the league&rsquo;s 16 teams had managers that had spent at least 5 seasons with their teams. MLB&rsquo;s 1944 season is also on the list, with most of the same contributors as 1945.</p>
 <p>College basketball shows up 7 times on the top 10, with sequences of seasons in the early 1940s (1940-1942) and 1960s (1961-1966). It generated these high values despite there being over 150 schools in the league. In the 1942 season, 12 coaches spent at least 20 seasons with the same team — Frank Hill led the way with his 27th season at Rutgers — and 49 coaches spent at least 10 seasons with the same team.</p>
-<p>The NHL’s 1947 season is the league’s single representative on the list, but there were only 6 active teams in hockey during that year.</p>
+<p>The NHL&rsquo;s 1947 season is the league&rsquo;s single representative on the list, but there were only 6 active teams in hockey during that year.</p>
 <table class="table table-striped table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<caption>
-<span id="tab:stintLong1980">Table 3: </span>
-<center>
-Seasons since 1980 with the largest average stint lengths
-</center>
+<caption><span id="tab:stintLong1980"></span>Table 3: <center>Seasons since 1980 with the largest average stint lengths</center>
 </caption>
-<thead>
-<tr>
-<th style="text-align:left;">
-League
-</th>
-<th style="text-align:right;">
-Season
-</th>
-<th style="text-align:right;">
-Teams
-</th>
-<th style="text-align:right;">
-Teams with data
-</th>
-<th style="text-align:right;">
-Mean
-</th>
-<th style="text-align:right;">
-Median
-</th>
-<th style="text-align:right;">
-SD
-</th>
-</tr>
-</thead>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> League </th>
+   <th style="text-align:right;"> Season </th>
+   <th style="text-align:right;"> Teams </th>
+   <th style="text-align:right;"> Teams with data </th>
+   <th style="text-align:right;"> Mean </th>
+   <th style="text-align:right;"> Median </th>
+   <th style="text-align:right;"> SD </th>
+  </tr>
+ </thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-nfl
-</td>
-<td style="text-align:right;">
-1988
-</td>
-<td style="text-align:right;">
-28
-</td>
-<td style="text-align:right;">
-28
-</td>
-<td style="text-align:right;">
-6.1
-</td>
-<td style="text-align:right;">
-3.8
-</td>
-<td style="text-align:right;">
-6.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:right;">
-2021
-</td>
-<td style="text-align:right;">
-347
-</td>
-<td style="text-align:right;">
-347
-</td>
-<td style="text-align:right;">
-6.1
-</td>
-<td style="text-align:right;">
-4.0
-</td>
-<td style="text-align:right;">
-5.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:right;">
-1994
-</td>
-<td style="text-align:right;">
-301
-</td>
-<td style="text-align:right;">
-301
-</td>
-<td style="text-align:right;">
-6.0
-</td>
-<td style="text-align:right;">
-5.0
-</td>
-<td style="text-align:right;">
-5.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:right;">
-2022
-</td>
-<td style="text-align:right;">
-358
-</td>
-<td style="text-align:right;">
-358
-</td>
-<td style="text-align:right;">
-6.0
-</td>
-<td style="text-align:right;">
-4.0
-</td>
-<td style="text-align:right;">
-5.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:right;">
-2019
-</td>
-<td style="text-align:right;">
-353
-</td>
-<td style="text-align:right;">
-353
-</td>
-<td style="text-align:right;">
-5.9
-</td>
-<td style="text-align:right;">
-4.0
-</td>
-<td style="text-align:right;">
-5.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:right;">
-2016
-</td>
-<td style="text-align:right;">
-351
-</td>
-<td style="text-align:right;">
-351
-</td>
-<td style="text-align:right;">
-5.9
-</td>
-<td style="text-align:right;">
-5.0
-</td>
-<td style="text-align:right;">
-4.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:right;">
-2017
-</td>
-<td style="text-align:right;">
-351
-</td>
-<td style="text-align:right;">
-351
-</td>
-<td style="text-align:right;">
-5.9
-</td>
-<td style="text-align:right;">
-4.0
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:right;">
-1996
-</td>
-<td style="text-align:right;">
-305
-</td>
-<td style="text-align:right;">
-305
-</td>
-<td style="text-align:right;">
-5.9
-</td>
-<td style="text-align:right;">
-4.0
-</td>
-<td style="text-align:right;">
-5.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:right;">
-2018
-</td>
-<td style="text-align:right;">
-351
-</td>
-<td style="text-align:right;">
-351
-</td>
-<td style="text-align:right;">
-5.8
-</td>
-<td style="text-align:right;">
-5.0
-</td>
-<td style="text-align:right;">
-5.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cfb
-</td>
-<td style="text-align:right;">
-1994
-</td>
-<td style="text-align:right;">
-107
-</td>
-<td style="text-align:right;">
-107
-</td>
-<td style="text-align:right;">
-5.7
-</td>
-<td style="text-align:right;">
-4.0
-</td>
-<td style="text-align:right;">
-5.2
-</td>
-</tr>
+  <tr>
+   <td style="text-align:left;"> nfl </td>
+   <td style="text-align:right;"> 1988 </td>
+   <td style="text-align:right;"> 28 </td>
+   <td style="text-align:right;"> 28 </td>
+   <td style="text-align:right;"> 6.1 </td>
+   <td style="text-align:right;"> 3.8 </td>
+   <td style="text-align:right;"> 6.4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:right;"> 2021 </td>
+   <td style="text-align:right;"> 347 </td>
+   <td style="text-align:right;"> 347 </td>
+   <td style="text-align:right;"> 6.1 </td>
+   <td style="text-align:right;"> 4.0 </td>
+   <td style="text-align:right;"> 5.6 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:right;"> 1994 </td>
+   <td style="text-align:right;"> 301 </td>
+   <td style="text-align:right;"> 301 </td>
+   <td style="text-align:right;"> 6.0 </td>
+   <td style="text-align:right;"> 5.0 </td>
+   <td style="text-align:right;"> 5.2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:right;"> 2022 </td>
+   <td style="text-align:right;"> 358 </td>
+   <td style="text-align:right;"> 358 </td>
+   <td style="text-align:right;"> 6.0 </td>
+   <td style="text-align:right;"> 4.0 </td>
+   <td style="text-align:right;"> 5.9 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:right;"> 2019 </td>
+   <td style="text-align:right;"> 353 </td>
+   <td style="text-align:right;"> 353 </td>
+   <td style="text-align:right;"> 5.9 </td>
+   <td style="text-align:right;"> 4.0 </td>
+   <td style="text-align:right;"> 5.5 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:right;"> 2016 </td>
+   <td style="text-align:right;"> 351 </td>
+   <td style="text-align:right;"> 351 </td>
+   <td style="text-align:right;"> 5.9 </td>
+   <td style="text-align:right;"> 5.0 </td>
+   <td style="text-align:right;"> 4.9 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:right;"> 2017 </td>
+   <td style="text-align:right;"> 351 </td>
+   <td style="text-align:right;"> 351 </td>
+   <td style="text-align:right;"> 5.9 </td>
+   <td style="text-align:right;"> 4.0 </td>
+   <td style="text-align:right;"> 5.3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:right;"> 1996 </td>
+   <td style="text-align:right;"> 305 </td>
+   <td style="text-align:right;"> 305 </td>
+   <td style="text-align:right;"> 5.9 </td>
+   <td style="text-align:right;"> 4.0 </td>
+   <td style="text-align:right;"> 5.5 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:right;"> 2018 </td>
+   <td style="text-align:right;"> 351 </td>
+   <td style="text-align:right;"> 351 </td>
+   <td style="text-align:right;"> 5.8 </td>
+   <td style="text-align:right;"> 5.0 </td>
+   <td style="text-align:right;"> 5.2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cfb </td>
+   <td style="text-align:right;"> 1994 </td>
+   <td style="text-align:right;"> 107 </td>
+   <td style="text-align:right;"> 107 </td>
+   <td style="text-align:right;"> 5.7 </td>
+   <td style="text-align:right;"> 4.0 </td>
+   <td style="text-align:right;"> 5.2 </td>
+  </tr>
 </tbody>
 </table>
 <p>Because the previous table featured only seasons from the 1940s and 1960s, we filter to 1980 and later for modern results. Under this criterion, the NFL leads with an average stint length of 6.1 seasons in 1988. That year featured Tom Landry coaching his 29th and last season with the Cowboys, Chuck Noll in his 20th season with the Steelers, Don Shula in his 19th season with the Dolphins, and Bill Walsh in his 10th and last season with the 49ers.</p>
-<p>The rest of this list is again mostly college basketball despite there being over 300 teams in Division I by this point. 2021, the top season, was headlined by Syracuse’s Jim Boeheim in year 44 and Duke’s Mike Krzyzewski in year 40. 73 of the 347 schools were led by head coaches that had been with their programs for at least 10 years.</p>
-</div>
-<div id="coaching-changes" class="section level3">
-<h3>Coaching Changes</h3>
-<p><img src="/post/2024/06/26/the-coaching-carousel/index_files/figure-html/anyChangeIndFac-1.png" width="864" style="display: block; margin: auto;" /></p>
-<p><img src="/post/2024/06/26/the-coaching-carousel/index_files/figure-html/anyChangeComp-1.png" width="864" style="display: block; margin: auto;" /></p>
-<p>An alternate way of looking at the data is to calculate the percent of teams that had at least one coaching change across a season, whether before the season began or during it. This includes new hires during the offseason and mid-season replacements. In this case, we’re also counting new teams entering a season as having a coaching change (except for teams promoted into the EPL). Under this method, the effect of outlier coaches/managers with extremely long stints are removed — as previously covered, see how Connie Mack’s 50 seasons with the Athletics drove up MLB’s coaching numbers in the 1940s.</p>
+<p>The rest of this list is again mostly college basketball despite there being over 300 teams in Division I by this point. 2021, the top season, was headlined by Syracuse&rsquo;s Jim Boeheim in year 44 and Duke&rsquo;s Mike Krzyzewski in year 40. 73 of the 347 schools were led by head coaches that had been with their programs for at least 10 years.</p>
+<h3 id="coaching-changes">Coaching Changes</h3>
+<img src="/post/2024/06/26/the-coaching-carousel/index_files/figure-html/anyChangeIndFac-1.png" width="864" style="display: block; margin: auto;" />
+<img src="/post/2024/06/26/the-coaching-carousel/index_files/figure-html/anyChangeComp-1.png" width="864" style="display: block; margin: auto;" />
+<p>An alternate way of looking at the data is to calculate the percent of teams that had at least one coaching change across a season, whether before the season began or during it. This includes new hires during the offseason and mid-season replacements. In this case, we&rsquo;re also counting new teams entering a season as having a coaching change (except for teams promoted into the EPL). Under this method, the effect of outlier coaches/managers with extremely long stints are removed — as previously covered, see how Connie Mack&rsquo;s 50 seasons with the Athletics drove up MLB&rsquo;s coaching numbers in the 1940s.</p>
 <p>As with stint lengths, we plot both the season values and 5-year rolling means. Results are very similar to what we saw with the stint length data. College basketball shows the least amount of turnover, with under 20% of teams changing coaches most seasons. College football showed similar rates to college basketball, but turnover has increased to between 25% and 30% since 2010. This may be because of football coaches leaving their positions before bowl games in recent years. College also shows less variation across years than pro leagues, likely due to the large number of teams in the league — over 300 for basketball and 100 for football. The NBA, NFL and MLB have been close to 20% and 30% in recent seasons. Of the older professional leagues, the NHL has shown more coaching turnover than the NBA, MLB, and NFL, with many seasons over 40%. The EPL is the most chaotic league, with between 40% and 65% of clubs making managerial changes in 10 of the last 11 seasons.</p>
 <table class="table table-striped table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<caption>
-<span id="tab:anyChangeMost">Table 4: </span>
-<center>
-Seasons since 1980 with the most coaching changes
-</center>
+<caption><span id="tab:anyChangeMost"></span>Table 4: <center>Seasons since 1980 with the most coaching changes</center>
 </caption>
-<thead>
-<tr>
-<th style="text-align:left;">
-League
-</th>
-<th style="text-align:right;">
-Season
-</th>
-<th style="text-align:right;">
-Teams
-</th>
-<th style="text-align:right;">
-Teams with coaching change
-</th>
-<th style="text-align:right;">
-Percent of teams with change
-</th>
-</tr>
-</thead>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> League </th>
+   <th style="text-align:right;"> Season </th>
+   <th style="text-align:right;"> Teams </th>
+   <th style="text-align:right;"> Teams with coaching change </th>
+   <th style="text-align:right;"> Percent of teams with change </th>
+  </tr>
+ </thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-nhl
-</td>
-<td style="text-align:right;">
-1980
-</td>
-<td style="text-align:right;">
-21
-</td>
-<td style="text-align:right;">
-14
-</td>
-<td style="text-align:right;">
-67%
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-epl
-</td>
-<td style="text-align:right;">
-2014
-</td>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-13
-</td>
-<td style="text-align:right;">
-65%
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-nhl
-</td>
-<td style="text-align:right;">
-1982
-</td>
-<td style="text-align:right;">
-21
-</td>
-<td style="text-align:right;">
-13
-</td>
-<td style="text-align:right;">
-62%
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-epl
-</td>
-<td style="text-align:right;">
-2013
-</td>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-12
-</td>
-<td style="text-align:right;">
-60%
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-epl
-</td>
-<td style="text-align:right;">
-2017
-</td>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-12
-</td>
-<td style="text-align:right;">
-60%
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-epl
-</td>
-<td style="text-align:right;">
-2023
-</td>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-12
-</td>
-<td style="text-align:right;">
-60%
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-nba
-</td>
-<td style="text-align:right;">
-2004
-</td>
-<td style="text-align:right;">
-29
-</td>
-<td style="text-align:right;">
-17
-</td>
-<td style="text-align:right;">
-59%
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-wnba
-</td>
-<td style="text-align:right;">
-1999
-</td>
-<td style="text-align:right;">
-12
-</td>
-<td style="text-align:right;">
-7
-</td>
-<td style="text-align:right;">
-58%
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-wnba
-</td>
-<td style="text-align:right;">
-2023
-</td>
-<td style="text-align:right;">
-12
-</td>
-<td style="text-align:right;">
-7
-</td>
-<td style="text-align:right;">
-58%
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-nhl
-</td>
-<td style="text-align:right;">
-1998
-</td>
-<td style="text-align:right;">
-26
-</td>
-<td style="text-align:right;">
-15
-</td>
-<td style="text-align:right;">
-58%
-</td>
-</tr>
+  <tr>
+   <td style="text-align:left;"> nhl </td>
+   <td style="text-align:right;"> 1980 </td>
+   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 67% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> epl </td>
+   <td style="text-align:right;"> 2014 </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 65% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> nhl </td>
+   <td style="text-align:right;"> 1982 </td>
+   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 62% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> epl </td>
+   <td style="text-align:right;"> 2013 </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 60% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> epl </td>
+   <td style="text-align:right;"> 2017 </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 60% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> epl </td>
+   <td style="text-align:right;"> 2023 </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 60% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> nba </td>
+   <td style="text-align:right;"> 2004 </td>
+   <td style="text-align:right;"> 29 </td>
+   <td style="text-align:right;"> 17 </td>
+   <td style="text-align:right;"> 59% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> wnba </td>
+   <td style="text-align:right;"> 1999 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 58% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> wnba </td>
+   <td style="text-align:right;"> 2023 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 58% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> nhl </td>
+   <td style="text-align:right;"> 1998 </td>
+   <td style="text-align:right;"> 26 </td>
+   <td style="text-align:right;"> 15 </td>
+   <td style="text-align:right;"> 58% </td>
+  </tr>
 </tbody>
 </table>
-<p>Which years had the most coaching changes? We’ll again filter to seasons since 1980, otherwise we’re left with a list made up of older seasons that all have tiny league sizes. There’s a lot of EPL and NHL in the resulting top 10. The EPL has four seasons — 2013, 2014, 2017, and 2023 — where at least 60% of teams saw a coaching change. The NHL topped 60% twice with the 1979-80 and 1981-82 seasons.</p>
-</div>
-<div id="midseason-coaching-changes" class="section level3">
-<h3>Midseason Coaching Changes</h3>
-<p><img src="/post/2024/06/26/the-coaching-carousel/index_files/figure-html/midChangeIndFac-1.png" width="864" style="display: block; margin: auto;" /></p>
-<p><img src="/post/2024/06/26/the-coaching-carousel/index_files/figure-html/midChangeComp-1.png" width="864" style="display: block; margin: auto;" /></p>
-<p>Instead of looking at all coaching changes in a season, we can filter to just in-season ones. This only includes coaches that get fired or resign sometime during the middle of the season, generally as a result of poor performance, rarely because of them taking other jobs. Again we plot both the season values and 5-year rolling means. From the graphs, we see that mid-season changes seldom occur in college basketball. The most that it has ever happened was in 2023, when 10 of the 363 schools — just 2.75% — had some type of mid-season change. College football was in a similar position — even more stable than basketball in many years — before jumping up to about 8% or 9% in recent years. It’s now close to the rates seen in the WNBA, NFL, MLB, and NBA. The NHL has generally been higher than the previously mentioned leagues, with around 17% of teams making changes during the season. The EPL stands above all though, with recent seasons having over 30% of teams changing managers in-season. This is more than twice as often as the next highest league.</p>
+<p>Which years had the most coaching changes? We&rsquo;ll again filter to seasons since 1980, otherwise we&rsquo;re left with a list made up of older seasons that all have tiny league sizes. There&rsquo;s a lot of EPL and NHL in the resulting top 10. The EPL has four seasons — 2013, 2014, 2017, and 2023 — where at least 60% of teams saw a coaching change. The NHL topped 60% twice with the 1979-80 and 1981-82 seasons.</p>
+<h3 id="midseason-coaching-changes">Midseason Coaching Changes</h3>
+<img src="/post/2024/06/26/the-coaching-carousel/index_files/figure-html/midChangeIndFac-1.png" width="864" style="display: block; margin: auto;" />
+<img src="/post/2024/06/26/the-coaching-carousel/index_files/figure-html/midChangeComp-1.png" width="864" style="display: block; margin: auto;" />
+<p>Instead of looking at all coaching changes in a season, we can filter to just in-season ones. This only includes coaches that get fired or resign sometime during the middle of the season, generally as a result of poor performance, rarely because of them taking other jobs. Again we plot both the season values and 5-year rolling means. From the graphs, we see that mid-season changes seldom occur in college basketball. The most that it has ever happened was in 2023, when 10 of the 363 schools — just 2.75% — had some type of mid-season change. College football was in a similar position — even more stable than basketball in many years — before jumping up to about 8% or 9% in recent years. It&rsquo;s now close to the rates seen in the WNBA, NFL, MLB, and NBA. The NHL has generally been higher than the previously mentioned leagues, with around 17% of teams making changes during the season. The EPL stands above all though, with recent seasons having over 30% of teams changing managers in-season. This is more than twice as often as the next highest league.</p>
 <table class="table table-striped table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<caption>
-<span id="tab:midChangeMost">Table 5: </span>
-<center>
-Seasons with the most in-season coaching changes
-</center>
+<caption><span id="tab:midChangeMost"></span>Table 5: <center>Seasons with the most in-season coaching changes</center>
 </caption>
-<thead>
-<tr>
-<th style="text-align:left;">
-League
-</th>
-<th style="text-align:right;">
-Season
-</th>
-<th style="text-align:right;">
-Teams
-</th>
-<th style="text-align:right;">
-Teams with coaching change
-</th>
-<th style="text-align:right;">
-Percent of teams with change
-</th>
-</tr>
-</thead>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> League </th>
+   <th style="text-align:right;"> Season </th>
+   <th style="text-align:right;"> Teams </th>
+   <th style="text-align:right;"> Teams with coaching change </th>
+   <th style="text-align:right;"> Percent of teams with change </th>
+  </tr>
+ </thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-epl
-</td>
-<td style="text-align:right;">
-2023
-</td>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-11
-</td>
-<td style="text-align:right;">
-55%
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-epl
-</td>
-<td style="text-align:right;">
-2014
-</td>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-45%
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-epl
-</td>
-<td style="text-align:right;">
-2018
-</td>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-45%
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-epl
-</td>
-<td style="text-align:right;">
-2022
-</td>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-45%
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-nhl
-</td>
-<td style="text-align:right;">
-1974
-</td>
-<td style="text-align:right;">
-16
-</td>
-<td style="text-align:right;">
-7
-</td>
-<td style="text-align:right;">
-44%
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-nhl
-</td>
-<td style="text-align:right;">
-1982
-</td>
-<td style="text-align:right;">
-21
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-43%
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-epl
-</td>
-<td style="text-align:right;">
-1995
-</td>
-<td style="text-align:right;">
-22
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-41%
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-epl
-</td>
-<td style="text-align:right;">
-2008
-</td>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-8
-</td>
-<td style="text-align:right;">
-40%
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-mlb
-</td>
-<td style="text-align:right;">
-1961
-</td>
-<td style="text-align:right;">
-18
-</td>
-<td style="text-align:right;">
-7
-</td>
-<td style="text-align:right;">
-39%
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-mlb
-</td>
-<td style="text-align:right;">
-1960
-</td>
-<td style="text-align:right;">
-16
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-38%
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-nba
-</td>
-<td style="text-align:right;">
-1960
-</td>
-<td style="text-align:right;">
-8
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-38%
-</td>
-</tr>
+  <tr>
+   <td style="text-align:left;"> epl </td>
+   <td style="text-align:right;"> 2023 </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 55% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> epl </td>
+   <td style="text-align:right;"> 2014 </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 45% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> epl </td>
+   <td style="text-align:right;"> 2018 </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 45% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> epl </td>
+   <td style="text-align:right;"> 2022 </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 45% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> nhl </td>
+   <td style="text-align:right;"> 1974 </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 44% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> nhl </td>
+   <td style="text-align:right;"> 1982 </td>
+   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 43% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> epl </td>
+   <td style="text-align:right;"> 1995 </td>
+   <td style="text-align:right;"> 22 </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 41% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> epl </td>
+   <td style="text-align:right;"> 2008 </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 40% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> mlb </td>
+   <td style="text-align:right;"> 1961 </td>
+   <td style="text-align:right;"> 18 </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 39% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> mlb </td>
+   <td style="text-align:right;"> 1960 </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 38% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> nba </td>
+   <td style="text-align:right;"> 1960 </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 38% </td>
+  </tr>
 </tbody>
 </table>
-<p>In fact, of the top 10 seasons with the most in-season coaching changes, the EPL accounted for 7 of them, peaking in 2023 when 11 out of the 20 teams — or 55% of teams — made some sort of managerial change in the middle of the season. Note that there was no need to filter to 1980 or later here.</p>
-</div>
-<div id="additional-facts" class="section level3">
-<h3>Additional Facts</h3>
-<div id="which-coachesmanagers-had-the-longest-tenures" class="section level4">
-<h4>Which coaches/managers had the longest tenures?</h4>
+<p>In fact, of the top 10 seasons with the most in-season coaching changes, the EPL accounted for 7 of them, peaking in 2023 when 11 out of the 20 teams — or 55% of teams —  made some sort of managerial change in the middle of the season. Note that there was no need to filter to 1980 or later here.</p>
+<h3 id="additional-facts">Additional Facts</h3>
+<h4 id="which-coachesmanagers-had-the-longest-tenures">Which coaches/managers had the longest tenures?</h4>
 <table class="table table-striped table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<caption>
-<span id="tab:longDet">Table 6: </span>
-<center>
-Coaches with the longest tenures
-</center>
+<caption><span id="tab:longDet"></span>Table 6: <center>Coaches with the longest tenures</center>
 </caption>
-<thead>
-<tr>
-<th style="text-align:left;">
-Sport
-</th>
-<th style="text-align:left;">
-Team
-</th>
-<th style="text-align:right;">
-Start
-</th>
-<th style="text-align:right;">
-End
-</th>
-<th style="text-align:left;">
-Coach
-</th>
-<th style="text-align:right;">
-Seasons
-</th>
-</tr>
-</thead>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Sport </th>
+   <th style="text-align:left;"> Team </th>
+   <th style="text-align:right;"> Start </th>
+   <th style="text-align:right;"> End </th>
+   <th style="text-align:left;"> Coach </th>
+   <th style="text-align:right;"> Seasons </th>
+  </tr>
+ </thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-mlb
-</td>
-<td style="text-align:left;">
-Philadelphia Athletics
-</td>
-<td style="text-align:right;">
-1901
-</td>
-<td style="text-align:right;">
-1950
-</td>
-<td style="text-align:left;">
-Connie Mack
-</td>
-<td style="text-align:right;">
-49.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:left;">
-Syracuse
-</td>
-<td style="text-align:right;">
-1977
-</td>
-<td style="text-align:right;">
-2023
-</td>
-<td style="text-align:left;">
-Jim Boeheim
-</td>
-<td style="text-align:right;">
-46.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cfb
-</td>
-<td style="text-align:left;">
-Penn State
-</td>
-<td style="text-align:right;">
-1966
-</td>
-<td style="text-align:right;">
-2011
-</td>
-<td style="text-align:left;">
-Joe Paterno
-</td>
-<td style="text-align:right;">
-45.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:left;">
-Western Kentucky
-</td>
-<td style="text-align:right;">
-1923
-</td>
-<td style="text-align:right;">
-1964
-</td>
-<td style="text-align:left;">
-E.A. Diddle
-</td>
-<td style="text-align:right;">
-42.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:left;">
-DePaul
-</td>
-<td style="text-align:right;">
-1943
-</td>
-<td style="text-align:right;">
-1984
-</td>
-<td style="text-align:left;">
-Ray Meyer
-</td>
-<td style="text-align:right;">
-42.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:left;">
-Duke
-</td>
-<td style="text-align:right;">
-1981
-</td>
-<td style="text-align:right;">
-2022
-</td>
-<td style="text-align:left;">
-Mike Krzyzewski
-</td>
-<td style="text-align:right;">
-41.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cfb
-</td>
-<td style="text-align:left;">
-Chicago
-</td>
-<td style="text-align:right;">
-1919
-</td>
-<td style="text-align:right;">
-1932
-</td>
-<td style="text-align:left;">
-Amos Alonzo Stagg
-</td>
-<td style="text-align:right;">
-41.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:left;">
-Kentucky
-</td>
-<td style="text-align:right;">
-1931
-</td>
-<td style="text-align:right;">
-1972
-</td>
-<td style="text-align:left;">
-Adolph Rupp
-</td>
-<td style="text-align:right;">
-41.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:left;">
-UTEP
-</td>
-<td style="text-align:right;">
-1962
-</td>
-<td style="text-align:right;">
-1999
-</td>
-<td style="text-align:left;">
-Don Haskins
-</td>
-<td style="text-align:right;">
-38.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:left;">
-Kansas
-</td>
-<td style="text-align:right;">
-1920
-</td>
-<td style="text-align:right;">
-1956
-</td>
-<td style="text-align:left;">
-Phog Allen
-</td>
-<td style="text-align:right;">
-36.4
-</td>
-</tr>
+  <tr>
+   <td style="text-align:left;"> mlb </td>
+   <td style="text-align:left;"> Philadelphia Athletics </td>
+   <td style="text-align:right;"> 1901 </td>
+   <td style="text-align:right;"> 1950 </td>
+   <td style="text-align:left;"> Connie Mack </td>
+   <td style="text-align:right;"> 49.2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:left;"> Syracuse </td>
+   <td style="text-align:right;"> 1977 </td>
+   <td style="text-align:right;"> 2023 </td>
+   <td style="text-align:left;"> Jim Boeheim </td>
+   <td style="text-align:right;"> 46.8 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cfb </td>
+   <td style="text-align:left;"> Penn State </td>
+   <td style="text-align:right;"> 1966 </td>
+   <td style="text-align:right;"> 2011 </td>
+   <td style="text-align:left;"> Joe Paterno </td>
+   <td style="text-align:right;"> 45.7 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:left;"> Western Kentucky </td>
+   <td style="text-align:right;"> 1923 </td>
+   <td style="text-align:right;"> 1964 </td>
+   <td style="text-align:left;"> E.A. Diddle </td>
+   <td style="text-align:right;"> 42.0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:left;"> DePaul </td>
+   <td style="text-align:right;"> 1943 </td>
+   <td style="text-align:right;"> 1984 </td>
+   <td style="text-align:left;"> Ray Meyer </td>
+   <td style="text-align:right;"> 42.0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:left;"> Duke </td>
+   <td style="text-align:right;"> 1981 </td>
+   <td style="text-align:right;"> 2022 </td>
+   <td style="text-align:left;"> Mike Krzyzewski </td>
+   <td style="text-align:right;"> 41.4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cfb </td>
+   <td style="text-align:left;"> Chicago </td>
+   <td style="text-align:right;"> 1919 </td>
+   <td style="text-align:right;"> 1932 </td>
+   <td style="text-align:left;"> Amos Alonzo Stagg </td>
+   <td style="text-align:right;"> 41.0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:left;"> Kentucky </td>
+   <td style="text-align:right;"> 1931 </td>
+   <td style="text-align:right;"> 1972 </td>
+   <td style="text-align:left;"> Adolph Rupp </td>
+   <td style="text-align:right;"> 41.0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:left;"> UTEP </td>
+   <td style="text-align:right;"> 1962 </td>
+   <td style="text-align:right;"> 1999 </td>
+   <td style="text-align:left;"> Don Haskins </td>
+   <td style="text-align:right;"> 38.0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:left;"> Kansas </td>
+   <td style="text-align:right;"> 1920 </td>
+   <td style="text-align:right;"> 1956 </td>
+   <td style="text-align:left;"> Phog Allen </td>
+   <td style="text-align:right;"> 36.4 </td>
+  </tr>
 </tbody>
 </table>
-<p>Next, a couple of fun facts from the data. First, we have the 10 longest coaching tenures overall. Connie Mack’s unbroken 50 season stint — technically 49.2 — with the Philadelphia Athletics is the longest of any coach in our database. Rankings from 2 to 26 are all college basketball or college football coaches, with stint lengths ranging from 46.8 to 30.0 seasons, not a shock given the whole of the results from our analysis. It is not until position 27 — John McGraw’s 29.1 season run with the New York Giants — that we see a professional coach again.</p>
+<p>Next, a couple of fun facts from the data. First, we have the 10 longest coaching tenures overall. Connie Mack&rsquo;s unbroken 50 season stint — technically 49.2 — with the Philadelphia Athletics is the longest of any coach in our database. Rankings from 2 to 26 are all college basketball or college football coaches, with stint lengths ranging from 46.8 to 30.0 seasons, not a shock given the whole of the results from our analysis. It is not until position 27 — John McGraw&rsquo;s 29.1 season run with the New York Giants — that we see a professional coach again.</p>
 <table class="table table-striped table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<caption>
-<span id="tab:longLgDet">Table 7: </span>
-<center>
-Each league’s longest tenured coach/manager
-</center>
+<caption><span id="tab:longLgDet"></span>Table 7: <center>Each league's longest tenured coach/manager</center>
 </caption>
-<thead>
-<tr>
-<th style="text-align:right;">
-Rank
-</th>
-<th style="text-align:left;">
-Sport
-</th>
-<th style="text-align:left;">
-Team
-</th>
-<th style="text-align:right;">
-Start
-</th>
-<th style="text-align:right;">
-End
-</th>
-<th style="text-align:left;">
-Coach
-</th>
-<th style="text-align:right;">
-Seasons
-</th>
-</tr>
-</thead>
+ <thead>
+  <tr>
+   <th style="text-align:right;"> Rank </th>
+   <th style="text-align:left;"> Sport </th>
+   <th style="text-align:left;"> Team </th>
+   <th style="text-align:right;"> Start </th>
+   <th style="text-align:right;"> End </th>
+   <th style="text-align:left;"> Coach </th>
+   <th style="text-align:right;"> Seasons </th>
+  </tr>
+ </thead>
 <tbody>
-<tr>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:left;">
-mlb
-</td>
-<td style="text-align:left;">
-Philadelphia Athletics
-</td>
-<td style="text-align:right;">
-1901
-</td>
-<td style="text-align:right;">
-1950
-</td>
-<td style="text-align:left;">
-Connie Mack
-</td>
-<td style="text-align:right;">
-49.2
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:left;">
-cbbm
-</td>
-<td style="text-align:left;">
-Syracuse
-</td>
-<td style="text-align:right;">
-1977
-</td>
-<td style="text-align:right;">
-2023
-</td>
-<td style="text-align:left;">
-Jim Boeheim
-</td>
-<td style="text-align:right;">
-46.8
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:left;">
-cfb
-</td>
-<td style="text-align:left;">
-Penn State
-</td>
-<td style="text-align:right;">
-1966
-</td>
-<td style="text-align:right;">
-2011
-</td>
-<td style="text-align:left;">
-Joe Paterno
-</td>
-<td style="text-align:right;">
-45.7
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-28
-</td>
-<td style="text-align:left;">
-nfl
-</td>
-<td style="text-align:left;">
-Green Bay Packers
-</td>
-<td style="text-align:right;">
-1922
-</td>
-<td style="text-align:right;">
-1949
-</td>
-<td style="text-align:left;">
-Curly Lambeau
-</td>
-<td style="text-align:right;">
-29.0
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-28
-</td>
-<td style="text-align:left;">
-nfl
-</td>
-<td style="text-align:left;">
-Dallas Cowboys
-</td>
-<td style="text-align:right;">
-1960
-</td>
-<td style="text-align:right;">
-1988
-</td>
-<td style="text-align:left;">
-Tom Landry
-</td>
-<td style="text-align:right;">
-29.0
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-51
-</td>
-<td style="text-align:left;">
-nba
-</td>
-<td style="text-align:left;">
-San Antonio Spurs
-</td>
-<td style="text-align:right;">
-1997
-</td>
-<td style="text-align:right;">
-2023
-</td>
-<td style="text-align:left;">
-Gregg Popovich
-</td>
-<td style="text-align:right;">
-26.8
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-53
-</td>
-<td style="text-align:left;">
-epl
-</td>
-<td style="text-align:left;">
-Manchester United
-</td>
-<td style="text-align:right;">
-1993
-</td>
-<td style="text-align:right;">
-2013
-</td>
-<td style="text-align:left;">
-Alex Ferguson
-</td>
-<td style="text-align:right;">
-26.0
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-143
-</td>
-<td style="text-align:left;">
-nhl
-</td>
-<td style="text-align:left;">
-Detroit Red Wings
-</td>
-<td style="text-align:right;">
-1928
-</td>
-<td style="text-align:right;">
-1947
-</td>
-<td style="text-align:left;">
-Jack Adams
-</td>
-<td style="text-align:right;">
-20.0
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-390
-</td>
-<td style="text-align:left;">
-wnba
-</td>
-<td style="text-align:left;">
-Minnesota Lynx
-</td>
-<td style="text-align:right;">
-2010
-</td>
-<td style="text-align:right;">
-2023
-</td>
-<td style="text-align:left;">
-Cheryl Reeve
-</td>
-<td style="text-align:right;">
-14.0
-</td>
-</tr>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:left;"> mlb </td>
+   <td style="text-align:left;"> Philadelphia Athletics </td>
+   <td style="text-align:right;"> 1901 </td>
+   <td style="text-align:right;"> 1950 </td>
+   <td style="text-align:left;"> Connie Mack </td>
+   <td style="text-align:right;"> 49.2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:left;"> cbbm </td>
+   <td style="text-align:left;"> Syracuse </td>
+   <td style="text-align:right;"> 1977 </td>
+   <td style="text-align:right;"> 2023 </td>
+   <td style="text-align:left;"> Jim Boeheim </td>
+   <td style="text-align:right;"> 46.8 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> cfb </td>
+   <td style="text-align:left;"> Penn State </td>
+   <td style="text-align:right;"> 1966 </td>
+   <td style="text-align:right;"> 2011 </td>
+   <td style="text-align:left;"> Joe Paterno </td>
+   <td style="text-align:right;"> 45.7 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 28 </td>
+   <td style="text-align:left;"> nfl </td>
+   <td style="text-align:left;"> Green Bay Packers </td>
+   <td style="text-align:right;"> 1922 </td>
+   <td style="text-align:right;"> 1949 </td>
+   <td style="text-align:left;"> Curly Lambeau </td>
+   <td style="text-align:right;"> 29.0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 28 </td>
+   <td style="text-align:left;"> nfl </td>
+   <td style="text-align:left;"> Dallas Cowboys </td>
+   <td style="text-align:right;"> 1960 </td>
+   <td style="text-align:right;"> 1988 </td>
+   <td style="text-align:left;"> Tom Landry </td>
+   <td style="text-align:right;"> 29.0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 51 </td>
+   <td style="text-align:left;"> nba </td>
+   <td style="text-align:left;"> San Antonio Spurs </td>
+   <td style="text-align:right;"> 1997 </td>
+   <td style="text-align:right;"> 2023 </td>
+   <td style="text-align:left;"> Gregg Popovich </td>
+   <td style="text-align:right;"> 26.8 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 53 </td>
+   <td style="text-align:left;"> epl </td>
+   <td style="text-align:left;"> Manchester United </td>
+   <td style="text-align:right;"> 1993 </td>
+   <td style="text-align:right;"> 2013 </td>
+   <td style="text-align:left;"> Alex Ferguson </td>
+   <td style="text-align:right;"> 26.0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 143 </td>
+   <td style="text-align:left;"> nhl </td>
+   <td style="text-align:left;"> Detroit Red Wings </td>
+   <td style="text-align:right;"> 1928 </td>
+   <td style="text-align:right;"> 1947 </td>
+   <td style="text-align:left;"> Jack Adams </td>
+   <td style="text-align:right;"> 20.0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 390 </td>
+   <td style="text-align:left;"> wnba </td>
+   <td style="text-align:left;"> Minnesota Lynx </td>
+   <td style="text-align:right;"> 2010 </td>
+   <td style="text-align:right;"> 2023 </td>
+   <td style="text-align:left;"> Cheryl Reeve </td>
+   <td style="text-align:right;"> 14.0 </td>
+  </tr>
 </tbody>
 </table>
 <p>The longest tenures for each sport are listed in the above table. The NFL, NBA, EPL, and NHL all have coaches reaching at least 20 seasons with their teams. Gregg Popovich is still active as of today and continues to add to his total. The WNBA is the only league without a 20-season-er, but Cheryl Reeve is also active and has every chance of reaching that milestone.</p>
-</div>
-<div id="which-teams-went-through-the-most-coachesmanagers-in-a-single-season" class="section level4">
-<h4>Which teams went through the most coaches/managers in a single season?</h4>
+<h4 id="which-teams-went-through-the-most-coachesmanagers-in-a-single-season">Which teams went through the most coaches/managers in a single season?</h4>
 <p>There are multiple teams in our data set that went through 4 managers in a single season, with a majority being from the EPL. Two are worth mentioning in detail: Newcastle United in 2008-09 and Watford in 2019-20. Newcastle entered the 2008-09 season with Kevin Keegan as manager, but he resigned after just 3 Premier League games. Caretaker manager Chris Hughton filled in for the next 3 games before Joe Kinnear was hired. Kinnear managed for a few months but would be forced to leave his position for health reasons. Hughton subbed in again before Alan Shearer was hired for the remainder of the season.</p>
-<p>2019-20’s Watford started with Javi Garcia as manager but was fired after 4 league games. Quique Sanchez Flores took over and was fired after just 1 win in 10 games. Hayden Mullins was caretaker for 1 game before Nigel Pearson took over. Pearson was fired with 2 games left in the season, and Mullins subbed in again. In both the Newcastle and Watford cases, we had 3 titular permanent managers and a caretaker manager with 2 separate stints. This is not unique in English football. For similar situations, see: 2001-02 Derby County, 2015-16 Aston Villa, 2016-17 Swansea City, 2017-18 West Bromwich Albion, 2022-23 Chelsea, and 2022-23 Leeds United.</p>
-<p>Four MLB teams cycled through 4 managers in a season: the 1907 Boston Americans, 1961 Chicago Cubs, 1980 St. Louis Cardinals, and 1977 Texas Rangers. Two NBA teams also had 4 managers: the 1981-82 Cleveland Cavaliers and 1988-89 Indiana Pacers.</p>
-</div>
-</div>
-<div id="parting-thoughts" class="section level3">
-<h3>Parting Thoughts</h3>
-<p>Results were close to expectations in regards to college programs being less likely to remove coaches. The area to dig deeper is international leagues. The EPL was added to the data to get a feel of how a major non-North American league performs. Having seen its results, there’s much curiosity about other soccer leagues. How representative is the EPL of the rest of the big European leagues such as La Liga, Serie A, or the Bundesliga? They all have similar sized seasons and relegation systems. They even compete with one another to hire the same managers. My guess is that we may see even more extreme instability in some of those leagues given - at least what seems like - the constant supply of managerial change news. It’d make for a worthwhile follow-up project.</p>
-</div>
+<p>2019-20&rsquo;s Watford started with Javi Garcia as manager but was fired after 4 league games. Quique Sanchez Flores took over and was fired after just 1 win in 10 games. Hayden Mullins was caretaker for 1 game before Nigel Pearson took over. Pearson was fired with 2 games left in the season, and Mullins subbed in again. In both the Newcastle and Watford cases, we had 3 titular permanent managers and a caretaker manager with 2 separate stints. This is not unique in English football. For similar situations, see: 2001-02 Derby County, 2015-16 Aston Villa, 2016-17 Swansea City, 2017-18 West Bromwich Albion, 2022-23 Chelsea, and 2022-23 Leeds United.</p>
+<p>Four MLB teams cycled through 4 managers in a season: the 1907 Boston Americans, 1961 Chicago Cubs, 1980 St. Louis Cardinals, and 1977 Texas Rangers. Two NBA teams also had 4 managers: the 1981-82 Cleveland Cavaliers and 1988-89 Indiana Pacers.</p>
+<h3 id="parting-thoughts">Parting Thoughts</h3>
+<p>Results were close to expectations in regards to college programs being less likely to remove coaches. The area to dig deeper is international leagues. The EPL was added to the data to get a feel of how a major non-North American league performs. Having seen its results, there&rsquo;s much curiosity about other soccer leagues. How representative is the EPL of the rest of the big European leagues such as La Liga, Serie A, or the Bundesliga? They all have similar sized seasons and relegation systems. They even compete with one another to hire the same managers. My guess is that we may see even more extreme instability in some of those leagues given - at least what seems like - the constant supply of managerial change news. It&rsquo;d make for a worthwhile follow-up project.</p>
 
 </main>
 

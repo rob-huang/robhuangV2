@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Los Angeles on Robert Huang</title>
-    <link>http://localhost:3503/tags/los-angeles/</link>
+    <link>http://localhost:4303/tags/los-angeles/</link>
     <description>Recent content in Los Angeles on Robert Huang</description>
     <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 12 Jun 2019 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:3503/tags/los-angeles/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:4303/tags/los-angeles/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Jonathan Gold 101 Restaurants - Mapped</title>
-      <link>http://localhost:3503/post/2019/06/12/jonathan-gold-101-restaurants-mapped/</link>
+      <link>http://localhost:4303/post/2019/06/12/jonathan-gold-101-restaurants-mapped/</link>
       <pubDate>Wed, 12 Jun 2019 00:00:00 +0000</pubDate>
-      <guid>http://localhost:3503/post/2019/06/12/jonathan-gold-101-restaurants-mapped/</guid>
+      <guid>http://localhost:4303/post/2019/06/12/jonathan-gold-101-restaurants-mapped/</guid>
       <description>Background The late Jonathan Gold, former Pulitzer Prize winning food critic for the Los Angeles Times and before that, LA Weekly, released an annual list of the city’s best restaurants between 2005 and 2017. These restaurants spanned Los Angeles and Orange County and included all types of cuisines and price points. Despite the yearly lists being the work of a single critic, they provided a sense of the pulse of the Los Angeles dining scene for each of those years.</description>
     </item>
   </channel>
