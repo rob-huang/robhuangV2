@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Sports on Robert Huang</title>
-    <link>http://localhost:4303/tags/sports/</link>
+    <link>http://localhost:4321/tags/sports/</link>
     <description>Recent content in Sports on Robert Huang</description>
     <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 26 Jun 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:4303/tags/sports/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:4321/tags/sports/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>The Coaching Carousel</title>
-      <link>http://localhost:4303/post/2024/06/26/the-coaching-carousel/</link>
+      <link>http://localhost:4321/post/2024/06/26/the-coaching-carousel/</link>
       <pubDate>Wed, 26 Jun 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:4303/post/2024/06/26/the-coaching-carousel/</guid>
+      <guid>http://localhost:4321/post/2024/06/26/the-coaching-carousel/</guid>
       <description>Being a head coach or manager of a sports team must be among the world&amp;rsquo;s most unstable professions given the number of teams that go through coaching changes in a season. Whether it&amp;rsquo;s an impatient front office, angry fanbase, or ambitious coach chasing a better situation, a lot of turnover is expected in this line of work. We&amp;rsquo;ll look at exactly how volatile this job is by analyzing some of America&amp;rsquo;s most popular sports leagues — the NFL, NBA, MLB, NHL, and WNBA.</description>
     </item>
   </channel>
