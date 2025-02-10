@@ -1,0 +1,810 @@
+---
+title: Formula One Junior Careers
+author: Robert Huang
+date: '2025-02-09'
+output:
+  bookdown::html_document2:
+    number_sections: false
+slug: formula-one-junior-careers
+categories: []
+tags:
+  - f1
+---
+
+<style>
+p.caption{
+  color: gray;
+  text-align: left;
+}
+</style>
+
+
+```{r setup, include = FALSE}
+
+library(tidyverse)
+library(lubridate)
+library(ggfortify)
+library(knitr)
+library(kableExtra)
+library(ggh4x)
+
+opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+options(knitr.kable.NA = "")
+
+# import
+lad_tab <- read.csv("data/formula one junior careers/ladder.csv")
+dat_full <- read.csv("data/formula one junior careers/dat_full.csv", na = "")
+senior_other <- read_csv("data/formula one junior careers/other series.csv", na = "") %>% 
+  mutate(did = tolower(driver)) %>% 
+  select(did, other_cnt, right_before_f1)
+t1_all <- read.csv("data/formula one junior careers/t1_all.csv", na = "")
+
+pct_lim <- 0.7
+
+```
+
+```{r buildData, include = FALSE}
+
+### driver performance in junior series
+# percent of series won/top 3/team 5
+# percent of series beat all teammates
+stat_perf <- dat_full %>% 
+  filter(
+    !is.na(year),
+    pct >= pct_lim,
+    # remove guest drivers with qualifying participation rates
+    !is.na(pos),
+    # if driver to f1, remove junior series after f1 debut year
+    (!is.na(year_f1) & year_calc <= year_f1) | is.na(year_f1)
+  ) %>% 
+  group_by(driver) %>% 
+  summarise(
+    # years in junior career (exclude years after f1 debut year)
+    years = max(year_calc) - min(year_calc) + 1,
+    f1 = min(year_f1),
+    n_full = n(),
+    n_team = sum(!is.na(pct_team), na.rm = TRUE),
+    n_1 = sum(pos == 1, na.rm = TRUE),
+    n_3 = sum(pos <= 3, na.rm = TRUE),
+    n_5 = sum(pos <= 5, na.rm = TRUE),
+    # outside top 10
+    n_out10 = sum(pos >= 10, na.rm = TRUE),
+    n_team_win = sum(pct_team == 1, na.rm = TRUE),
+    pct_1 = n_1 / n_full,
+    pct_5 = n_5 / n_full,
+    pct_out10 = n_out10 / n_full,
+    pct_team_win = n_team_win / n_team,
+    med_pos = median(pos, na.rm = TRUE),
+    sd_pos = coalesce(sd(pos, na.rm = TRUE), 0),
+    med_pos_tile = median(pos_tile, na.rm = TRUE),
+    sd_pos_tile = coalesce(sd(pos_tile, na.rm = TRUE), 0),
+    # age at first t5 junior series
+    age_min = min(age),
+    # age at last junior series (if f1, then up to f1 debut season)
+    age_max = max(age),
+    # year of first junior series in data set
+    yr_min = min(year_calc),
+    # year of last junior series (if f1, then up to f1 debut season)
+    yr_max = max(year_calc),
+    f2_top6 = as.numeric(sum(any_top) > 0)
+  )
+
+# specific stats by tier
+# for t2, only count f2, gp2, and f3000 international (ignore gp2 asia)
+# combine 4 and 5
+# if skipped series, set default position value
+# using 0 implies position finishes better than P1 in skipped tiers
+skip_def <- 0
+
+stat_perf_tier <- dat_full %>% 
+  filter(
+    !is.na(year),
+    pct >= pct_lim,
+    # remove guest drivers with qualifying participatiion rates
+    !is.na(pos),
+    (tier == 2 & series %in% c("f2", "gp2", "f3000 international")) | tier >= 3,
+    # if driver to f1, remove junior series after f1 debut year
+    (!is.na(year_f1) & year_calc <= year) | is.na(year_f1)
+  ) %>% 
+  group_by(driver, tier) %>% 
+  summarise(
+    # years between first and last year in tier
+    tier_yr = max(as.numeric(substring(year, 1, 4))) - min(as.numeric(substring(year, 1, 4))) + 1,
+    tier_best = min(pos),
+    tier_worst = max(pos),
+    tier_best_tile = min(pos_tile),
+    tier_worst_tile = max(pos_tile)
+  ) %>% 
+  ungroup() %>% 
+  pivot_longer(
+    cols = -c(driver, tier)
+  ) %>% 
+  complete(
+    driver,
+    tier = 2:5,
+    name
+  ) %>% 
+  mutate(
+    value = case_when(
+      !is.na(value) ~ value,
+      # assume pct score of 1 if skipped tier
+      grepl("_tile$", name) ~ 1,
+      TRUE ~ skip_def
+    )
+  ) %>% 
+  mutate(name = paste0(name, "_", tier)) %>% 
+  select(-tier) %>% 
+  pivot_wider(
+    names_from = name,
+    values_from = value
+  )
+
+# number of series spent repeating a previous series
+# use combined version of series (ex: f3000/gp2/f2 combined)
+stat_rep <- dat_full %>% 
+  filter(
+    !is.na(year),
+    pct >= pct_lim,
+    # remove guest drivers with qualifying participation rates
+    !is.na(pos),
+    # if driver to f1, remove junior series after f1 debut year
+    (!is.na(year_f1) & year_calc <= year_f1) | is.na(year_f1)
+  ) %>% 
+  count(driver, lab) %>% 
+  filter(n > 1) %>% 
+  mutate(n_rep = n - 1) %>% 
+  group_by(driver) %>% 
+  summarise(n_rep = sum(n_rep))
+
+# number of wins in rookie season
+stat_rook_win <- dat_full %>% 
+  filter(
+    !is.na(year),
+    pct >= pct_lim,
+    # remove guest drivers with qualifying participation rates
+    !is.na(pos),
+    # if driver to f1, remove junior series after f1 debut year
+    (!is.na(year_f1) & year_calc <= year_f1) | is.na(year_f1)
+  ) %>% 
+  group_by(driver, lab) %>% 
+  filter(n() == 1 & pos == 1) %>% 
+  ungroup() %>% 
+  count(driver, name = "p1_rook")
+
+# combine tier, repeat, rookie win data
+stat_perf <- stat_perf %>% 
+  left_join(
+    stat_perf_tier,
+    by = "driver"
+  ) %>% 
+  # for drivers with only f2 as junior series
+  mutate(
+    across(
+      starts_with("tier_"),
+      ~coalesce(., ., skip_def)
+    )
+  ) %>% 
+  left_join(
+    stat_rep,
+    by = "driver"
+  ) %>% 
+  left_join(
+    stat_rook_win,
+    by = "driver"
+  ) %>% 
+  mutate(
+    across(
+      c(n_rep, p1_rook),
+      ~coalesce(., ., 0)
+    )
+  ) %>% 
+  mutate(
+    p1_rook_pct = p1_rook / n_full
+  )
+
+# drivers missing major series
+# sakon yamamoto not missing any series but outlier relative to other drivers
+drive_miss <- c("Markus Winkelhock", "Yuji Ide",
+                "Narain Karthikeyan", "Patrick Friesacher",
+                "Gianmaria Bruni", "Adam Carroll",
+                "Sakon Yamamoto")
+
+
+### pca of f1 drivers since 2005
+stat_perf_filt <- stat_perf %>%
+  filter(
+    f1 >= 2005 | (f2_top6 == 1 & yr_max >= 2005),
+    !driver %in% drive_miss
+  ) %>% 
+  mutate(did = tolower(driver)) %>% 
+  left_join(
+    senior_other %>% 
+      select(did, other_cnt),
+    by = "did"
+  ) %>% 
+  mutate(other_cnt = coalesce(other_cnt, 0)) %>% 
+  select(-did)
+
+# dataframe with rownames
+stat_perf_filt_df <- stat_perf_filt %>% 
+  mutate(F1 = as.factor(!is.na(f1))) %>% 
+  as.data.frame() %>% 
+  `rownames<-`(.[,1]) %>%   
+  select(
+    driver, F1,
+    age_min, age_max, years, pct_1, pct_5, pct_out10, pct_team_win,
+    # med_pos, sd_pos,
+    med_pos_tile, sd_pos_tile,
+    other_cnt, n_rep, p1_rook_pct,
+    starts_with("tier_") & !matches("_(best|worst)_\\d")
+  )
+
+# pca
+driver_pca <- stat_perf_filt_df %>%
+  select(-c(driver, F1)) %>% 
+  prcomp(scale = TRUE)
+
+```
+
+Formula One is not a meritocracy. This is clear from looking at the junior careers of drivers who make it into F1. Unlike the NBA, NFL, elite soccer leagues, and other top tier sports competitions, the most talented athletes—in this case, single-seater race car drivers—do not always make it to the pinnacle of the sport. This is not surprising given the paucity of available spots in F1 (20 roster slots for 2025, up to 22 for 2026) combined with the expense of running a team. Yes, drivers with immaculate careers in the junior categories graduate to F1, but there are numerous drivers with questionable CVs who get F1 seats because of reasons other than skill—family money, backing from rich sponsors, marketability, timing/luck, and nepotism. This is not even taking into account that motorsport has one of the biggest barriers to entry out of any sport—loads of money is needed to get a start in racing itself, preventing potential great drivers from ever even trying out the sport. Basketball requires a ball and a hoop. Soccer requires a ball and some open space. Motorsport requires an expensive car/cart (that needs to be maintained and repaired/replaced when it gets damaged) and a race track to play on.
+
+For this analysis, we will ignore the barriers to entry and concentrate on all those who have made it into the single-seater junior categories, looking closely at their junior performances. Since 2006, there have been 76 drivers who made their F1 debuts (this includes the 3 drivers set to compete in the upcoming 2025 season). We will study the junior careers of these drivers and see how they stacked up to one another. Who deserved their promotions and who did not? Are there drivers with strong records who never made it into F1?
+
+### The Junior Ladder
+
+```{r}
+
+lad_tab %>% 
+  kbl(caption = "The current junior ladder from Formula 4 to Formula 1. The inactive column includes defunct series that used to be part of the junior categories.") %>%
+  kable_styling(full_width = FALSE)
+
+```
+
+Drivers currently advance through the junior competitions following the FIA Global Pathway, a ladder with 5 tiers with F1 at the top. Drivers who graduate from carting start their junior careers at tier 5 with Formula 4, and the most talented drivers (or those with enough financially backing) advance to Formula Regional—then to Formula 3—then to Formula 2—and finally to Formula 1. An example is Gabriel Bortoleto who started in Italian F4 in 2020, moved up to Formula Regional European for 2021 and 2022, then to Formula 3 in 2023, then to Formula 2 in 2024, and is scheduled to make his F1 debut in 2025. This exact path is not a requirement as some drivers skip tiers or even do a lower tier series after graduating from it. Drivers who skipped tiers include Lance Stroll who went directly to F1 after the F3 European Championship, and Max Verstappen who only raced in F3 European, skipping all of tiers 2, 4, and 5. On the other hand, Guanyu Zhou went back to the F3 Asian Championship (since rebranded as the Formula Regional Asian Championship) in the winter break between his 2nd and 3rd seasons in F2.
+
+There are also many defunct series that existed before the codification of the Global Pathway that offered different routes to F1. Some of these have direct throughlines to current series. For example, F3000 International became GP2, which became F2. For other series, placement in tiers alongside current series is not exact. Formula Renault 3.5 should really rank between F2 and F3, but is placed in tier 3 for this analysis because of the desire to reserve tier 2 for F2 and its parent series. Tier 3 is used for international F3 series and other series that don't easily fit into a specific tier. National F3 series are placed in tier 4. Entry level series are placed in tier 5. Placements are not perfect but generally correspond to how drivers advanced through their junior careers.
+
+### Series Before F1
+
+```{r}
+
+### series before f1
+before_f1 <- dat_full %>% 
+  filter(
+    year_f1 >= 2006,
+    !is.na(year),
+    pct >= pct_lim,
+    type == "m",
+    !is.na(pos),
+  ) %>% 
+  group_by(driver) %>% 
+  filter(year <= year_f1) %>% 
+  filter(year == max(year)) %>% 
+  ungroup() %>% 
+  mutate(did = tolower(driver)) %>% 
+  left_join(
+    senior_other,
+    by = "did"
+  ) %>% 
+  mutate(
+    lab_fix = case_when(
+      right_before_f1 %in% "mult" ~ "non-junior",
+      lab %in% "F2" ~ "F2 / GP2 / Int F3000",
+      lab %in% "F3 EU" ~ "F3 Euro Series / F3 European",
+      lab %in% c("Nissan", "R3.5") ~ "Renault 3.5 / World Series Nissan",
+      TRUE ~ lab
+    )
+  )
+
+# summary stats
+before_f1_sum <- before_f1 %>% 
+  group_by(lab_fix) %>% 
+  summarise(
+    n = n(),
+    mean_pos = mean(pos),
+    med_pos = median(pos),
+    sd_pos = sd(pos)
+  ) %>% 
+  mutate(pct = n / sum(n))
+
+```
+
+```{r, fig.align = "center", fig.width = 7.5, fig.height = 4, fig.cap = "For F1 drivers who debuted between 2006 and 2025, the junior series they competed in (excluding winter series) immediately prior to their first F1 appearance."}
+
+# plot series counts
+before_f1_sum %>% 
+  ggplot(aes(x = n, y = reorder(lab_fix, n))) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(x = n + 2, label = n)) +
+  labs(x = "# of drivers", y = "") +
+  theme_bw() +
+  theme(
+    panel.grid = element_blank()
+  )
+
+```
+
+We start off by looking at the last series each of the 76 drivers competed in before landing in F1. The majority of drivers (`r before_f1_sum$n[before_f1_sum$lab_fix == "F2 / GP2 / Int F3000"]`, or `r scales::percent(round(before_f1_sum$pct[before_f1_sum$lab_fix == "F2 / GP2 / Int F3000"], 2))`) ended their junior careers in the Formula 2 Championship (known as the GP2 series from 2005 to 2016 and International Formula 3000 before 2005), not surprising as this is designed to be the last step in the junior ladder before F1. In a distant second is the Formula Renault 3.5 Series/World Series by Nissan which produced `r before_f1_sum$n[before_f1_sum$lab_fix == "Renault 3.5 / World Series Nissan"]` drivers. Renault 3.5 was active from 1998 to 2017 and was basically a bridge series between F3 and F2. Seven drivers skipped F2 entirely and jumped straight from some version of Formula 3 to F1. Another `r before_f1_sum$n[before_f1_sum$lab_fix == "non-junior"]` drivers spent multiple seasons in other senior series (Deutsche Tourenwagen Masters, Formula E, Super Formula, World Endurance Championship, CART) after graduating from the junior ranks and before an F1 drive.
+
+Since 2018, 20 out of the 22 drivers entering F1 came from F2. The two exceptions were Nyck de Vries and Pietro Fittipaldi. De Vries arrived in F1 after 3 seasons in Formula E but before that had also spent 3 seasons in Formula 2, winning the F2 title in his last season there. Fittipaldi's last non-winter series before F1 was DTM, but he also spent 2 seasons in Formula V8 3.5—a Renault 3.5 successor series—earlier in his career. With the demise of Renault 3.5, it is rare for drivers without F2 experience to move into F1.
+
+```{r, fig.align = "center", fig.width = 7.5, fig.height = 4, fig.cap = "Finishing position of every driver's last junior season broken down by series."}
+
+# distribution of finishes for f2, renault 3.5, and f3
+before_f1_fin <- before_f1 %>% 
+  filter(!lab_fix %in% c("non-junior")) %>% 
+  mutate(
+    lab_fix = ifelse(grepl("^F3", lab_fix), "any F3", lab_fix),
+    lab_fix = factor(lab_fix,
+                     levels = c("F2 / GP2 / Int F3000", "Renault 3.5 / World Series Nissan", "any F3"))
+  ) %>% 
+  count(lab_fix, pos) %>% 
+  complete(lab_fix, pos = 1:18)
+
+before_f1_fin %>% 
+  ggplot(aes(x = n, y = factor(reorder(pos, -pos)))) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(x = n + 0.5, label = n)) +
+  facet_grid(. ~ lab_fix) +
+  labs(x = "# of drivers", y = "Position") +
+  scale_y_discrete(breaks = before_f1_fin$pos[!is.na(before_f1_fin$n)]) +
+  theme_bw() +
+  theme(
+    panel.grid = element_blank(),
+    # axis.text.x = element_blank(),
+    # axis.ticks.x = element_blank(),
+    strip.text.y = element_text(size = 10)
+  )
+
+```
+
+How well did these drivers coming from F2, Renault 3.5, and F3 perform in their last seasons before F1? All 11 Renault 3.5 graduates finished in the top 6, with 4 exiting as series champions. Almost 90% (43/49) coming straight from F2 finished in the top 6, with a quarter of the 49 being F2 champions. There were 6 drivers finishing position 9 or lower.
+
+```{r}
+
+# f2 drivers >= P9
+before_f1_t2low <- before_f1 %>% 
+  filter(
+    lab_fix %in% c("F2 / GP2 / Int F3000"),
+    pos >= 9
+  ) %>% 
+  select(driver, `F1 debut` = year_f1, series = lab, year, positon = pos) %>% 
+  arrange(year)
+
+before_f1_t2low %>% 
+  kbl(caption = "Drivers finishing 9th of lower in their last season in F2 before F1.") %>%
+  kable_styling(full_width = FALSE)
+
+```
+
+Kamui Kobayashi and Karun Chandhok finished poorly in GP2, but were able to secure F1 drives, Kobayashi initially as a substitute and Chandhok with a full time drive. Nationality might have played roles here with Kobayashi getting his debut with the Japanese Toyota F1 team and Chandhok perhaps bringing sponsors and an Indian fanbase with him. Jerome D'Ambrosio spent 3 seasons in GP2 with midfield finishes of 11th, 9th, and 12th. He was actually teammates with Kobayashi the first two seasons, besting him both times. Jack Aitken was the Williams reserve driver at the time they required a substitute for a single F1 event. Franco Colapinto finished 9th in the 2024 F2 season but was called up to F1 in the midst of that F2 season. At the time of his last F2 race, he was in 6th position. Oliver Bearman had an erratic 2024 F2 season, missing 2 rounds because of call-ups to F1 (although he did finish in 6th position in the 2023 F2 season). Bearman's impressive substitute appearances had earned him an F1 drive for the next season regardless of his 2024 F2 finish.
+
+The 7 drivers who jumped straight from F3 to F1 were much more accomplished in their last junior seasons. Five of the 7 won their respective series and the other two finished 2nd and 3rd. There must be enormous potential (or money) for one to skip F2. Of note is that 3 of these drivers were also Red Bull Juniors. We'll look more closely at these drivers later.
+
+
+### Summarizing Driver Careers
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 2, fig.cap = "Driver junior career summary. Jack Aitken is provided as an example."}
+
+### plot - all tiers have equal widths
+# age at time of f1 debut OR last junior senior, if available
+plot_tier <- function(y1, y2, d = NA, leg_pos = "none") {
+  
+  if(any(!is.na(d))) {
+    dat_filt <- dat_full %>% 
+      filter(tolower(driver) %in% tolower(d))
+  } else {
+    dat_filt <- dat_full %>% 
+      filter(
+        yr_max >= y1,
+        yr_max <= y2,
+        (any_top | !is.na(year_f1))
+      )
+  }
+  
+  # if participation pct below threshold, italic text
+  # sort drivers based on F1 debut year, alphabetical otherwise
+  dat_filt <- dat_filt %>% 
+    mutate(
+      fontface = ifelse(pct >= pct_lim, "bold", "italic"),
+      driver = str_replace(driver, " ", "\n"),
+      driver = ifelse(
+        !is.na(dob),
+        glue::glue("{driver}\n({format(round(coalesce(age_f1, age_end), 1), nsmall = 1)})"),
+        driver
+      )
+    )
+  
+  d_sort <- dat_filt %>% 
+    filter(!is.na(year)) %>% 
+    select(driver, year_f1) %>% 
+    distinct() %>% 
+    arrange(year_f1, driver) %>% 
+    pull(driver)
+  
+  dat_filt <- dat_filt %>% 
+    mutate(driver = factor(driver, levels = d_sort))
+  
+  # plot
+  dat_filt %>%  
+    ggplot() +
+    annotate(
+      "rect",
+      xmin = 0, xmax = 1,
+      ymin = 1, ymax = 1.25,
+      fill = "gray90"
+    ) +
+    geom_vline(xintercept = 0.25, col = "white", linewidth = 0.5) +
+    geom_vline(xintercept = 0.5, col = "white", linewidth = 0.5) +
+    geom_vline(xintercept = 0.75, col = "white", linewidth = 0.5) +
+    # geom_hline(yintercept = 1, col = "black", linewidth = 0.5) +
+    geom_rect(
+      aes(
+        fill = pct_team,
+        xmin = x_min_var_s, xmax = x_max_var_s,
+        ymin = y_min_s, ymax = y_max_s,
+        color = ifelse(is.na(series), NA, "black")
+      ), linewidth = 0.25
+    ) +
+    geom_text(
+      aes(label = pos_mark,
+          fontface = fontface,
+          x = (x_min_var_s + x_max_var_s) / 2, 
+          y = (y_min_s + y_max_s) / 2),
+      size = 2.5
+    ) +
+    geom_text(
+      data = dat_filt %>% 
+        filter(!is.na(year)) %>% 
+        select(driver, lab, x_min_var_s, x_max_var_s) %>% 
+        distinct(),
+      aes(label = lab, x = (x_min_var_s + x_max_var_s) / 2, y = 1.125),
+      size = 2.5
+    ) +
+    facet_wrap(driver ~ ., ncol = 1, strip.position = "left") +
+    labs(x = "", y = "") +
+    scale_fill_gradient2(
+      low = "coral", mid = "yellow", high = "green2", midpoint = 0.5,
+      limits = c(0, 1), na.value = "white", name = "teammates\nbeaten",
+      breaks = c(0, 0.5, 1), labels = c("none", "50%", "all")
+    ) +
+    scale_color_identity() +
+    scale_x_continuous(breaks = c(1/8, 3/8, 5/8, 7/8), labels = c("Tier 2", "Tier 3", "Tier 4", "Tier 5"), expand = c(0, 0)) +
+    scale_y_continuous(limits = c(0, 1.25), expand = expansion(mult = c(0, 0), add = c(0, 0))) +
+    theme_bw() +
+    theme(
+      panel.grid = element_blank(),
+      strip.text.y.left = element_text(angle = 0),
+      axis.text.y = element_blank(),
+      axis.ticks.y = element_blank(),
+      legend.position = leg_pos
+      # panel.spacing = unit(1, "lines")
+    )
+  
+}
+
+plot_tier(d = "jack aitken", leg_pos = "right") +
+  ggh4x::force_panelsizes(rows = unit(4, "lines"))
+
+```
+
+Driver junior careers are summarized using a visual that shows their performances in lower formulas. Note that most winter and sub-tier 5 series are not included. We present Jack Aitken as an example. The graph has the following elements:
+
+- Number under name: The number in the left label below the driver's name shows their age when they debuted in F1. For drivers without an F1 appearance, this is the age at the end of their junior careers. Aitken was 25 when he made his first F1 appearance.
+
+- Columns: Careers are divided into five tiers, with each specific series occupying its own column within its corresponding section based on tier. Note that different iterations of the same series are grouped together using the name of the latest iteration (example: GP2 is labeled as F2). Aitken competed in one tier 2 series (F2/GP2), two tier 3 series (Renault 3.5 and F3), four tier 4 series (Euroformula Open, Renault 2.0 Alps, Renault 2.0 Eurocup, Renault 2.0 Northern European Cup), and a single tier 5 series (Intersteps Championship).
+
+- Stacking: Series are shown chronologically with older years on top. Each box represents one season in that series with the number showing finishing position in the standings, if classified. Aitken spent 3 seasons in Renault 2.0 Eurocup (R2 EU) where he was not classified in season one, 7th in season 2, and 1st in season 3.
+
+- **Bold** - *Italics*: The finishing position is in bold if the driver entered at least 70% of the races on the schedule for that season. If the participation rate is under 70%, the number will be in italics. In the season where Aitken finished 15th in the Formula V8 3.5 Series (R3.5), Aitken entered only 4 out of the 18 races.
+
+- \* There will be a star next to the finishing position if the series was done in a season after the driver's F1 debut. Aitken's final F2 season was in 2021, after his 2020 F1 appearance, where he finished 23rd and took part in 9 out of 24 races.
+
+- Sorting: Series are sorted alphabetically within each tier, not chronologically. Drivers do generally move from right to left in regards to tier level as they advance up the junior ladder.
+
+- Colors: Each box is shaded from red to green according to performance relative to teammates: green for finishing ahead of all teammates, red if behind all teammates, and some shade of yellow if somewhere in the middle. The box will be white if there were no qualifying teammates for that season. Drivers qualify if they have a participation rate of at least 70% and they raced for only one team in that season. Aitken finished ahead of all teammates in 4 of his junior seasons. He was behind his only teammate in his first F2 season. He was somewhere in the middle for the rest of his series.
+
+We can compare the visual to a table of Aitken's junior career:
+
+```{r}
+
+# table
+aitken_tab <- dat_full %>% 
+  filter(driver == "Jack Aitken") %>% 
+  filter(!is.na(year)) %>% 
+  mutate(
+    team.rank = ifelse(
+      !is.na(n_team) & n_team > 1,
+      glue::glue("{pos_team}/{n_team}"),
+      NA
+    ),
+    pct = scales::percent(pct, 2)
+  ) %>% 
+  select(tier, series, label = lab, year, position = pos,
+         races = part, series.races = n, part.rate = pct, team.rank) %>% 
+  arrange(desc(tier), series, year)
+
+aitken_tab %>% 
+  kbl(caption = "Jack Aitken's junior career.") %>%
+  kable_styling(full_width = FALSE)
+
+```
+
+Through the visual, we get a much quicker summary of Aitken's junior career. He spent only one season in tier 5 but multiple seasons in tier 4 where he won 2 out of 4 series (that he had a participation rate of at least 70% in). He had an underwhelming record in regards to teammates, finishing on top less than half the time. He completed 3 full F2 seasons, made his F1 debut at age 25, then returned to F2 for a partial season.
+
+### Driver Groupings
+
+We now group all 76 drivers that arrived in F1 since 2006 into categories based on the shape and quality of their junior careers. Which are the strongest groups of drivers based on junior records? Which drivers had questionable junior careers? This is a very subjective assignment based on incomplete information. The main measures available to us are finishing position and team performance, but there are many other factors that are related to skill and potential that we do not have access to and are not quantifiable.
+
+#### F2/GP2 champions in rookie season
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 6.5, fig.cap = "Drivers that won the F2/GP2 title in their first and only season in the series."}
+
+c("gabriel bortoleto", "oscar piastri", "george russell", "charles leclerc",
+  "nico hulkenberg", "lewis hamilton", "nico rosberg") %>% 
+  plot_tier(d = .) +
+  ggh4x::force_panelsizes(rows = unit(4, "lines"))
+
+```
+
+The ultimate junior achievement for a driver is to win the F2/GP2 championship in their rookie season. Seven drivers hold this distinction and all 7 made it to F1. Charles Leclerc, Geroge Russell, Oscar Piastri, and Gabriel Bortoleto pulled the double, also winning the F3/GP3 title in their rookie seasons. Lewis Hamilton and Nico Hulkenberg won the F3 Euro Series title in their second seasons in the series. Nico Rosberg, Hamilton, Leclerc, and Piastri also never finished behind a teammate in any junior season. 
+
+This is an elite group of drivers: Rosberg and Hamilton are F1 champions and Hulkenberg, Leclerc, Russell, and Piastri have or are on their way to having long F1 careers. Bortoleto has the weakest resume of this group—finishing behind teammates in 2 lower tier series while also being the only driver here to have a finish outside the top 10. We will see if Bortoleto's F1 career will be as successful as the other 6 drivers'.
+
+#### Other F2/GP2 champions
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 6.5, fig.cap = "F2/GP2 champions in year 2 or later. Note that GP2 champions Timo Glock and Giorgio Pantano are not included here because they made their F1 debuts before 2006."}
+
+c("romain grosjean", "pastor maldonado", "jolyon palmer", "stoffel vandoorne",
+  "pierre gasly", "mick schumacher", "nyck de vries") %>% 
+  plot_tier(d = .) +
+  ggh4x::force_panelsizes(rows = unit(4, "lines"))
+
+```
+
+Despite being the highest step in the junior ladder, winning the F2/GP2 title does not guarantee an F1 drive. Out of the 20 winners, 16 have made it into F1. Most of the drivers that did not win the title in their rookie seasons have vastly different profiles than the rookie champions. Obviously, the average age here is older than the other group given that they have spent more time in F2.
+
+Romain Grosjean actually got his F1 drive in 2009 before his GP2 title win in 2011. At the time of his call-up, he was in the middle of his second season in the series, sitting 2nd in the driver standings. He was not able to secure a seat for the following F1 season and returned to the junior categories before the 2011 GP2 win and a return to F1 in 2012. Grosjean's junior career was successful, with more titles than any other driver in our database.
+
+Stoffel Vandoorne, Pierre Gasly, and Mick Schumacher all won the F2/GP2 title in their second seasons. Schumacher does well in the standings but only in sophomore seasons. Vandoorne has the most impressive junior career out of this group with multiple series wins, never finishing lower than 5th, and beating every teammate he was matched with. His record would not be that different from anyone in the rookie champions group had he finished 1st instead of 2nd in his debut GP2 season (although he was a distant 2nd).
+
+The rest of the drivers spent at least three seasons in the series before winning the title. Pastor Maldonado and Nyck de Vries won in season 3 (3 and a half seasons for Maldonado to be more precise) and Jolyon Palmer won in season 4. De Vries did not get an F1 call-up after his 2019 F2 title, spending 3 years in Formula E before an impressive F1 substitute appearance in 2022 earned him a full contract for the following season. Despite being GP2 champion, Palmer had an unimpressive junior career. This included 3 poor finishes in GP2 behind teammates and multiple seasons in low prestige series—the less successful version of F2 that ran from 2009 to 2012 and his father's Formula Palmer Audi.
+
+#### Almost won everything
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 2.1, fig.cap = "First place finish in every full season series except for one."}
+
+c("andrea kimi antonelli", "lando norris") %>% 
+  plot_tier(d = .) +
+  ggh4x::force_panelsizes(rows = unit(4, "lines"))
+
+```
+
+Next are two drivers that never won F2 but might have better junior careers than many that did: Lando Norris and Andrea Kimi Antonelli. Norris won every series he was a full time participant in as a rookie except for F2 in 2018, finishing in 2nd behind George Russell. Antonelli similarly won 4 series as a rookie, skipped F3, and then finished 6th in the 2024 season of F2. No other F1 drivers in the dataset have won as many junior series in their rookie seasons as Norris and Antonelli (excluding short winter and sub tier 5 series). Both also never finished behind a teammate.
+
+#### Renault 3.5 champions
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 5.6, fig.cap = "Formula Renault 3.5 Series (2005-2015) and World Series by Nissan champions (1998-2004). Marc Gené, Fernando Alonso, and Ricardo Zonta won the series but started in F1 before 2006."}
+
+c("carlos sainz jr", "kevin magnussen", "giedo van der garde",
+  "heikki kovalainen", "franck montagny", "robert kubica") %>% 
+  plot_tier(d = .) +
+  ggh4x::force_panelsizes(rows = unit(4, "lines"))
+
+```
+
+While not a finishing school like F2, Formula Renault 3.5/World Series by Nissan was the other major end point for drivers before F1. Before it ended, it was the highest level of the Renault junior ladder—sitting somewhere between F2 and F3—with some drivers in the competition not getting F1 call-ups continuing on to F2/GP2. Whereas 16 out of 20 F2 champions graduated to F1, only 10 out of 19 made it from Renault 3.5 (this combines the results of World Series by Nissan, Formula Renault 3.5, and World Series Formula V8 3.5).
+
+Since 2006, 6 Renault 3.5/World Series by Nissan title winners have debuted in F1. Marc Gené, Fernando Alonso, and Ricardo Zonta were winners who started in F1 before 2006.
+
+Robert Kubica and Carlos Sainz won their titles in their rookie seasons, jumping to F1 straight after. Kevin Magnussen did the same after his second season win. Heikki Kovalainen and Giedo van der Garde did not get F1 contracts directly after their championships, moving on to GP2 after their title wins. Kovalainen nearly won the GP2 in his only season there, but Van der Garde was much less impressive, spending 4 seasons in GP2, 2 of which he finished behind his teammate. Frank Montagny possesses the most unique profile of this group, racing 3 seasons in World Series by Nissan (after 2 middling seasons in F3000, the F2 predecessor) and winning the title twice. He then spent two gap years as an F1 test driver before a full promotion at the late age of 28.
+
+By the time Pietro Fittipaldi won the title in 2017, the series was known as World Series Formula V8 3.5. Renault had pulled support for the series and the competition had lost prestige. We'll cover him later in the F1 substitutes section.
+
+#### Almost rookie GP2 champions
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 1.25, fig.cap = "Almost GP2 champion in rookie season. This also applies to Heikki Kovalainen (World Series by Nissan champion)."}
+
+c("antonio giovinazzi") %>% 
+  plot_tier(d = .) +
+  ggh4x::force_panelsizes(rows = unit(4, "lines"))
+
+```
+
+Two drivers were nearly GP2 champions in their rookie seasons. We mentioned Nissan World Series winner Heikki Kovalainen earlier. Kovalainen entered the final round of the inaugural 2005 GP2 calendar trailing Nico Rosberg by only 3 points, but Rosberg won both races that weekend, cementing his place in the books as the first ever GP2 champion.
+
+Antonio Giovinazzi went into the final round of the 2016 GP2 Series ahead of teammate Pierre Gasly but was overtaken and lost the title to Gasly by only 8 points. How different would Kovalainen and Giovinazzi's F1 careers have been had they been rookie GP2 champions? Would F1 teams have hung on to them longer? Maybe not for Kovalainen—he had a long 7 year career—but maybe for Giovinazzi who lasted only 3 full seasons.
+
+#### Skipped F2 (and Renault 3.5)
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 6.5, fig.cap = "Drivers that skipped both F2 and Renault 3.5"}
+
+c("lance stroll", "esteban ocon", "max verstappen", "daniil kvyat",
+  "valtteri bottas", "sebastian vettel", "adrian sutil") %>% 
+  plot_tier(d = .) +
+  ggh4x::force_panelsizes(rows = unit(4, "lines"))
+
+```
+
+There were 7 drivers that skipped F2 (and Renault 3.5) to move directly to F1, 5 of who were 20 years old or younger. Adrian Sutil was a product of a different era when drivers were much older, winning the 2006 Japanese Formula 3 Championship at 23 before F1—with F3 Japan since rebranded as Super Formula Lights as part of the Super Formula ladder (and growing less viable as a prep series for Formula One). Valtteri Bottas, a similarly older driver, had a strong junior career never placing lower than 3rd in the standings that culminated with the 2011 GP3 Series title.
+
+Sebastian Vettel, Daniil Kvyat, and Max Verstappen were all part of the Red Bull Junior Team—a program that has aggressively promoted younger drivers with potential into their senior teams. Verstappen was the ultimate case, taking part in only one full season of lower formula racing before being the youngest F1 driver in history at 17. Vettel was at one point the youngest driver to win an F1 race and is still the youngest driver to have won the F1 World Drivers' Championship. We'll see more on Red Bull later.
+
+Well-known son Lance Stroll had a strong junior career, winning 3 of 4 series he competed in. He might have a numerous advantages over his competitors though given that his father literally owned the teams he raced for.
+
+#### Cups of coffee
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 3.8, fig.cap = "Drivers that only made 1 or 2 substitute F1 appearances."}
+
+c("jack aitken", "pietro fittipaldi", "andre lotterer", "markus winkelhock") %>% 
+  plot_tier(d = .) +
+  ggh4x::force_panelsizes(rows = unit(4, "lines"))
+
+```
+
+There are drivers who are hired in reserve roles for F1 teams and with good fortune, are able to take part in a grand prix or two with no promise of ever getting a full contract. Markus Winkelhock, Andre Lotterer, and Jack Aitken's F1 careers each lasted just one race. There is nothing in the junior careers of Winkelhock or Aitken that scream quality. Lotterer was nearly 33 years old and was in his 12th year in Formula Nippon/Super Formula when he made his single appearance. Pietro Fittipaldi had a little more luck, having had the chance to make 2 substitute appearances. His junior career is peppered with many low finishes, with 3 titles coming from low quality series. How much did being the part of the Fittipaldi family help in securing the reserve driver job with Haas that led to the F1 drive?
+
+#### Other senior series
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 5.75, fig.cap = "All these drivers spent multiple seasons in other senior series after their junior careers before coming back to F1. Nyck de Vries, Andre Lotterer, and Pietro Fittipaldi were covered earlier but also belong in this category."}
+
+c("brendon hartley", "pascal wehrlein", "paul di resta", "sebastien bourdais",
+  "yuji ide", "sakon yamamoto") %>% 
+  plot_tier(d = .) +
+  ggh4x::force_panelsizes(rows = unit(4, "lines"))
+
+```
+
+A less common arc is for drivers who have moved on to other non-junior series to get back into F1 with full drives. After an unspectacular junior career, Brendon Hartley moved on to spend 4 full seasons in the World Endurance Championship before a call-up to the Toro Rosso F1 team. Pascal Wehrlein and Paul di Resta moved away from single seaters after F3 to become Deutsche Tourenwagen Masters champions before coming back to F1. Sebastien Bourdais was an International F3000 champion but could not secure an F1 seat. He went to Champ Car in the United States where he won 4 straight titles, leading him back to F1. Yuji Ide and Sakon Yamamoto both spent time in Formula Nippon and Super GT. Yamamoto may have the worst resume of any F1 driver, with 27th in F3 Euro Series and 20th in German F3 being particular low lights. His Formula Nippon and Super GT results were not much better.
+
+Note that Nyck de Vries, Andre Lotterer, and Pietro Fittipaldi also qualify for this section but were covered earlier. De Vries was a Formula E champion, Lotterer was both Formula Nippon and WEC champion, and Fittipaldi spent some time in DTM and IndyCar. 
+
+#### Red Bull Juniors
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 7.4, fig.cap = "Red Bull Juniors that went from the junior team to F1 within the following season. Pierre Gasly, Carlos Sainz, Sebastian Vettel, Daniil Kvyat, and Max Verstappen also fit into this category but were covered earlier."}
+
+c("isack hadjar", "liam lawson", "yuki tsunoda", "jean eric vergne",
+  "daniel ricciardo", "sebastien buemi", "jaime alguersuari",
+  "scott speed") %>% 
+  plot_tier(d = .) +
+  ggh4x::force_panelsizes(rows = unit(4, "lines"))
+
+```
+
+There have been 13 drivers who went from the Red Bull Junior Team to F1 (in at least the following season). We've already covered Max Verstappen, Daniil Kvyat, Sebastian Vettel (skipped F2), Pierre Gasly, (GP2 champion), and Carlos Sainz (Renault 3.5 champion). The drivers Red Bull promote generally have solid lower formula careers, but the most noticeable trait among their promotions is youth, with a good number skipping tiers. Drivers that the team do not believe in do not last long with the program. Unlike other F1 teams, Red Bull have the advantage of owning two entrants—one is a senior team and the other functions as a junior team (Toro Rosso/AlphaTauri/RB). They can afford to throw in extremely young drivers in ways that other teams cannot. Red Bull's focus on youth can be seen when comparing the age of their F1 drivers with all other F1 drivers.
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 5, fig.cap = "Debut ages for all F1 drivers. There is some random variation added to values along the x-axis (year) to prevent overplotting. Red Bull Juniors are highlighted in red."}
+
+set.seed(100)
+t1_all %>% 
+  ggplot(aes(x = year_f1, y = age_f1, col = rb)) +
+  geom_jitter(height = 0) +
+  scale_x_continuous(breaks = seq(1950, 2020, by = 10)) +
+  scale_color_manual(values = c("black", "red")) +
+  labs(x = "Year", y = "Age at F1 Debut", color = "") +
+  theme_bw()
+
+```
+
+The above plot shows the ages of all drivers when they debuted in F1. We see that F1 drivers have gotten younger and younger over time. Even with the decrease in age, the Red Bull Juniors are relatively younger. The team's oldest driver, Vitantonio Liuzzi, first appeared for Red Bull F1 in 2005 right before the establishment of Toro Rosso. Once Toro Rosso was set up for the 2006 season, Liuzzi was moved there to partner Scott Speed, Red Bull Junior's second oldest driver. Red Bull has not promoted anyone older to F1 since.
+
+Alexander Albon and Brendon Hartley were also Red Bull Juniors but did not go straight from the Junior Team to Red Bull's F1 teams. Hartley was nearly 28 when he raced for Toro Rosso, years after he was gone from the Red Bull Junior Team. Albon had been dropped by Red Bull Junior in 2012 before he was picked up by Toro Rosso for the 2019 season.
+
+#### Teammate battle outliers
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 4.75, fig.cap = "Lucas di Grassi, Roberto Merhi, and Franco Colapinto have some of the best junior teammate records among F1 drivers; Nicholas Latifi and Logan Sargeant have some of the worst."}
+
+c("franco colapinto", "roberto merhi", "lucas di grassi", "logan sargeant",
+  "nicholas latifi") %>% 
+  plot_tier(d = .) +
+  ggh4x::force_panelsizes(rows = unit(4, "lines"))
+
+```
+
+The teammate battle between drivers is often the most important result in motorsport because of the differences in equipment, strategy, and personel (including the drivers themselves) between teams. Despite the fact that most junior competitions are spec series, some teams perform better than others. For example, between 2019 and 2024, the Prema Racing team won 5 out of the 6 Formula 3 team championships. It is not enough to finish high in the standings; you need to finish ahead of your teammates.
+
+Some of the biggest outliers on both ends of the teammate battle are highlighted (not including all the drivers mentioned earlier). On the positive end stand Lucas di Grassi and Franco Colapinto who finished ahead of every teammate they faced, even if they both lacked series wins. Colapinto is 7 out of 7 and di Grassi likely would have equaled if he had a full time teammate in his second GP2 season. Roberto Merhi has one stain on his record of 8 out of 9, but he also won a series. On the other end are Nicholas Latifi and Logan Sargeant. Latifi went 1 out of 9 and Sargeant went 0 out 7, with both also goose egging on title wins. This is harsh on Sargeant who was neck and neck with his teammates in 2022 F2 and 2020 F3. There is some congruence here with this group of drivers: Colapinto replaced Sargeant, who himself had replaced Latifi, at the Williams F1 team (an improvement at each step).
+
+#### Inconsistent careers
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 11.7, fig.cap = "Drivers with mixed junior career records."}
+
+c("marcus ericsson", "esteban gutierrez", "jules bianchi", "charles pic",
+  "sergio perez", "bruno senna", "nelson piquet jr", "jack doohan",
+  "oliver bearman", "alexander albon", "sergey sirotkin", "alexander rossi",
+  "felipe nasr") %>% 
+  plot_tier(d = .) +
+  ggh4x::force_panelsizes(rows = unit(4, "lines"))
+
+```
+
+This is kind of a grab bag of drivers who do not fit into any of the previous categories but generally had solid if consistent junior results. Although their records are not immaculate, you can see arguments for some them being in F1. The driver here with the strongest record is Jules Bianchi whose career is better than inconsistent. His worst outcome is the 12th place finish in 2009-10 GP2 Asia Series in which he missed the first round of. There's a good chance he would have finished above his teammate and inside the top 10 had he competed in every race. Nelson Piquet Jr had strong finishes although his career is a bit Lance Stroll-ish, with him always racing for teams owned by his father. Oliver Bearman is the most confounding. He had strong F3 and F4 results, but he finished behind his teammate in both F2 seasons—though his second year in F2 was interrupted with call-ups to the Haas F1 team.
+
+#### Low quality junior careers
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 9.2, fig.cap = "Drivers with poor junior career records. Sakon Yamamoto, Yuji Ide, and Nicholas Latifi also qualify but were covered earlier."}
+
+c("jerome d'ambrosio", "karun chandhok", "vitaly petrov", "kamui kobayashi",
+  "kazuki nakajima", "guanyu zhou", "nikita mazepin", "rio haryanto",
+  "will stevens", "max chilton") %>% 
+  plot_tier(d = .) +
+  ggh4x::force_panelsizes(rows = unit(4, "lines"))
+
+```
+
+On the bottom end of the spectrum, we have the drivers with the worst junior records—ones where we question why they ever got a shot at F1. Considering their junior performances, they must have brought something to the table other than talent—something like big time financial backing or huge commercial potential. Conversely, maybe F1 teams had internal data suggesting they were more than their junior records.
+
+Note that Sakon Yamamoto, Yuji Ide, Nicholas Latifi—all shown in detail previously—also fit comfortably in this category. Common features of drivers here include low placements in the standings, finishing behind teammates, and spending multiple seasons in the same series. There may be wins but generally in lower quality series.
+
+Kamui Kobayashi is a bit better than the other drivers in this group because of his strong wins in GP2 Asia, Renault 2.0 Eurocup, and Renault 2.0 Italy but is dragged down by double 16th place finishes behind teammates in GP2. Max Chilton and Will Stevens never finished a junior series in position 3 or higher, something not achieved by any of the other F1 drivers we looked at.
+
+
+### Top F2 performers
+
+After going through all the F1 drivers, we now look at the best performing F2 drivers to have never made F1. We saw earlier that drivers finishing their junior careers in the top 6 of F2 make up a large portion of drivers in F1, especially so after Renault 3.5 ended. Who are the best drivers that have finished in the top 6 of F2 that never got an F1 drive? There are other drivers that never raced in F2 that may be great candidates for F1, but the focus here will only be on this subset of drivers.
+
+#### The other F2 champions
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 3.8, fig.cap = "F2/GP2 champions that never made it to F1."}
+
+c("theo pourchaire", "felipe drugovich", "fabio leimer", "davide valsecchi") %>% 
+  plot_tier(d = .) +
+  ggh4x::force_panelsizes(rows = unit(4, "lines"))
+
+```
+
+Does every F2/GP2 winner deserve a shot at F1? There are 4 drivers that were F2 champions that, as of the end of the 2024 season, never got an F1 drive. Those ships have sailed for the retired Davide Valsecchi and Fabio Leimer. The biggest strike against both is the huge amount of time they spent in GP2. Valescchi won the title in season 5 and Leimer in season 4, both after middling performances prior to their winning seasons. No drivers other than the even more unimpressive Jolyon Palmer took as much time to win the F2/GP2 title. All three's junior records are also littered with finishes outside the top 10, ranking them among the bottom of all F2 winners.
+
+Felipe Drugovich fared better than Valsecchi and Leimer, but is also below average relative to other F2 winners. After an unexceptional junior career from tiers 5 to 3, it took 3 seasons for Drugovich to win the F2 title. His only other two wins came in the Euroformula Open and MRF Challenge, both weak series.
+
+Unlike Valsecchi, Leimer, and Drugovich, Theo Pourchaire had a very strong career. Yes, while it took him 3 seasons to become F2 champion, he also finished 5th in his first season, 2nd in his second season, and was only 20 years old when he finished 1st. His earlier career included finishing 2nd in his rookie F3 year and 1st in his rookie F4 ADAC year. Add all that to never finishing behind a teammate and Pourchaire has the best junior career out of F2 drivers to not yet have gotten an F1 drive.
+
+#### Best of the rest
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 7.5, fig.cap = "The best of the remaining F2 drivers not yet to have made it to F1. Note that Robin Frijns never drove a full season in F2 but is featured here because of a strong junior career."}
+
+c("ayumu iwasa", "robert shwartzman", "frederik vesti", "james calado",
+  "oliver rowland", "alexandre premat", "alex lynn", "robin frijns") %>% 
+  plot_tier(d = .) +
+  ggh4x::force_panelsizes(rows = unit(4, "lines"))
+
+```
+
+Among the drivers that did not win the F2 title, the above are arguably the best of the rest. On the basis of these records, few can say they were robbed of an F1 opportunity. Robert Shwartzman has the best finishing positions of this group of drivers, the highlights being an F3 title in his rookie year and 4th/2nd in his two F2 seasons. The high F2 finishes, though, both came behind teammates that won the title. This is the disadvantage of racing for a top team—you are expected to place high in the standings, but you might be up against a difficult teammate. Similarly, Alexandre Premat finished 4th and 3rd in F2 behind championship teammates both seasons. Alex Lynn won the GP3 title in his rookie year in 2014 but followed it up with two 6th place finishes in GP2. Oliver Rowland and Ayumu Iwasa present a different profile—strong records against teammates but lower finishing positions.
+
+As a bonus, we include Robin Frijns. He never spent a full season in GP2, but his resume includes rookie season wins in Renault 3.5 and Renault 2.0 Eurocup, a second season BMW Europe title, and never finishing behind a teammate. Among drivers that never made F1, Frijns and Pourchaire should feel the most aggrieved.
+
+### A More Objective Approach
+
+All the previous driver groupings were done unscientifically based on coming up with interesting categories. A more objective approach is to use principal component analysis to summarize junior careers. We apply PCA using a dataset of F1 drivers with debuts starting 2005 (our previous analysis started with 2006) and drivers who finished at 6th place or higher in F2/GP2. We look at variables such as finishing position in each tier, percent of series won, percent of series where finished above teammates, age, and other measures. Are there any obvious non-F1 drivers with careers equaling F1 drivers? Are there F1 drivers with records that are more befitting non-F1 drivers?
+
+```{r, fig.align = "center", fig.width = 9, fig.height = 7, fig.cap = "PCA plot of F1 drivers since 2005 and F2/GP2 drivers that have finished top 6. Drivers that made F1 are in black. Drivers that did not make F1 are in orange. Note that the following drivers are excluded because of incomplete junior career information: Markus Winkelhock, Yuji Ide, Narain Karthikeyan, Patrick Friesacher, Gianmaria Bruni, and Adam Carroll. Sakon Yamamoto is also excluded because he is a big outlier."}
+
+# pca plot
+driver_pca %>% 
+  autoplot(
+    data = stat_perf_filt_df %>% 
+      mutate(F1 = ifelse(F1 == "TRUE", "F1", "not F1")),
+    color = "F1",
+    label.size = 3, shape = FALSE, 
+    loadings = TRUE, loadings.label = TRUE, loadings.label.size = 3
+  ) +
+  scale_color_manual(name = "", values = c("black", "orange")) +
+  theme_bw() +
+  theme(legend.position = "none")
+
+```
+
+With the PCA plot, PC1 along the x-axis summarizes junior series performance, with higher values corresponding to more successful and shorter junior careers. Those on the right of the x-axis had the best junior careers (ex: Lando Norris, Charles Leclerc, Nico Hulkenberg) or a combination of success and skipping tiers 2/3 (ex: Lance Stroll, Max Verstappen). Names on the left have had less successful careers (ex: Johnny Cecotto Jr, Artem Markelov). PC2 along the y-axis is not as interesting, with information mostly on age and tier 5 performance.
+
+Drivers are colored according to whether they made F1. The orange drivers are the F2 top 6 finishers without F1 call-ups. From this we see that Theo Pourchaire is the only true standout among F2 hopefuls, matching what we saw with the driver career summaries earlier. In contrast, you question how Jolyon Palmer, Nicholas Latifi, Nikita Mazepin, Karun Chandhok, and Max Chilton made in to F1 given their junior records.
+
+### Closing Thoughts
+
+Analyzing junior careers using only finishing positions and performance relative to teammates is admittedly a very naive way of assessing driver potential. We did not consider things such as margin of victory, quality of opponents, quality of teammates, quality of team the driver is on, and prestige of series (not all series within the same tier are equal). We never went deeper into individual race results or considered whether things out of the driver's control such as mechanical issues affected performance. Some junior series are not spec series, with variation in engine manufacturers. Even with spec series, there is variation in car setup, team strategy, and quality of equipment. There is no way of quantifying these differences—a lot of these varying factors are not public. Position in standings and teammate performance are valuable pieces of information, but they do not tell the full story. There could be drivers finishing down in the standings that are true talents that deserve an F1 drive more than drivers that consistently finish on the podium. F1 teams have way more information than we when deciding on drivers to sign. We can only analyze the data that is available to us.
+
+
+### Data Sources
+
+The bulk of the data used in this anlaysis were from the following sources: [Wikipedia](https://en.wikipedia.org/), [Driver Database](https://www.driverdb.com/), and [Ergast](https://ergast.com/mrd/). 
+
