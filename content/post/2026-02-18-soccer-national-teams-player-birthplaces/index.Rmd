@@ -1,0 +1,824 @@
+---
+title: Soccer National Teams - Player Birthplaces
+author: Robert Huang
+date: '2026-02-18'
+output:
+  bookdown::html_document2:
+    number_sections: false
+slug: soccer-national-teams-player-birthplaces
+categories: []
+tags:
+  - sports
+  - soccer
+---
+
+<style>
+p.caption{
+  color: gray;
+  text-align: left;
+}
+</style>
+
+```{r setup, include = FALSE}
+
+library(tidyverse)
+library(ggimage)
+library(treemapify)
+library(ggbeeswarm)
+library(ggrepel)
+library(knitr)
+library(kableExtra)
+
+opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+
+### import
+dat_full <- read.csv("data/dat_exp.csv", na = "")
+tdate <- read.csv("data/tdate.csv", na = "") %>% 
+  mutate(date = ymd(date))
+fb_ind <- read.csv("data/fb_ind_exp.csv", na = "")
+
+
+### required tables
+# country summaries by tournament
+ctourn_sum <- dat_full %>%
+  group_by(confed, tourn, year, country) %>%
+  summarise(
+    n = sum(!is.na(is_birth)),
+    b = sum(is_birth, na.rm = TRUE),
+    missing = sum(is.na(is_birth))
+  ) %>%
+  ungroup() %>%
+  mutate(pct = b / n) %>% 
+  # number of tournaments for each country
+  group_by(country) %>% 
+  mutate(country_n = n()) %>% 
+  ungroup() %>% 
+  left_join(
+    tdate,
+    by = c("confed", "tourn", "year")
+  ) %>% 
+  left_join(
+    fb_ind %>% 
+      select(c_code, c_confed = confed),
+    by = c("country" = "c_code")
+  )
+
+# tournament summary
+tourn_sum <- ctourn_sum %>% 
+  group_by(confed, tourn, year, date) %>% 
+  summarise(
+    n_teams = n(),
+    den_sum = sum(n),
+    num_sum = sum(b),
+    pct_tot = sum(b) / sum(n),
+    mean_pct = mean(pct),
+    med_pct = median(pct),
+    n_missing = sum(missing)
+  ) %>% 
+  group_by(confed, tourn) %>%
+  mutate(
+    tourn_lab = paste0(
+      toupper(confed),
+      " ",
+      str_to_title(tourn),
+      " (",
+      scales::label_percent()(sum(num_sum) / sum(den_sum)),
+      ")"
+    )
+  ) %>% 
+  ungroup()
+
+# country summary
+cty_sum <- ctourn_sum %>% 
+  group_by(c_confed, country) %>% 
+  summarise(
+    n_tourn = n(),
+    den_sum = sum(n),
+    num_sum = sum(b),
+    pct_tot = sum(b) / sum(n),
+    mean_pct = mean(pct),
+    med_pct = median(pct),
+    n_missing = sum(missing)
+  ) %>% 
+  ungroup()
+
+# play/birth country details
+# excludes all entries missing bcountry
+cty_det <- dat_full %>% 
+  filter(!is.na(bcountry)) %>% 
+  group_by(pcountry = country, bcountry) %>% 
+  summarise(
+    # count of given birth/play countries
+    n = n()
+  ) %>% 
+  ungroup() %>% 
+  group_by(pcountry) %>% 
+  mutate(
+    # total number of roster slots for given country
+    n_p = sum(n)
+  ) %>% 
+  group_by(bcountry) %>% 
+  mutate(
+    # total number of rosters slots taken by given birth country
+    n_b = sum(n)
+  ) %>% 
+  ungroup() %>% 
+  mutate(
+    # pct of slots taken by this birth country
+    pct_p = n / n_p,
+    # pct of slots playing for this country
+    pct_b = n / n_b
+  ) %>% 
+  left_join(
+    fb_ind %>% 
+      select(c_code, p_confed = confed),
+    by = c("pcountry" = "c_code")
+  ) %>% 
+  left_join(
+    fb_ind %>% 
+      select(c_code, b_confed = confed),
+    by = c("bcountry" = "c_code")
+  )
+
+# birth country summary
+bcty_sum <- dat_full %>% 
+  left_join(
+    fb_ind %>% 
+      select(c_code, b_confed = confed),
+    by = c("bcountry" = "c_code")
+  ) %>% 
+  group_by(b_confed, bcountry) %>% 
+  summarise(
+    # number of tournaments players born in given country appeared in
+    n_tourn = length(unique(paste0(year, tourn))),
+    # of all slots in data, how many born in given country
+    n_tot = n(),
+    # number that end up playing for birth country
+    n_forbirth = sum(is_birth),
+    # number that play elsewhere
+    n_out = sum(!is_birth)
+  ) %>% 
+  ungroup() %>% 
+  mutate(
+    pct_forbirth = n_forbirth / n_tot,
+    pct_out = n_out / n_tot
+  )
+
+
+### plot functions
+# plot trend with flags
+plot_ctrend_fn <- function(x) {
+  
+  plot_df <- ctourn_sum %>%
+    filter(country_n >= 3) %>% 
+    filter(c_confed == tolower(x))
+  
+  flag_df <- fb_ind %>% 
+    mutate(
+      country = c_code,
+      date = ymd("2001-07-01"),
+      pct = 0.2
+    ) %>% 
+    filter(
+      c_code %in% (
+        plot_df %>% 
+          pull(country) %>% 
+          unique()
+      )
+    )
+  
+  plot_df %>% 
+    ggplot(aes(x = date, y = pct)) +
+    geom_line() +
+    geom_point() +
+    geom_flag(data = flag_df, aes(image = flag_fix), size = 0.25) +
+    facet_wrap(~ country, nrow = 5, ncol = 6) +
+    scale_y_continuous(
+      limits = c(0, 1),
+      labels = scales::percent_format(1)
+    ) +
+    labs(x = NULL, y = "% home born") +
+    theme_bw() +
+    theme(
+      panel.grid.major.x = element_blank(),
+      panel.grid.minor.x = element_blank(),
+      panel.grid.minor.y = element_blank(),
+      panel.background = element_rect(fill = "gray96")
+    )
+  
+}
+
+# plot tree maps
+# for given country, where are their rosters originating from
+# i.e. what is the makeup of the x national team?
+tree_play_fn <- function(x) {
+  
+  cty_det %>% 
+    left_join(
+      fb_ind %>% 
+        select(bcountry = c_code, b_flag = flag_fix,
+               b_confed_col = confed_col),
+      by = "bcountry"
+    ) %>% 
+    mutate(
+      b_confed = coalesce(b_confed, "other"),
+      b_confed_col = coalesce(b_confed_col, "gray")
+    ) %>% 
+    filter(pcountry == toupper(x)) %>% 
+    ggplot(
+      aes(area = n, fill = b_confed_col,
+          label = bcountry, subgroup = b_confed)
+    ) +
+    geom_treemap(color = "white") +
+    geom_treemap_subgroup_text(
+      place = "center", color = "white", grow = TRUE, alpha = 0.2
+    ) +
+    geom_treemap_text(
+      place = "center", color = "white", fontface = "italic"
+    ) +
+    geom_treemap_subgroup_border(color = "white") +
+    scale_fill_identity() +
+    labs(
+      title = paste0(
+        "The ",
+        fb_ind$Country[tolower(fb_ind$c_code) == x],
+        " national team players were born in..."
+      )
+    ) +
+    guides(fill = "none") +
+    theme(plot.title = element_text(hjust = 0.5))
+  
+}
+
+# plot tree maps
+# for players born in given country, where are they taking up roster slots
+# i.e. which national teams are x-born players playing for?
+tree_born_fn <- function(x) {
+  
+  cty_det %>% 
+    filter(
+      # p_confed != "ofc",
+      bcountry == toupper(x)
+    ) %>% 
+    left_join(
+      fb_ind %>% 
+        select(pcountry = c_code, p_flag = flag_fix,
+               p_confed_col = confed_col),
+      by = "pcountry"
+    ) %>% 
+    mutate(
+      p_confed = coalesce(p_confed, "other"),
+      p_confed_col = coalesce(p_confed_col, "gray")
+    ) %>% 
+    ggplot(
+      aes(area = n, fill = p_confed_col,
+          label = pcountry, subgroup = p_confed)
+    ) +
+    geom_treemap(color = "white") +
+    geom_treemap_subgroup_text(
+      place = "center", color = "white", grow = TRUE, alpha = 0.2
+    ) +
+    geom_treemap_text(
+      place = "center", color = "white", fontface = "italic"
+    ) +
+    geom_treemap_subgroup_border(color = "white") +
+    scale_fill_identity() +
+    labs(
+      title = paste0(
+        "Born in ",
+        fb_ind$Country[tolower(fb_ind$c_code) == x],
+        ", went on to play for..."
+      )
+    ) +
+    guides(fill = "none") +
+    theme(plot.title = element_text(hjust = 0.5))
+  
+}
+
+```
+
+Today we look at the makeup of national team squads in international soccer tournaments in terms of where players were born. Teams are generally represented by players that are born and raised in that country, but there has been an increasing shift in players declaring for countries where they were not born in—and may not have grown up in. The reasons for this may be familial, geopolitical, or sociological, but we're going to concentrate on the data. Specifically, we analyze what percent of a national team's squad in major international tournaments is made up of players born in that country. The difficulty of obtaining more in depth background information on players means we can't answer questions about where players were raised.
+
+Squad lists are pulled from [Wikipedia](https://en.wikipedia.org/) for all major international tournaments starting with the 1998 World Cup (1998-06-10) and ending with the 2025 CAF Cup of Nations (2025-12-21). The tournaments included are:
+
+```{r}
+
+dat_full %>% 
+  group_by(confed, tourn) %>% 
+  summarise(
+    First = min(year),
+    Last = max(year),
+    `# of Editions` = length(unique(paste0(tourn, year)))
+  ) %>% 
+  ungroup() %>% 
+  mutate(
+    Confederation = toupper(confed),
+    Tournament = str_to_title(tourn)
+  ) %>% 
+  select(Confederation, Tournament, First, Last, `# of Editions`) %>% 
+  kbl(caption = "International tournaments inlcuded in the data.") %>% 
+  kable_styling(full_width = FALSE)
+
+```
+
+This is the World Cup, every confederation's primary national team competition, and the now defunct Confederations Cup. Note that some tournaments like the Copa America and Gold Cup sometimes invite nations from outside their respective confederations to participate—those squads are also included in our dataset. We try to assign every player on the roster a country of birth based on a variety of sources—primarily Wikipedia, [Transfermarkt](https://www.transfermarkt.com/), [National Football Teams](https://www.national-football-teams.com/), and [FBref](https://fbref.com/). While every effort is made to ensure the accuracy of birthplace information, there are possibly cases of errors in the resulting dataset. There are many situations where different sources list conflicting birth countries or cities. Biological details are scant for most footballers from smaller nations, with finding reliable data more difficult the farther back in history we go.
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 6, fig.cap = "Percent of data with missing birthplace for each tournament."}
+
+dat_full %>% 
+  group_by(confed, tourn, year) %>% 
+  summarise(
+    n_missing = sum(is.na(is_birth)),
+    n_tot = n()
+  ) %>% 
+  ungroup() %>% 
+  mutate(
+    lab = paste0(toupper(confed), " ", str_to_title(tourn)),
+    pct_miss = n_missing / n_tot
+  ) %>% 
+  ggplot(aes(x = year, y = pct_miss)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~ lab) +
+  scale_y_continuous(
+    limits = c(0, 1),
+    labels = scales::percent_format(1)
+  ) +
+  labs(x = "Date", y = "% missing birthplace") +
+  theme_bw()
+
+```
+
+This is especially true of the OFC Nations Cup from 1998 to 2012 where between 25% and 50% of birthplaces are unknown. Keep this in mind for any results related to the OFC. Most tournaments are close to complete; the only other competition with more than 10% missing data is the 2000 CAF Cup of Nations.
+
+For the main metric we're going to focus on in this analysis, any player with a birth country matching the national team they play for is considered home born. If those two values do not match, they are considered a non-home born player. Aggregating this result for the entire squad gives an overall % home born statistic. The key here is that percentages are calculated using roster spots as the denominator, not players. This means that the same players may be counted multiple times if they appeared in multiple tournaments for a country. More precisely, the interpretation of percent home born is the percent of all roster spots that are home born, not percent of players that are home born. This method applies for the entire analysis.
+
+
+## By Tournament
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 6, fig.cap = "Percent of roster slots used for home born players at each tournament. Aggregate totals for all tournaments are shown in the facet labels next to the tournament names."}
+
+tourn_sum %>%
+  ggplot(aes(x = date, y = pct_tot)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~ tourn_lab) +
+  scale_y_continuous(
+    limits = c(0, 1), labels = scales::percent_format(1),
+    breaks = seq(0, 1, by = 0.2)
+  ) +
+  labs(x = NULL, y = "% home born") +
+  theme_bw() +
+  theme(panel.grid.minor.y = element_blank())
+
+```
+
+We start by plotting the trend of home born players for every event. While tournaments like the Copa America, World Cup, and Nations Cup have been consistent in their use of home born players with maybe a slight dip in more recent years, others like the Cup of Nations and Gold Cup have shown a sharper drop in the percent of home born players. The Cup of Nations has gone from over 90% home born to under 70% in the last 25 years. From 2000 to 2007, the Gold Cup was at 90% but has dropped to 70% in 2025. The Asian Cup is somewhere in between with a slower but consistent decline. While the rates of change vary across confederations, what is obvious is that we're seeing fewer squad positions for home born players—particularly in Africa and North America. The only tournaments without a change are the European Championship and Confederations Cup (last held in 2017).
+
+```{r}
+
+### most home/least home tournaments
+# show top 5 for both
+tourn_sum %>%
+  arrange(desc(pct_tot)) %>% 
+  mutate(
+    Confederation = toupper(confed),
+    Tournament = str_to_title(tourn),
+    `% Home Born` = scales::percent_format(0.1)(pct_tot)
+  ) %>% 
+  slice_head(n = 5) %>% 
+  select(Confederation, Tournament, Year = year, Teams = n_teams,
+         `# Players` = den_sum, `# Home Born` = num_sum, `% Home Born`) %>% 
+  kbl(
+    align = "llrrrrr",
+    caption = "Tournaments with the highest percentage of home born players."
+  ) %>% 
+  kable_styling(full_width = FALSE)
+
+tourn_sum %>%
+  arrange(pct_tot) %>%
+  mutate(
+    Confederation = toupper(confed),
+    Tournament = str_to_title(tourn),
+    `% Home Born` = scales::percent_format(0.1)(pct_tot)
+  ) %>% 
+  slice_head(n = 5) %>% 
+  select(Confederation, Tournament, Year = year, Teams = n_teams,
+         `# Players` = den_sum, `# Home Born` = num_sum, `% Home Born`) %>% 
+  kbl(
+    align = "llrrrrr",
+    caption = "Tournaments with the lowest percentage of home born players."
+  ) %>% 
+  kable_styling(full_width = FALSE)
+
+```
+
+The 2001 Copa America was the most home born tournament—255 out of 258 roster spots were used by players born in the country of their national teams (almost 99%!). The Copa America also occupies the second and third spots with similarly high percentages. On the opposite end is the 2023 Cup of Nations—only 408 out of 627 roster spots were used by home born players (65%). Appropriately, the second and third positions are also taken by other editions of the Cup of Nations.
+
+It's useful to point out that these results are dependent on the specific nations that participate in the tournaments. Teams have to qualify for these tournaments, so the participants are not the same for different editions of the same tournament. The number of home born players for an individual year could be a lot lower than other years if the rate is dragged down by a nation that depends heavily on outside born players, especially if they do not qualify for the other years.
+
+## By Country
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 6, fig.cap = "AFC - Percent of roster slots used for home born players at each tournament. Only teams that have participated in a least 3 tournaments are plotted."}
+
+plot_ctrend_fn("afc") +
+  ggh4x::force_panelsizes(rows = unit(5, "lines"))
+
+```
+
+We dig a little deeper by looking at how the usage of home born players by individual countries has evolved over time, covering only national teams that have participated in at least 3 tournaments. Starting with the AFC, we see that a few countries experienced a dip in the use of home born players after years at a steady clip during the most recent running of the Asian Cup in 2023— namely Australia, Indonesia, Iraq, and Syria. Qatar has undergone the boldest transformation, going from 95% in the 2000 Asian Cup, to 73% in 2004, and then down to 65% or lower ever since. On the other end are countries that have never strayed from selecting players born inside their national limits such as China, Iran, Japan, South Korea, and Saudi Arabia.
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 7, fig.cap = "CAF - Percent of roster slots used for home born players at each tournament. Only teams that have participated in a least 3 tournaments are plotted."}
+
+plot_ctrend_fn("caf") +
+  ggh4x::force_panelsizes(rows = unit(5, "lines"))
+
+```
+
+As we saw with the aggregated Cup of Nations results earlier, the CAF features the most dramatic shift in home born usage out of all confederations. There were points in the early 2000s that all of Algeria, DR Congo, Morocco, and Senegal had squads that comprised of at least 90% home born talent, but that has completely changed. Now they all depend greatly on players born outside their borders, sometimes utilizing teams where a minority of the roster are home born. The Ivory Coast, Cameroon, Ghana, and Nigeria have also moved toward outside players albeit at a slower pace than the previous group. There are nations that have gone against the African grain: Egypt, South Africa, and Zambia are tournament regulars that continue to focus on squads based around home born players.
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 4.5, fig.cap = "CONCACAF - Percent of roster slots used for home born players at each tournament. Only teams that have participated in a least 3 tournaments are plotted."}
+
+plot_ctrend_fn("concacaf") +
+  ggh4x::force_panelsizes(rows = unit(5, "lines"))
+
+```
+
+In CONCACAF, Costa Rica, Cuba, Honduras, and Panama have seen almost no movement away from their nearly 100% home born player squads. Haiti is the only country showing clear downward movement while the change down for Guatemala, Mexico, and Trinidad & Tobago is slighter. Others like Canada, Jamaica, and the United States bounce up and down in their use of non-home born players. Curacao is an outlier in the sense that it has never had a roster made up of more than half home born players in any of its 3 Gold Cup appearances.
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 3.25, fig.cap = "CONMEBOL - Percent of roster slots used for home born players at each tournament. Only teams that have participated in a least 3 tournaments are plotted."}
+
+plot_ctrend_fn("conmebol") +
+  ggh4x::force_panelsizes(rows = unit(5, "lines"))
+
+```
+
+Unlike the other confederations, none of the CONMEBOL nations show a pattern in the usage of home born players. This is expected as CONMEBOL came out on top as the home-heaviest confederation in a previous graph. In fact, Bolivia's 82% home player rate in the 1999 Copa America (18/22 players) is the lowest by a CONMEBOL nation in any tournament, a target many countries in the rest of the world would struggle to reach. Colombia has somehow not used a single outside born player since 1999 even though they had 17 tournaments to do so. Brazil nearly matched that feat but included Andreas Pereira, born to Brazilian parents in Belgium, in their 2024 Copa America squad.
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 7, fig.cap = "UEFA - Percent of roster slots used for home born players at each tournament. Only teams that have participated in a least 3 tournaments are plotted."}
+
+plot_ctrend_fn("uefa") +
+  ggh4x::force_panelsizes(rows = unit(5, "lines"))
+
+```
+
+UEFA is similar to CONMEBOL in that no nation is moving towards using fewer home born players. This is not too much of a shock—UEFA and CONMEBOL are home to the strongest footballing nations in the world along with the best footballing infrastructures. These countries do not need to go searching for prospects outside of their own borders. The only UEFA nations in the plot to rely on non-home born players are two countries located in the British Isles—the Republic of Ireland and Wales (both using English born players with family ties).
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 3.25, fig.cap = "OFC - Percent of roster slots used for home born players at each tournament. Only teams that have participated in a least 3 tournaments are plotted."}
+
+plot_ctrend_fn("ofc") +
+  ggh4x::force_panelsizes(rows = unit(5, "lines"))
+
+```
+
+The OFC is graphed for completeness. Other than New Zealand, we will not read too much into the results since we're missing so much data for these rosters.
+
+What we learn is that for the last 25 years, countries across the world are either decreasing their usage of home born footballers or holding steady. Almost no country is drifting in the other direction—using more home born players than they have historically—except maybe Equatorial Guinea, which we will go into more detail later.
+
+## Overall Country
+
+```{r, fig.align = "center", fig.width = 9.5, fig.height = 6, fig.cap = "Overall home born percentages for each national team. Denominators are roster spots, not players. All teams are included regardless of the number of tournament entered."}
+
+cty_sum %>% 
+  # filter(!c_confed %in% c("ofc")) %>% 
+  mutate(c_label = ifelse(pct_tot < 0.59, country, NA)) %>% 
+  ggplot(aes(x = toupper(c_confed), y = pct_tot)) +
+  geom_beeswarm(size = 1) +
+  geom_text_repel(
+    aes(label = c_label), size = 3, hjust = 0, nudge_x = 0.05
+  ) +
+  geom_vline(xintercept = c(1.5, 2.5, 3.5, 4.5, 5.5)) +
+  # use expand = c(0.1, 0.1) if ofc excluded
+  scale_x_discrete(position = "top", expand = c(0.08, 0.08)) +
+  scale_y_continuous(
+    limits = c(0, 1), breaks = seq(0, 1, by = 0.2),
+    labels = scales::percent_format(1)
+  ) +
+  labs(x = NULL, y = "% home born") +
+  theme_bw() +
+  theme(
+    panel.grid.major.x = element_blank(),
+    axis.ticks.x = element_line(color = NA)
+  )
+
+```
+
+Stats for all tournaments are summarized into a single number for each country and plotted for comparison above. Note that unlike the line plots, all countries are shown regardless of the number of tournaments they competed in. Let's remind everyone that the denominator is roster spots, not players, so the statistic is % of all roster spots used for home born players. Results are slightly weighted toward recent tournaments because of the increase in squad sizes at tournaments since 2020, but this does not have that big of an effect in skewing the numbers.
+
+We see that CONMEBOL is a unique confederation with all its nations building rosters around home born footballers—every CONMEBOL country spends over 90% of their roster spots on players born inside the country. OFC is similar if Samoa is ignored, but remember that there is a large chunk of OFC players with unknown birthplaces. Confirming earlier conclusions, CAF and CONCACAF are the two confederations that depend most on outside talent as each have multiple nations that use less than half their squad places on players born inside the country. The AFC and UEFA are somewhere in the middle of the extremes, each with only one country below the 50% home born mark—the Philippines and Albania, respectively.
+
+## Country Details
+
+We move on to examining the composition of rosters for some countries of interest, starting with the teams with the lowest home born percentages.
+
+```{r}
+
+cty_sum %>% 
+  filter(pct_tot < 0.5) %>% 
+  arrange(pct_tot) %>% 
+  mutate(
+    Confederation = toupper(c_confed),
+    `% Home Born` = scales::percent_format(0.1)(pct_tot)
+  ) %>% 
+  select(Confederation, Country = country, `# Tournaments` = n_tourn,
+         `# Players` = den_sum, `# Home Born` = num_sum, `% Home Born`) %>% 
+  kbl(
+    align = "llrrrr",
+    caption = "Countries where % home born is less than 50%."
+  ) %>% 
+  kable_styling(full_width = FALSE)
+
+```
+
+The table above shows the 9 countries since June 1998 with less than 50% of their rosters being made up of home born players. For some of the teams, we will go into detail about where these players were born.
+
+```{r, fig.align = "center", fig.width = 5, fig.height = 5.23}
+
+tree_play_fn("com")
+
+```
+
+The Comoros, a former French overseas territory, leads the international footballing world in the use of outside players. They've taken part in two CAF Cup of Nations (2021 and 2025) and have allotted only 3 of its 54 total squad slots to players born in the Comoros itself—just under 6%. Over 75% (42/54) of their squad were born in France, maybe not too surprising because of the Comoros's standing as a soccer nation compared to France. Neighboring Mayotte adds 13% (7/54) and Reunion, not that much farther away, adds another 4% (2/54). Both Mayotte and Reunion are departments of France with national teams of their own, but they are not eligible for the World Cup or Africa Cup of Nations as the players from French overseas departments also qualify for the mainland France national team. Of the 3 players that were born in the Comoros, 2 played for youth teams in France (Abdallah Ali Mohamed and Rafiki Saïd), leaving just one player (Ibroihim Djoudja) that was actually developed in the Comoros.
+
+```{r, fig.align = "center", fig.width = 5, fig.height = 5.23}
+
+tree_play_fn("phi")
+
+```
+
+The Philippines have participated in one tournament—the 2019 Asian Cup—where they spent just 4 out of 23 positions on home born players (17%, more than double the standard set by the Comoros). They draw from a much wider and balanced range of countries than the Comoros with Germany (Patrick Reichelt, Stephan Schröck) being the biggest source. Other players with Filipino heritage from England (Phil Younghusband - most capped and highest goalscorer for the Philippines), Spain (Carli de Murga), Denmark (Kevin Ray Mendoza), Australia (Iain Ramsay), Austria (Stephan Palla), the UAE (Luke Woodland), and the United States (Miguel Tanton) make up the rest of their roster.
+
+```{r, fig.align = "center", fig.width = 5, fig.height = 5.23}
+
+tree_play_fn("cuw")
+
+```
+
+Curacao, while not an independent country, is similar to the Comoros in that it draws from countries it has political and geographical ties to—in this case, the Netherlands and Bonaire. Curacao is a part of the Netherlands, and mainland Netherlands born players generate 70% of it squad (including Leandro Bacuna - most capped). Neighboring Bonaire—which together with Curacao, Aruba, Saba, Sint Eustatius, and Sint Maarten once formed the Netherlands Antilles—provides a single player (Ayrton Statie) that took part in 2 editions of the Gold Cup. Unlike the Comoros, a lot more of Curacao's rosters spots (19 total or 27%) are used by Curacao born players.
+
+```{r, fig.align = "center", fig.width = 5, fig.height = 5.23}
+
+tree_play_fn("eqg")
+
+```
+
+Equatorial Guinea is a former Spanish colony and gets over 60% of its squad from its descendants in Spain (Emilio Nsue - leading goalscorer). Its national football team has drawn [criticism](https://www.espn.com/soccer/story/_/id/37391514/naturalisation-new-level) in the past for its use of naturalized players without cultural connections to the country—players from Cameroon (Viera Ellong), Brazil (Danilo Clementino), Ivory Coast (Fousseny Kamissoko), Liberia (Lawrence Doe), and Nigeria (Daniel Ekedo)—but this practice appears to have died down with rosters now made up of only Equatorial Guinea born players and Spain born players with Equatoguinean heritage. We already saw some evidence of this where Equatorial Guinea seemed like the only nation to have an increasing trend toward using home born players, specifically when comparing their 2012/2015 Cup of Nations to their 2021/2023/2025 Cup of Nations.
+
+```{r, fig.align = "center", fig.width = 5, fig.height = 5.23}
+
+tree_play_fn("alb")
+
+```
+
+Albania is the only UEFA nation under 50% and pulls from players with Albanian heritage across Europe. Albania itself provides the majority of the roster, but Switzerland, one of the top destinations of Kosovar-Albanian emigration, and Kosovo are the other key contributors. As a side note, 15 out of Switzerland's 240 roster spots have been used by Kosovo born players who grew up in Switzerland—namely Albert Bunjaku (1 squad), Milaim Rama (1 squad), Valon Behrami (6 squads), and Xherdan Shaqiri (7 squads)—the most of any non-Swiss country.
+
+```{r, fig.align = "center", fig.width = 5, fig.height = 5.23}
+
+tree_play_fn("alg")
+
+```
+
+While Algeria had a 91% home born squad for the 2000 Cup of Nations, that number has dropped down to less than 50% for 10 out of the 11 tournaments they've entered since 2004. About half their squad slots have been taken by players with Algerian roots born in France, including Algeria's two most capped players: Aïssa Mandi and Riyad Mahrez. This 40%/50% split between players born in Algeria/France has been pretty constant for Algerian squads since the 2004 Cup of Nations. The only tournament in this range where there were more Algerian born players (16) than French born players (11) was the 2021 Cup of Nations.
+
+We won't go into a detailed breakdown of these countries, but over 50% of Guyana's squad was born in England (Guyana was formerly British Guiana) and over 50% of Suriname's squad was born in the Netherlands (Suriname was previously a constituent country of the Netherlands).
+
+```{r}
+
+ctourn_sum %>% 
+  arrange(pct) %>% 
+  filter(pct < 0.1) %>% 
+  mutate(
+    Confederation = toupper(confed),
+    Tournament = str_to_title(tourn),
+    `% Home Born` = scales::percent_format(0.1)(pct)
+  ) %>% 
+  select(Confederation, Tournament, Year = year, Country = country,
+         `# Players` = n, `# Home Born` = b, `% Home Born`) %>% 
+  kbl(
+    align = "llrrrrr",
+    caption = "Specific squads sent to tournaments (not aggregated) where the percentage of home born players is less than 10%."
+  ) %>% 
+  kable_styling(full_width = FALSE)
+
+```
+
+Instead of aggregating teams, has anyone ever entered a tournament without a single home born player? There are 4 cases where a national team sent a squad with over 90% "foreign" players: Equatorial Guinea in the 2012 Cup of Nations, the Comoros in both the 2021 and 2025 Cup of Nations, and Curacao in the 2025 Gold Cup. Comoros and Curacao were each just one player away from a perfect non-home born roster in 2025. With the Comoros, that home born player was Rafiki Saïd, already at a French youth team before reaching his teens. Similarly for Curacao, their sole home born player at that tournament was Tahith Chong—joined Dutch side Feyenoord at age 10 and represented the Netherlands at multiple youth levels.
+
+## Birth Countries
+
+Instead of keying in on a national team and then studying the various birth countries of its roster, we can look at the data from the opposite direction to answer the question: Which birth countries provide the most players to other nations?
+
+```{r}
+
+bcty_sum %>% 
+  filter(
+    # !b_confed %in% c("ofc"),
+    !is.na(b_confed)
+  ) %>% 
+  arrange(desc(n_out)) %>% 
+  filter(n_out >= 50) %>% 
+  left_join(
+    cty_det %>%
+      group_by(bcountry) %>% 
+      summarise(`Total Countries` = n()) %>% 
+      ungroup(),
+    by = "bcountry"
+  ) %>% 
+  mutate(Confederation = toupper(b_confed),) %>% 
+  select(Confederation, `Birth Country` = bcountry, 
+         `# of Spots for Birth Country` = n_forbirth,
+         `# of Spots for Other Countries` = n_out,
+         `Total Countries`) %>% 
+  kbl(
+    align = "llrrr",
+    caption = "Number of roster spots taken by players born in country. Countries that have taken more than 50 spots for other (non home) nations shown."
+  ) %>% 
+  kable_styling(full_width = FALSE)
+
+```
+
+The above table shows all birth countries that have supplied more than 50 roster positions for other nations. A good number of these are some of the strongest footballing nations in the world—France, England, Germany, Spain, Argentina, and Brazil have won World Cups. These countries have ultra competitive national teams where securing a place on the squad is difficult, maybe pushing candidates with ties to other nations to seek alternative routes into big tournaments. We take a closer look at some of these countries.
+
+```{r, fig.align = "center", fig.width = 5, fig.height = 5.23}
+
+tree_born_fn("fra")
+
+```
+
+The most extreme case is France. Since the 1998 World Cup, 310 spots on the French national team have been used for French born players. Compare that to the 1,079 spots allotted to French born players for other national teams. Yes, that's 3.5 times more French born footballers on roster sheets outside of mainland France than for France itself. There are 42 countries that have benefited from this (including France itself), with more than 60% going to the CAF—Pierre-Emerick Aubameyang (Gabon), Kalidou Koulibaly (Senegal), and Sofiane Feghouli (Algeria) are examples. Most of these are independent African states with a history of French colonization. There are 3 French overseas departments with their own national teams that have qualified for the CONCACAF Gold Cup—Guadeloupe, Martinique, and French Guiana. France has also provided players to every confederation. In addition to CAF, UEFA, and CONCACAF, each of AFC, CONMEBOL, and OFC have 6 slots taken by French born players.
+
+```{r, fig.align = "center", fig.width = 5, fig.height = 5.23}
+
+tree_born_fn("eng")
+
+```
+
+England does not provide the volume of players for other countries like France—no country even comes close—but is not that far behind in terms of number of countries represented with 40. Over half of tournament roster spots taken up by English born players are for national teams not named England, and like France, it has also touched every confederation. In UEFA, the other countries of the British Isles—the Republic of Ireland (Kevin Kilbane), Northern Ireland (Oliver Norwood), Scotland (Scott McTominay), and Wales (Ashley Williams)—receive the most players. In CONCACAF, we see countries that gained independence from the United Kingdom—Jamaica (Wes Morgan), Grenada (Aaron Pierre), Trinidad and Tobago (Shaka Hislop), etc. It's a similar story for CAF with Nigeria (Ademola Lookman), Ghana (Antoine Semenyo), and Zimbabwe (Jordan Zemura).
+
+```{r, fig.align = "center", fig.width = 5, fig.height = 5.23}
+
+tree_born_fn("ned")
+
+```
+
+Coming in third is the Netherlands, supplying 169 roster spots for countries outside of mainland Netherlands. Curacao (Eloy Room and many other of their most capped players) and Suriname (Shaquille Pinas) are countries with Dutch links. Moroccans (Hakim Ziyech) form one of the largest minority groups in the Netherlands. Cape Verde (Garry Rodrigues) is an unexpected entry here given its relatively small diaspora in the Netherlands.
+
+```{r, fig.align = "center", fig.width = 5, fig.height = 5.23}
+
+tree_born_fn("ger")
+
+```
+
+While the bulk of German born players in international tournaments represent Germany, 168 spots have been for other countries. Turkey, Croatia, and the USA are the main benefactors. There are large numbers of Germans of either Turkish (Hakan Çalhanoğlu) or Croatian (Niko Kovač) descent and many have gone on the represent those two countries in football. The German born American players are mostly children of U.S. servicemen based in Germany (Jermaine Jones, John Brooks).
+
+```{r, fig.align = "center", fig.width = 5, fig.height = 5.23}
+
+tree_born_fn("esp")
+
+```
+
+We covered Equatorial Guinea before, learning that they're adept at utilizing foreign born players with or without Equatoguinean ties. If you see a Spanish born player in a tournament, there's a 15% chance that they could be representing Equatorial Guinea—a number that could have been higher had Equatorial Guinea qualified for more Cup of Nations. The second largest group plays for Morocco (Achraf Hakimi)—this is in line with Moroccans being the largest minority group in Spain.
+
+```{r, fig.align = "center", fig.width = 5, fig.height = 5.23}
+
+tree_born_fn("usa")
+
+```
+
+The United States is a source of players for a variety of CONCACAF teams, with El Salvador (Gerson Mayen), Haiti (Derrick Etienne Jr.), and Guatemala (Darwin Lom) standing out. While there are large diasporas from many countries across the world located in the U.S., there are unlikely to be footballers who declare for prominent UEFA and CONMEBOL nations. The U.S. is not a soccer powerhouse and the countries that are have enough talent of their own without having to go scouting for players in the U.S.
+
+```{r, fig.align = "center", fig.width = 5, fig.height = 5.23}
+
+tree_born_fn("arg")
+tree_born_fn("bra")
+
+```
+
+A fun comparison is between Argentina and Brazil, rival South American countries that are among the world's most successful national teams. They have taken up 105 and 95 roster spots for the rest of the world, respectively (but definitely never playing for each other). The largest chunk of footballers born in Argentina but not playing for Argentina play for other CONMEBOL members, albeit for different reasons. Paraguay and Chile are examples of countries with Argentinian players with Argentinian heritage (Roberto Acuña for Paraguay and Matías Fernández for Chile) while Ecuador includes naturalized players born in Argentina (Hernán Galíndez). On the other hand, since the 1998 World Cup there are no examples of Brazilian born players representing another CONMEBOL nation. When Brazilians do play for another country, they are more likely to be naturalized citizens instead of having familial links to the other country (Pepe for Portugal, Cacau for Germany, or José Clayton for Tunisia) .
+
+Note that these numbers are heavily skewed by the nations that show up in the data set. For example, one of the biggest reasons France has such a huge gap over other countries is that the big nations they provide players for—Algeria, Senegal, Cameroon, etc.—are also strong at soccer and thus qualify for tournaments year after year, pushing the French numbers up. This is actually more evidence for the prowess of French soccer—these other countries are preforming amazingly well using teams full of French born players.
+
+## Other Findings of Note
+
+* National teams only using home born players
+
+```{r}
+
+cty_sum %>% 
+  filter(
+    c_confed != "ofc",
+    pct_tot == 1
+  ) %>% 
+  arrange(desc(n_tourn)) %>% 
+  mutate(Confederation = toupper(c_confed),) %>% 
+  select(Confederation, Country = country, 
+         `# of Tournaments` = n_tourn,
+         `# of Players` = den_sum,
+         `# Home Born` = num_sum,
+         `# Unknown Birthplace` = n_missing) %>% 
+  kbl(
+    align = "llrrrr",
+    caption = "National teams that have only used home born players."
+  ) %>% 
+  kable_styling(full_width = FALSE)
+
+```
+
+There are 11 national teams that have built rosters made up of only players born in their own country. The most impressive of these is Colombia, which achieved this after having competed in 17 tournaments with 388 possible roster spots. It is the only Spanish-speaking CONMEBOL nation not to have featured an Argentine born player on any of their squads. Conversely, no Colombia born player has played for any other CONMEBOL nation. Saudi Arabia is not that far behind with 14 tournaments and 322 roster spots, and Cuba is a little farther back with 9 tournaments and 179 roster spots (do note that Saudi Arabia and Cuba are missing birthplaces for 3 and 7 entries, respectively). The rest of the countries on this list have participated in fewer tournaments.
+
+* National teams featuring the widest range of birth countries
+
+```{r}
+
+cty_det %>% 
+  group_by(p_confed, pcountry) %>% 
+  summarise(
+    n_cty = n(),
+    n_confed = length(unique(b_confed))
+  ) %>% 
+  ungroup() %>% 
+  arrange(desc(n_cty)) %>% 
+  filter(n_cty >= 10) %>% 
+  mutate(Confederation = toupper(p_confed)) %>% 
+  select(Confederation, Country = pcountry, 
+         `# of Countries` = n_cty) %>% 
+  kbl(
+    align = "llr",
+    caption = "National teams that have featured players born in at least 10 different countries."
+  ) %>% 
+  kable_styling(full_width = FALSE)
+
+```
+
+```{r, fig.align = "center", fig.width = 5, fig.height = 5.23}
+
+tree_play_fn("can")
+
+```
+
+Canada is the most international team, with players born in 25 different countries across 3 federations donning the Canadian national shirt. There is no one country that stands out as a contributor (outside of Canada itself) although a mix of UEFA nations comprise the biggest bucket. Canada is also represented by Majrekar James of Dominica and Carl Fletcher of Montserrat, two nations that have never qualified for a major national tournament but were able to spawn players for this national side.
+
+* National teams featuring the widest range of birth continents
+
+```{r}
+
+cty_det %>% 
+  filter(!is.na(b_confed)) %>% 
+  group_by(p_confed, pcountry) %>% 
+  summarise(
+    n_cty = n(),
+    n_confed = length(unique(b_confed))
+  ) %>% 
+  ungroup() %>%
+  filter(n_confed >= 5) %>% 
+  mutate(Confederation = toupper(p_confed)) %>% 
+  select(Confederation, Country = pcountry, 
+         `# of Countries` = n_cty,
+         `# of Confederations` = n_confed) %>% 
+  kbl(
+    align = "llrr",
+    caption = "National teams that have featured players born in at least 5 different confederations."
+  ) %>% 
+  kable_styling(full_width = FALSE)
+
+```
+
+There is no national team that has been represented by players born in all 6 confederations; the closest are the 5 countries topping out at 5 confederations. Australia is missing a player from CONCACAF, Liberia and Palestine are missing players from OFC, New Zealand is missing a player from CONMEBOL, and the United States is missing a player from CAF.
+
+* Countries that have birthed players for every confederation
+
+```{r}
+
+cty_det %>%
+  # filter(p_confed != "ofc") %>% 
+  group_by(b_confed, bcountry) %>% 
+  summarise(
+    n_cty = n(),
+    n_confed = length(unique(p_confed))
+  ) %>% 
+  ungroup() %>% 
+  filter(n_confed >= 6) %>% 
+  mutate(Confederation = toupper(b_confed)) %>% 
+  select(Confederation, Country = bcountry, 
+         `# of Countries` = n_cty,
+         `# of Confederations` = n_confed) %>% 
+  kbl(
+    align = "llrr",
+    caption = "Countries that have provided players for all 6 confederations."
+  ) %>% 
+  kable_styling(full_width = FALSE)
+
+```
+
+```{r, fig.align = "center", fig.width = 5, fig.height = 5.23}
+
+tree_born_fn("rsa")
+
+```
+
+Players born France, England, Germany, the United States, and South Africa have gone on to represent every confederation. South Africa is the most interesting case because of its efficiency in completing this feat with just 13 roster spots for other national teams. You'd expect this for France, England, Germany, and the United States—they've each taken up over 100 roster spots for other countries, so every confederation could have been covered just by luck. South Africa provided each of Australia (OFC - Keanu Baccus), Portugal (UEFA - Dimas Teixeira), USA/Canada (CONCACAF - Roy Wegerle/Kevin Harmse), and Chile (CONMEBOL - Mark Gonzalez) with a single player; New Zealand is the relative outlier, getting 3 unique players from South Africa (Deklan Wynne, Storm Roux, Daniel Ellensohn).
+
+## Limitations
+
+This analysis only uses birthplace, which as mentioned may not be accurate as there's a scarcity of biographical references for many of the lesser known players. A more complete study should also consider where players were raised. Players could be born in one country but spend their childhood in another, having the ability to choose from multiple national teams to represent. Yassine Bounou was born in Canada to Moroccan parents, but moved to Morocco at the age of 3 and grew up there. He represents the Moroccan team and counts as a non-home player in this analysis. Folarin Balogun was born in the United States to Nigerian parents, moved to the United Kingdom when he was a month old, eventually growing up in England. He later chose to play for the U.S. team, counting as a home player in the data. A better analysis should take into account all these intricacies, but this seems an impossible task. Given the difficulty of finding birthplaces for many players, getting entire histories of their childhoods is nigh impossible when we have a dataset of tens of thousands of players.
