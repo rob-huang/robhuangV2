@@ -2,7 +2,6 @@ baseurl: "https://robhuang.netlify.app/"
 languageCode: "en-us"
 title: "Robert Huang"
 theme: "hugo-xmin"
-googleAnalytics: "G-DQ4793W4Q0"
 disqusShortname: ""
 ignoreFiles: ["\\.Rmd$", "\\.Rmarkdown$", "_cache$"]
 footnotereturnlinkcontents: "↩"
