@@ -2,68 +2,77 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:4321/</loc>
+    <loc>https://robhuang.netlify.app/</loc>
+    <lastmod>2026-02-18T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://robhuang.netlify.app/post/</loc>
+    <lastmod>2026-02-18T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://robhuang.netlify.app/tags/soccer/</loc>
+    <lastmod>2026-02-18T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://robhuang.netlify.app/post/2026/02/18/soccer-national-teams-player-birthplaces/</loc>
+    <lastmod>2026-02-18T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://robhuang.netlify.app/tags/sports/</loc>
+    <lastmod>2026-02-18T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://robhuang.netlify.app/tags/</loc>
+    <lastmod>2026-02-18T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://robhuang.netlify.app/tags/f1/</loc>
+    <lastmod>2025-02-09T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://robhuang.netlify.app/post/2025/02/09/formula-one-junior-careers/</loc>
+    <lastmod>2025-02-09T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://robhuang.netlify.app/post/2024/06/26/the-coaching-carousel/</loc>
     <lastmod>2024-06-26T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:4321/post/</loc>
-    <lastmod>2024-06-26T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:4321/tags/sports/</loc>
-    <lastmod>2024-06-26T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:4321/tags/</loc>
-    <lastmod>2024-06-26T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:4321/post/2024/06/26/the-coaching-carousel/</loc>
-    <lastmod>2024-06-26T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:4321/tags/f1/</loc>
+    <loc>https://robhuang.netlify.app/post/2022/05/13/formula-one-grand-prix-start-times/</loc>
     <lastmod>2022-05-13T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:4321/post/2022/05/13/formula-one-grand-prix-start-times/</loc>
-    <lastmod>2022-05-13T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:4321/tags/nba/</loc>
+    <loc>https://robhuang.netlify.app/tags/nba/</loc>
     <lastmod>2020-06-13T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:4321/post/2020/06/13/nba-playoffs-best-players-to-have-never-advanced/</loc>
+    <loc>https://robhuang.netlify.app/post/2020/06/13/nba-playoffs-best-players-to-have-never-advanced/</loc>
     <lastmod>2020-06-13T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:4321/post/2020/04/27/nba-hometowns/</loc>
+    <loc>https://robhuang.netlify.app/post/2020/04/27/nba-hometowns/</loc>
     <lastmod>2020-04-27T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:4321/tags/film/</loc>
+    <loc>https://robhuang.netlify.app/tags/film/</loc>
     <lastmod>2019-12-24T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:4321/post/2019/12/24/the-gender-age-gap-in-hollywood-romances/</loc>
+    <loc>https://robhuang.netlify.app/post/2019/12/24/the-gender-age-gap-in-hollywood-romances/</loc>
     <lastmod>2019-12-24T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:4321/tags/nba-draft/</loc>
+    <loc>https://robhuang.netlify.app/tags/nba-draft/</loc>
     <lastmod>2019-08-13T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:4321/post/2019/08/13/nba-draft-vs-draft-boards/</loc>
+    <loc>https://robhuang.netlify.app/post/2019/08/13/nba-draft-vs-draft-boards/</loc>
     <lastmod>2019-08-13T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:4321/tags/food/</loc>
+    <loc>https://robhuang.netlify.app/tags/food/</loc>
     <lastmod>2019-06-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:4321/post/2019/06/12/jonathan-gold-101-restaurants-mapped/</loc>
+    <loc>https://robhuang.netlify.app/post/2019/06/12/jonathan-gold-101-restaurants-mapped/</loc>
     <lastmod>2019-06-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:4321/tags/los-angeles/</loc>
+    <loc>https://robhuang.netlify.app/tags/los-angeles/</loc>
     <lastmod>2019-06-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:4321/post/2018/12/10/nba-awards-voting-outlier-ballots-using-pca/</loc>
+    <loc>https://robhuang.netlify.app/post/2018/12/10/nba-awards-voting-outlier-ballots-using-pca/</loc>
     <lastmod>2018-12-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:4321/post/2018/11/13/nba-awards-voting-hometown-bias/</loc>
+    <loc>https://robhuang.netlify.app/post/2018/11/13/nba-awards-voting-hometown-bias/</loc>
     <lastmod>2018-11-13T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:4321/post/2018/10/10/nba-draft-best-worst-picks-by-team-and-general-manager/</loc>
+    <loc>https://robhuang.netlify.app/post/2018/10/10/nba-draft-best-worst-picks-by-team-and-general-manager/</loc>
     <lastmod>2018-10-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:4321/about/</loc>
+    <loc>https://robhuang.netlify.app/about/</loc>
   </url><url>
-    <loc>http://localhost:4321/categories/</loc>
+    <loc>https://robhuang.netlify.app/categories/</loc>
   </url>
 </urlset>
